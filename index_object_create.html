@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+          /*
+        padding: 0;
+        margin: 0 auto;
+        text-align: center;
+        */
+      }
+
+      #container {
+        width: 90%;
+      }
+
+      h2 {
+        color: #ff0033;
+      }
+
+      div {
+        margin-top: 30px;
+      }
+
+    .blue {
+        font-weight: bold;
+        color: #3366cc;
+    }
+
+    .red {
+        font-weight: bold;
+        color: #ff0033;
+    }
+
+/*
+    h2 {
+        font-weight: bold;
+        color: #3366cc;
+    }
+    */
+
+    pre {
+        background-color: #efefef;
+        width: 75%;
+    }
+
+    .small {
+        font-size: 80%;
+        color: #666666;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Object.create()</h2>
+      <p>テスト内容はChromeのConsoleに表示</p>
+
+      <p>＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // 第一引数のみでObject作成作成
+        let cat = {
+          name: "Mike",
+          method: function() {
+            console.log("猫の名前は、" + this.name);
+          }
+        };
+
+        let cat2 = Object.create(cat);
+        cat2.method(); // 猫の名前は、Mike
+
+        // 第二引数（propertiesObject）も使用
+        /*
+          {
+              "propertyName": {
+                  value: undefined, //
+                  writable: true, // 上書き可能か
+                  configurable: false, // 変更や削除が可能か
+                  enumerable: false, // 列挙されるか
+                  get: function () {}, // getter
+                  set: function () {}, // setter
+              }
+          }
+          */
+
+        let cat3 = Object.create(cat, {
+          name: {
+            value: "Kuro",
+            writable: true
+          },
+          bark: {
+            value: function() {
+              console.log(this.name + " は、ニャーと鳴いている");
+            }
+          }
+        });
+        cat3.method(); // 猫の名前は、Kuro
+        cat3.bark(); // Kuro は、ニャーと鳴いている
+        cat3.name = "Shiro"; // writable: trueにしたので変更可
+        cat3.method(); // 猫の名前は、Shiro
+        console.log("");
+      </script>
+
+      <pre>
+      <code>
+
+        // 第一引数のみでObject作成作成
+        let cat = {
+          name: "Mike",
+          method: function() {
+            console.log("猫の名前は、" + this.name);
+          }
+        };
+
+        let cat2 = Object.create(cat);
+        cat2.method(); // 猫の名前は、Mike
+
+        // 第二引数（propertiesObject）も使用
+          /*
+          {
+              "propertyName": {
+                  value: undefined, //
+                  writable: true, // 上書き可能か
+                  configurable: false, // 変更や削除が可能か
+                  enumerable: false, // 列挙されるか
+                  get: function () {}, // getter
+                  set: function () {}, // setter
+              }
+          }
+          */
+
+         let cat3 = Object.create(cat, {
+             name: {
+                 value: "Kuro",
+                 writable: true
+             },
+             bark: {
+                 value: function() {
+                     console.log(this.name + " は、ニャーと鳴いている");
+                 }
+             }
+         })
+         cat3.method(); // 猫の名前は、Kuro
+         cat3.bark(); // Kuro は、ニャーと鳴いている
+         cat3.name = "Shiro"; // writable: trueにしたので変更可
+         cat3.method(); // 猫の名前は、Shiro
+
+      </code>
+      </pre>
+
+      <p>参考：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/create" target="_blank">Object.create() - MDN - Mozilla</a></p>
+
+      <p><a href="https://knowledge.reontosanta.com/archives/864" target="_blank">JavaScriptにおけるObject.createの引数</a></p>
+
+      <p><a href="https://noumenon-th.net/programming/2017/02/05/object3/" target="_blank">思考の葉 オブジェクトについて[Object.create()]</a></p>
+
+      
+      <p><a href="https://codeday.me/jp/qa/20190606/944570.html" target="_blank">コードログ</a></p>
+
+      <p><a href="http://var.blog.jp/archives/78945827.html" target="_blank">JavaScript のオブジェクトのクローンは Object.create で十分なことが多い気がする</a></p>
+
+    </div>
+
+    <script src="src/object_create.js"></script>
+  </body>
+</html>
