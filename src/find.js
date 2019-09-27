@@ -18,7 +18,7 @@ console.log("found2: ", found2); // found2:  undefined、★見つからない�
 
 // Syntax
 // arr.find(callback[, thisArg])
-//
+//F
 // callback()は最大3つの引数を取る（element...現在の配列内の要素、現在の配列内のインデックス、findを呼び出した元の配列）
 // thisArg...callback()が実行される時にthisとして扱われるオブジェクト
 

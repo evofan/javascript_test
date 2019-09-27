@@ -1,0 +1,303 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+          /*
+        padding: 0;
+        margin: 0 auto;
+        text-align: center;
+        */
+      }
+
+      #container {
+        width: 90%;
+      }
+
+      h2 {
+        color: #ff0033;
+      }
+
+      div {
+        margin-top: 30px;
+      }
+
+    .blue {
+        font-weight: bold;
+        color: #3366cc;
+    }
+
+    .red {
+        font-weight: bold;
+        color: #ff0033;
+    }
+
+    pre {
+        background-color: #efefef;
+        width: 75%;
+    }
+
+    .small {
+        font-size: 80%;
+        color: #666666;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Object.assign()</h2>
+      <p>テスト内容はChromeのConsoleに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // 第一引数に無名オブジェクトを渡して、既存のオブジェクトを（シャロー）コピーした新規オブジェクトを作成出来る
+        let obj_1 = { a: "mike", b: "kuro" };
+        let obj_2 = Object.assign({}, obj_1);
+        console.log("obj_2: ", obj_2); // obj_2:  {a: "mike", b: "kuro"}
+
+        // 第一引数に定義済みのオブジェクトを指定した場合、第二引数以降のオブジェクトがマージされる（オブジェクトに同名プロパティがあった場合は後ろの値に上書きされる）
+        let obj_3 = { a: "mike", b: "kuro" };
+        let obj_4 = { b: "shiro", c: "tora" };
+        Object.assign(obj_3, obj_4);
+        console.log("obj_3: ", obj_3); // obj_3:  {a: "mike", b: "shiro", c: "tora"}
+
+        // 第二引数以降のプロパティにネストしたオブジェクトがあった場合、そのオブジェクトは参照コピーになる
+        let obj_5 = { d: { name: "tama", age: 3 } };
+        Object.assign(obj_3, obj_5);
+        console.log("obj_3: ", obj_3); // obj_3:  {a: "mike", b: "shiro", c: "tora", d: {name: "tama", age: 3}
+        // 元のオブジェクトの値を更新
+        obj_5.d.age = 4;
+        console.log("obj_5: ", obj_5); // d: {name: "tama", age: 4}
+        console.log("obj_3: ", obj_3); // obj_3:  {a: "mike", b: "shiro", c: "tora", d: {name: "tama", age: 4} // 参照なので元の変更の影響を受ける
+
+        // deep copyをする場合（funtionやundefinedがある場合は不可の方法）
+        let obj_6 = Object.assign({}, JSON.parse(JSON.stringify(obj_5)));
+        console.log("obj_6: ", obj_6); // {d: {name: "tama", age: 4}
+        // 元のオブジェクトの値を更新
+        obj_5.d.name = "saba";
+        console.log("obj_5: ", obj_5); // {d: {name: "saba", age: 4}}
+        console.log("obj_6: ", obj_6); // {d: {name: "tama", age: 4}} // 元の変更の影響を受けない＝値渡しが出来てる
+
+        // プロトタイプチェーン上のプロパティはコピーされない
+        let obj_10 = Object.create(obj_1);
+        console.log(obj_10); // {} __proto__: a: "mike", b: "kuro", __proto__: Object
+        let obj_11 = Object.assign({}, obj_10);
+        console.log(obj_11); // {} __proto__: Object
+
+        // 列挙可能でないプロパティはコピーされない
+        let obj_12 = Object.create(obj_1, {
+          a: {
+            value: "mikeneko",
+            enumerable: true
+          },
+          b: {
+            value: "kuroneko",
+            enumerable: false
+          }
+        });
+        console.log(obj_12); // {a: "mikeneko", b: "kuroneko"}
+        let obj_13 = Object.assign({}, obj_12);
+        console.log(obj_13); // {a: "mikeneko"}
+
+        // アクセサディスクリプタは、データディスクリプタとしてコピーされる
+        let obj_14 = Object.create(
+          {},
+          {
+            price: {
+              value: 100,
+              enumerable: true,
+              configurable: true,
+              writable: true
+            },
+            sale_buy: {
+              get: function() {
+                return this.price;
+              },
+              set: function(val) {
+                this.price = val;
+              }
+            }
+          }
+        );
+        // console.log(obj_14); // 第一引数に{}を指定しない場合： __proto__: price: {value: 100, enumerable: true} sale_buy: {get: ƒ, set: ƒ} __proto__: Object
+        console.log(obj_14); // {price: 100}price: 100sale_buy: 100get sale_buy: ƒ ()arguments: nullcaller: nulllength: 0name: "get"prototype: {constructor: ƒ}__proto__: ƒ ()[[FunctionLocation]]: index_object_assign.html:158[[Scopes]]: Scopes[2]set sale_buy: ƒ (val)__proto__: Object
+
+        console.log(obj_14.price); // 100
+        console.log((obj_14.sale_buy = 300)); // 300
+        console.log(obj_14.sale_buy); // 300 ※ writable: trueにしないと100のまま
+
+        let obj_15 = Object.assign({}, obj_14);
+        console.log(obj_15); // {price: 300} price: 300 __proto__: Object
+        obj_15.price = 500;
+        console.log(obj_15.price); // 500
+        console.log((obj_15.sale_buy = 200)); // 200
+        console.log(obj_15.sale_buy); // 200
+
+        console.log(Object.getOwnPropertyDescriptors(obj_15));
+        // price: {value: 500, writable: true, enumerable: true, configurable: true}
+        // sale_buy: {value: 200, writable: true, enumerable: true, configurable: true} // ※データディスクリプタ
+        // __proto__: Object
+        console.log(Object.getOwnPropertyDescriptors(obj_14));
+        // price: {value: 300, writable: true, enumerable: true, configurable: true}
+        // sale_buy: {enumerable: false, configurable: false, get: ƒ, set: ƒ} // ※アクセサディスクリプタ
+        // __proto__: Object
+
+        // アクセサディスクリプタとしてコピーしたい場合
+        obj_16 = Object.defineProperties(
+          {},
+          Object.getOwnPropertyDescriptors(obj_14)
+        );
+        obj_16.price = 1000;
+        console.log(obj_16.price); // 1000
+        console.log((obj_16.sale_buy = 2000)); // 2000
+        console.log(obj_16.sale_buy); // 2000
+
+        console.log(Object.getOwnPropertyDescriptors(obj_16));
+        // price: {value: 2000, writable: true, enumerable: true, configurable: true}
+        // sale_buy: {enumerable: false, configurable: false, get: ƒ, set: ƒ} // ※アクセサディスクリプタのままコピーされている
+        // __proto__: Object
+
+        console.log("");
+      </script>
+
+      <pre>
+      <code>
+
+        // 第一引数に無名オブジェクトを渡して、既存のオブジェクトを（シャロー）コピーした新規オブジェクトを作成出来る
+        let obj_1 = { a: "mike", b: "kuro" };
+        let obj_2 = Object.assign({}, obj_1);
+        console.log("obj_2: ", obj_2); // obj_2:  {a: "mike", b: "kuro"}
+
+        // 第一引数に定義済みのオブジェクトを指定した場合、第二引数以降のオブジェクトがマージされる（オブジェクトに同名プロパティがあった場合は後ろの値に上書きされる）
+        let obj_3 = { a: "mike", b: "kuro" };
+        let obj_4 = { b: "shiro", c: "tora" };
+        Object.assign(obj_3, obj_4);
+        console.log("obj_3: ", obj_3); // obj_3:  {a: "mike", b: "shiro", c: "tora"}
+
+        // 第二引数以降のプロパティにネストしたオブジェクトがあった場合、そのオブジェクトは参照コピーになる
+        let obj_5 = { d: { name: "tama", age: 3 } };
+        Object.assign(obj_3, obj_5);
+        console.log("obj_3: ", obj_3); // obj_3:  {a: "mike", b: "shiro", c: "tora", d: {name: "tama", age: 3}
+        // 元のオブジェクトの値を更新
+        obj_5.d.age = 4;
+        console.log("obj_5: ", obj_5); // d: {name: "tama", age: 4}
+        console.log("obj_3: ", obj_3); // obj_3:  {a: "mike", b: "shiro", c: "tora", d: {name: "tama", age: 4} // 参照なので元の変更の影響を受ける
+
+        // deep copyをする場合（funtionやundefinedがある場合は不可の方法）
+        let obj_6 = Object.assign({}, JSON.parse(JSON.stringify(obj_5)));
+        console.log("obj_6: ", obj_6); // {d: {name: "tama", age: 4}
+        // 元のオブジェクトの値を更新
+        obj_5.d.name = "saba";
+        console.log("obj_5: ", obj_5); // {d: {name: "saba", age: 4}}
+        console.log("obj_6: ", obj_6); // {d: {name: "tama", age: 4}} // 元の変更の影響を受けない＝値渡しが出来てる
+
+        // プロトタイプチェーン上のプロパティはコピーされない
+        let obj_10 = Object.create(obj_1);
+        console.log(obj_10); // {} __proto__: a: "mike", b: "kuro", __proto__: Object
+        let obj_11 = Object.assign({}, obj_10);
+        console.log(obj_11); // {} __proto__: Object
+
+        // 列挙可能でないプロパティはコピーされない
+        let obj_12 = Object.create(obj_1, {
+          a: {
+            value: "mikeneko",
+            enumerable: true
+          },
+          b: {
+            value: "kuroneko",
+            enumerable: false
+          }
+        });
+        console.log(obj_12); // {a: "mikeneko", b: "kuroneko"}
+        let obj_13 = Object.assign({}, obj_12);
+        console.log(obj_13); // {a: "mikeneko"}
+
+        // アクセサディスクリプタは、データディスクリプタとしてコピーされる
+        let obj_14 = Object.create(
+          {},
+          {
+            price: {
+              value: 100,
+              enumerable: true,
+              configurable: true,
+              writable: true
+            },
+            sale_buy: {
+              get: function() {
+                return this.price;
+              },
+              set: function(val) {
+                this.price = val;
+              }
+            }
+          }
+        );
+        // console.log(obj_14); // 第一引数に{}を指定しない場合： __proto__: price: {value: 100, enumerable: true}
+        // sale_buy: {get: ƒ, set: ƒ} __proto__: Object
+        console.log(obj_14); // {price: 100}price: 100sale_buy: 100get
+        // sale_buy: ƒ ()arguments: nullcaller: nulllength: 0name: "get"prototype: {constructor: ƒ}
+        // __proto__: ƒ ()[[FunctionLocation]]: index_object_assign.html:158[[Scopes]]: Scopes[2]set sale_buy: ƒ (val)__proto__: Object
+
+        console.log(obj_14.price); // 100
+        console.log((obj_14.sale_buy = 300)); // 300
+        console.log(obj_14.sale_buy); // 300 ※ writable: trueにしないと100のまま
+
+        let obj_15 = Object.assign({}, obj_14);
+        console.log(obj_15); // {price: 300} price: 300 __proto__: Object
+        obj_15.price = 500;
+        console.log(obj_15.price); // 500
+        console.log((obj_15.sale_buy = 200)); // 200
+        console.log(obj_15.sale_buy); // 200
+
+        console.log(Object.getOwnPropertyDescriptors(obj_15));
+        // price: {value: 500, writable: true, enumerable: true, configurable: true}
+        // sale_buy: {value: 200, writable: true, enumerable: true, configurable: true} // ※データディスクリプタ
+        // __proto__: Object
+        console.log(Object.getOwnPropertyDescriptors(obj_14));
+        // price: {value: 300, writable: true, enumerable: true, configurable: true}
+        // sale_buy: {enumerable: false, configurable: false, get: ƒ, set: ƒ} // ※アクセサディスクリプタ
+        // __proto__: Object
+
+        // アクセサディスクリプタとしてコピーしたい場合
+        obj_16 = Object.defineProperties(
+          {},
+          Object.getOwnPropertyDescriptors(obj_14)
+        );
+        obj_16.price = 1000;
+        console.log(obj_16.price); // 1000
+        console.log((obj_16.sale_buy = 2000)); // 2000
+        console.log(obj_16.sale_buy); // 2000
+
+        console.log(Object.getOwnPropertyDescriptors(obj_16));
+        // price: {value: 2000, writable: true, enumerable: true, configurable: true}
+        // sale_buy: {enumerable: false, configurable: false, get: ƒ, set: ƒ} // ※アクセサディスクリプタのままコピーされている
+        // __proto__: Object
+
+      </code>
+      </pre>
+
+      <p>参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/assign" target="_blank">Object.assign() - JavaScript | MDN</a></p>
+
+      <p><a href="https://yutapon.hatenablog.com/entry/2014/05/20/102526" target="_blank">Object.defineProperty()について調べた</a><br>
+      ＞enumerable: falseだと、列挙されなくなります。<br>
+      ＞（列挙されなくなるだけで、プロパティにアクセスして値を取得することはできます）<br>
+      ＞この記事で指していたのはデータディスクリプタのことです。<br>
+      ＞get, setを指定したりするアクセサディスクリプタというのもあるのですが、
+      </p>
+
+      <p><a href="https://qiita.com/SE-studying-now/items/ecdbc0317ba1806aed61" target="_blank">Object.assign()を使ったコピーいろいろ</a></p>
+
+      <p><a href="" target="_blank"></a></p>
+
+    </div>
+
+    <script src="src/object_assign.js"></script>
+  </body>
+</html>

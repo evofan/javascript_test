@@ -59,9 +59,7 @@
     <div id="conatiner">
       <h1>JavaScript Test Memo</h1>
       <h2>Object.create()</h2>
-      <p>テスト内容はChromeのConsoleに表示</p>
-
-      <p>＋参考ページを元にサンプル作成</p>
+      <p>テスト内容はChromeのConsoleに表示＋参考ページを元にサンプル作成</p>
 
       <script>
         // 第一引数のみでObject作成作成
@@ -107,6 +105,7 @@
         console.log("");
       </script>
 
+      <p>オブジェクトの作成と第二引数のパラメータ</p>
       <pre>
       <code>
 
@@ -125,10 +124,10 @@
           /*
           {
               "propertyName": {
-                  value: undefined, //
-                  writable: true, // 上書き可能か
-                  configurable: false, // 変更や削除が可能か
-                  enumerable: false, // 列挙されるか
+                  value: undefined, // 値
+                  writable: true, // 上書き可能か（default: false）
+                  configurable: false, // 属性変更や削除が可能か（default: false）
+                  enumerable: false, // 列挙されるか（default: false）
                   get: function () {}, // getter
                   set: function () {}, // setter
               }
@@ -154,19 +153,605 @@
       </code>
       </pre>
 
-      <p>参考：</p>
+      <script>
+        let obj = Object.create(Object.prototype);
+        // let obj = {};とequal
+
+        let cat4 = {
+          name: "Tama",
+          method: function() {
+            console.log("猫の名前は、" + this.name); // 猫の名前は、Mike
+          }
+        };
+
+        let cat5 = Object.create(cat4, {
+          name: {
+            value: "Saba",
+            writable: false,
+            configurable: true,
+            enumerable: true
+          }
+        });
+        cat5.method(); // 猫の名前は、Saba
+        cat5.name = "SabaTora"; // writable: falseなので変更不可
+        cat5.method(); // 猫の名前は、Saba
+
+        for (let prop in cat5) {
+          console.log(prop, cat5[prop]);
+          // name Saba
+          // method ƒ () { console.log("猫の名前は、" + this.name); // 猫の名前は、Mike }
+        }
+
+        delete cat5.name; // configurable: trueなので削除可
+        cat5.method(); // 猫の名前は、Tama // 継承元の名前に戻る
+
+        console.log("");
+      </script>
+
+      <pre>
+      <code>
+
+        let obj = Object.create(Object.prototype);
+        // let obj = {};とequal
+
+        let cat4 = {
+          name: "Tama",
+          method: function() {
+            console.log("猫の名前は、" + this.name); // 猫の名前は、Mike
+          }
+        };
+
+        let cat5 = Object.create(cat4, {
+          name: {
+            value: "Saba",
+            writable: false,
+            configurable: true,
+            enumerable: true
+          }
+        });
+        cat5.method(); // 猫の名前は、Saba
+        cat5.name = "SabaTora"; // writable: falseなので変更不可
+        cat5.method(); // 猫の名前は、Saba
+
+        for (let prop in cat5) {
+          console.log(prop, cat5[prop]);
+          // name Saba
+          // method ƒ () { console.log("猫の名前は、" + this.name); // 猫の名前は、Mike }
+        }
+
+        delete cat5.name; // configurable: trueなので削除可
+        cat5.method(); // 猫の名前は、Tama // 継承元の名前に戻る
+
+      </code>
+      </pre>
+
+      <script>
+        let CatP = function(name, age) {
+          this.name = name;
+          this.age = age;
+        };
+        CatP.prototype.toString = function() {
+          return this.name + ", " + this.age;
+        };
+
+        // the old way
+        let Tabi = new CatP("Tabi", 3);
+        for (let n in Tabi) {
+          if (Tabi.hasOwnProperty(n)) {
+            console.log(n, Tabi[n]); // name Tabi, age 3
+          }
+        }
+
+        // the pure way
+        let Que = Object.create(new CatP("Que", 5));
+        console.log("hasOwnProperty：");
+        for (let n in Que) {
+          if (Que.hasOwnProperty(n)) {
+            console.log(n, Que[n]); // [ empty ] ※すべてのメンバーがプロトタイプに属しているため、これは何も出力しません。
+          }
+        }
+        console.log("no use hasOwnProperty：");
+        for (let n in Que) {
+          console.log(n, Que[n]); // name Que, age 5
+        }
+
+        console.log("prototype拡張後：");
+        CatP.prototype.name = null; // default value if you don't init in ctor
+        CatP.prototype.age = null;
+        CatP.prototype.gender = "male";
+        CatP.prototype.toString = function() {
+          return this.name + ", " + this.age;
+        };
+
+        console.log("hasOwnProperty：");
+        for (let n in Que) {
+          if (Que.hasOwnProperty(n)) {
+            console.log(n, Que[n]); // [ empty ] ※すべてのメンバーがプロトタイプに属しているため、これは何も出力しません。
+          }
+        }
+        console.log("no use hasOwnProperty：");
+        for (let n in Que) {
+          console.log(n, Que[n]); // name Que, age 5, toString ƒ () { return this.name + ', ' + this.age }, gender male
+        }
+
+        console.log("");
+
+        //
+        let inherits = function(childCtor, parentCtor) {
+          function tempCtor() {}
+          tempCtor.prototype = parentCtor.prototype;
+          childCtor.superclass = parentCtor.prototype;
+          childCtor.prototype = new tempCtor();
+          childCtor.prototype.constructor = childCtor;
+        };
+        // Object.Create ver.
+        /*
+      let inherits = function(childCtor, parentCtor) {
+        childCtor.prototype = Object.create(parentCtor.prototype);
+        childCtor.superclass = parentCtor.prototype;
+      }      
+      */
+
+        let Person = function(name) {
+          this.name = name;
+        };
+        Person.prototype.name = "";
+        Person.prototype.toString = function() {
+          return "My Name is " + this.name;
+        };
+
+        let OldPerson = function(name, age) {
+          OldPerson.superclass.constructor.call(this);
+          this.name = name;
+          this.age = age;
+        };
+
+        inherits(OldPerson, Person);
+        OldPerson.prototype.age = 0;
+        OldPerson.prototype.toString = function() {
+          let oldString = OldPerson.superclass.toString.call(this);
+          return oldString + " and my age is " + this.age;
+        };
+
+        let Taro = new Person("Taro");
+        console.log(Taro.name); // Taro
+        console.log(Taro.toString()); // My Name is Taro
+
+        let Jiro = new OldPerson("Jiro", 10);
+        console.log(Jiro.name); // Jiro
+        console.log(Jiro.toString()); // My Name is Jiro and my age is 10
+
+        console.log("");
+      </script>
+
+      <p>hasOwnProperty()での違い</p>
+      <pre>
+      <code>
+
+        let CatP = function(name, age) {
+          this.name = name;
+          this.age = age;
+        };
+        CatP.prototype.toString = function() {
+          return this.name + ", " + this.age;
+        };
+
+        // the old way
+        let Tabi = new CatP("Tabi", 3);
+        for (let n in Tabi) {
+          if (Tabi.hasOwnProperty(n)) {
+            console.log(n, Tabi[n]); // name Tabi, age 3
+          }
+        }
+
+        // the pure way
+        let Que = Object.create(new CatP("Que", 5));
+        console.log("hasOwnProperty：");
+        for (let n in Que) {
+          if (Que.hasOwnProperty(n)) {
+            console.log(n, Que[n]); // [ empty ] ※すべてのメンバーがプロトタイプに属しているため、これは何も出力しません。
+          }
+        }
+        console.log("no use hasOwnProperty：");
+        for (let n in Que) {
+          console.log(n, Que[n]); // name Que, age 5
+        }
+
+        console.log("prototype拡張後：");
+        CatP.prototype.name = null; // default value if you don't init in ctor
+        CatP.prototype.age = null;
+        CatP.prototype.gender = "male";
+        CatP.prototype.toString = function() {
+          return this.name + ", " + this.age;
+        };
+
+        console.log("hasOwnProperty：");
+        for (let n in Que) {
+          if (Que.hasOwnProperty(n)) {
+            console.log(n, Que[n]); // [ empty ] ※すべてのメンバーがプロトタイプに属しているため、これは何も出力しません。
+          }
+        }
+        console.log("no use hasOwnProperty：");
+        for (let n in Que) {
+          console.log(n, Que[n]); // name Que, age 5, toString ƒ () { return this.name + ', ' + this.age }, gender male
+        }
+
+        console.log("");
+
+        //
+        let inherits = function(childCtor, parentCtor) {
+          function tempCtor() {}
+          tempCtor.prototype = parentCtor.prototype;
+          childCtor.superclass = parentCtor.prototype;
+          childCtor.prototype = new tempCtor();
+          childCtor.prototype.constructor = childCtor;
+        };
+        // Object.Create ver.
+        /*
+        let inherits = function(childCtor, parentCtor) {
+          childCtor.prototype = Object.create(parentCtor.prototype);
+          childCtor.superclass = parentCtor.prototype;
+        }      
+        */
+
+        let Person = function(name) {
+          this.name = name;
+        };
+        Person.prototype.name = "";
+        Person.prototype.toString = function() {
+          return "My Name is " + this.name;
+        };
+
+        let OldPerson = function(name, age) {
+          OldPerson.superclass.constructor.call(this);
+          this.name = name;
+          this.age = age;
+        };
+
+        inherits(OldPerson, Person);
+        OldPerson.prototype.age = 0;
+        OldPerson.prototype.toString = function() {
+          let oldString = OldPerson.superclass.toString.call(this);
+          return oldString + " and my age is " + this.age;
+        };
+
+        let Taro = new Person("Taro");
+        console.log(Taro.name); // Taro
+        console.log(Taro.toString()); // My Name is Taro
+
+        let Jiro = new OldPerson("Jiro", 10);
+        console.log(Jiro.name); // Jiro
+        console.log(Jiro.toString()); // My Name is Jiro and my age is 10
+
+      </code>
+      </pre>
+
+      <p>オブジェクトのクローン（Not DeepCopy）に使用</p>
+
+      <script>
+        // JSON.parse()とJSON.stringify()を使用したver.
+        let defaultParams = { a: "b" };
+        console.log(defaultParams); // {a: "b"}
+
+        let newParams = JSON.parse(JSON.stringify(defaultParams));
+        console.log("newParams: ", newParams); // newParams:  {a: "b"}
+
+        class A {
+          constructor() {
+            this.name = "class A";
+            this.num = 1;
+          }
+          get() {
+            return this.num;
+          }
+          set(num) {
+            this.num = num;
+          }
+        }
+
+        let a = new A();
+        console.log("a: ", a); // a:  A {name: "class A", num: 1}
+        a.set(2);
+        console.log("a.num: ", a.num); // a.num:  2
+
+        let b = Object.create(a, {
+          num: {
+            value: a.num,
+            writable: true,
+            configurable: false,
+            enumerable: true
+          }
+        });
+        console.log("b: ", b); // b:  A {} ※空？
+
+        console.log("b.num: ", b.num); // b.num:  2
+        console.log("b.get(): ", b.get()); // b.get():  2
+
+        b.num = 3;
+        console.log("b.num: ", b.num); // b.num:  3
+        b.set(4); // "writable: false" -> Uncaught TypeError: Cannot assign to read only property 'num' of object '#<A>'
+        console.log("b.num: ", b.num); // b.num:  4
+
+        a.get();
+        console.log("a.get(): ", a.get()); // a.get():  2
+
+        a.test = "abcde";
+        console.log("a.test: ", a.test); // a.test:  abcde
+        console.log("b.test: ", b.test); // b.test:  abcde ※元に無いプロパティを作ると元も影響を受ける
+
+        b.name = "class B";
+        console.log("a.name: ", a.name); // a.name:  class A
+        console.log("b.name: ", b.name); // b.name:  class B
+
+        console.log("");
+      </script>
+
+      <pre>
+      <code>
+
+        // JSON.parse()とJSON.stringify()を使用したver.
+        let defaultParams = { a: "b" };
+        console.log(defaultParams); // {a: "b"}
+
+        let newParams = JSON.parse(JSON.stringify(defaultParams));
+        console.log("newParams: ", newParams); // newParams:  {a: "b"}
+
+        class A {
+          constructor() {
+            this.name = "class A";
+            this.num = 1;
+          }
+          get() {
+            return this.num;
+          }
+          set(num) {
+            this.num = num;
+          }
+        }
+
+        let a = new A();
+        console.log("a: ", a); // a:  A {name: "class A", num: 1}
+        a.set(2);
+        console.log("a.num: ", a.num); // a.num:  2
+
+        let b = Object.create(a, {
+          num: {
+            value: a.num,
+            writable: true,
+            configurable: false,
+            enumerable: true
+          }
+        });
+        console.log("b: ", b); // b:  A {} ※空？
+
+        console.log("b.num: ", b.num); // b.num:  2
+        console.log("b.get(): ", b.get()); // b.get():  2
+
+        b.num = 3;
+        console.log("b.num: ", b.num); // b.num:  3
+        b.set(4); // "writable: false" -> Uncaught TypeError: Cannot assign to read only property 'num' of object '#<A>'
+        console.log("b.num: ", b.num); // b.num:  4
+
+        a.get();
+        console.log("a.get(): ", a.get()); // a.get():  2
+
+        a.test = "abcde";
+        console.log("a.test: ", a.test); // a.test:  abcde
+        console.log("b.test: ", b.test); // b.test:  abcde ※元に無いプロパティを作ると元も影響を受ける
+
+        b.name = "class B";
+        console.log("a.name: ", a.name); // a.name:  class A
+        console.log("b.name: ", b.name); // b.name:  class B
+
+      </code>
+      </pre>
+
+      <p>Object.create で最も単純なオブジェクトを作る</p>
+
+      <script>
+        let obj_1 = Object.create(null);
+        console.log("obj_1: ", obj_1); // obj_1:  {}
+
+        console.log(Object.getPrototypeOf(obj_1)); // null、プロトタイプ（チェーン）を持たない為
+
+        // 自分でプロパティを定義
+        Object.defineProperty(obj_1, "id", { value: 123 });
+        console.log(obj_1.id); // 123
+
+        // prototypeを指定してオブジェクトを作成
+        let obj_2 = Object.create(Object.prototype);
+        console.log(obj_2.toString()); // [object Object]
+
+        console.log(Object.getPrototypeOf(obj_2) === Object.prototype); // true
+
+        // 誰がそのプロパティを持っているか？
+        console.log(Object.getOwnPropertyNames(obj_2)); // []
+        console.log(Object.getOwnPropertyNames(Object.prototype));
+        // (12)
+        // 0: "constructor"
+        // 1: "__defineGetter__"
+        // 2: "__defineSetter__"
+        // 3: "hasOwnProperty"
+        // 4: "__lookupGetter__"
+        // 5: "__lookupSetter__"
+        // 6: "isPrototypeOf"
+        // 7: "propertyIsEnumerable"
+        // 8: "toString"
+        // 9: "valueOf"
+        // 10: "__proto__"
+        // 11: "toLocaleString"
+        // length: 12
+        // __proto__: Array(0)
+
+        // その他（Object以外）のビルトインオブジェクトのprototypeを調べる
+        console.log(Object.getOwnPropertyNames(Function.prototype));
+        // (9)
+        // 0: "length"
+        // 1: "name"
+        // 2: "arguments"
+        // 3: "caller"
+        // 4: "constructor"
+        // 5: "apply"
+        // 6: "bind"
+        // 7: "call"
+        // 8: "toString"
+        // length: 9
+        // __proto__: Array(0)
+
+        console.log(Object.getOwnPropertyNames(String.prototype));
+        // (48)
+        // 0: "length"
+        // 1: "constructor"
+        // 2: "anchor"
+        // 3: "big"
+        // 4: "blink"
+        // 5: "bold"
+        // 6: "charAt"
+        // 7: "charCodeAt"
+        // 8: "codePointAt"
+        // 9: "concat"
+        // 10: "endsWith"
+        // 11: "fontcolor"
+        // 12: "fontsize"
+        // 13: "fixed"
+        // 14: "includes"
+        // 15: "indexOf"
+        // 16: "italics"
+        // 17: "lastIndexOf"
+        // 18: "link"
+        // 19: "localeCompare"
+        // 20: "match"
+        // 21: "matchAll"
+        // 22: "normalize"
+        // 23: "padEnd"
+        // 24: "padStart"
+        // 25: "repeat"
+        // 26: "replace"
+        // 27: "search"
+        // 28: "slice"
+        // 29: "small"
+        // 30: "split"
+        // 31: "strike"
+        // 32: "sub"
+        // 33: "substr"
+        // 34: "substring"
+        // 35: "sup"
+        // 36: "startsWith"
+        // 37: "toString"
+        // 38: "trim"
+        // 39: "trimStart"
+        // 40: "trimLeft"
+        // 41: "trimEnd"
+        // 42: "trimRight"
+        // 43: "toLocaleLowerCase"
+        // 44: "toLocaleUpperCase"
+        // 45: "toLowerCase"
+        // 46: "toUpperCase"
+        // 47: "valueOf"
+        // length: 48
+        // __proto__: Array(0)
+
+        console.log(Object.getOwnPropertyNames(Array.prototype));
+        // (33)
+        // 0: "length"
+        // 1: "constructor"
+        // 2: "concat"
+        // 3: "copyWithin"
+        // 4: "fill"
+        // 5: "find"
+        // 6: "findIndex"
+        // 7: "lastIndexOf"
+        // 8: "pop"
+        // 9: "push"
+        // 10: "reverse"
+        // 11: "shift"
+        // 12: "unshift"
+        // 13: "slice"
+        // 14: "sort"
+        // 15: "splice"
+        // 16: "includes"
+        // 17: "indexOf"
+        // 18: "join"
+        // 19: "keys"
+        // 20: "entries"
+        // 21: "values"
+        // 22: "forEach"
+        // 23: "filter"
+        // 24: "flat"
+        // 25: "flatMap"
+        // 26: "map"
+        // 27: "every"
+        // 28: "some"
+        // 29: "reduce"
+        // 30: "reduceRight"
+        // 31: "toLocaleString"
+        // 32: "toString"
+        // length: 33
+        // __proto__: Array(0)
+
+        console.log("");
+
+      </script>
+
+      <code>
+      <pre>
+
+        let obj_1 = Object.create(null);
+        console.log("obj_1: ", obj_1); // obj_1:  {}
+
+        console.log(Object.getPrototypeOf(obj_1)); // null、プロトタイプ（チェーン）を持たない為
+
+        // 自分でプロパティを定義
+        Object.defineProperty(obj_1, "id", { value: 123 });
+        console.log(obj_1.id); // 123
+
+        // prototypeを指定してオブジェクトを作成
+        let obj_2 = Object.create(Object.prototype);
+        console.log(obj_2.toString()); // [object Object]
+
+        console.log(Object.getPrototypeOf(obj_2) === Object.prototype); // true
+
+        // 誰がそのプロパティを持っているか？
+        console.log(Object.getOwnPropertyNames(obj_2)); // []
+        console.log(Object.getOwnPropertyNames(Object.prototype));
+        // (12)
+        // 0: "constructor"
+        // 1: "__defineGetter__"
+        // 2: "__defineSetter__"
+        // 3: "hasOwnProperty"
+        // 4: "__lookupGetter__"
+        // 5: "__lookupSetter__"
+        // 6: "isPrototypeOf"
+        // 7: "propertyIsEnumerable"
+        // 8: "toString"
+        // 9: "valueOf"
+        // 10: "__proto__"
+        // 11: "toLocaleString"
+        // length: 12
+        // __proto__: Array(0)
+
+      </pre>
+
+      <p>参考サイト：</p>
 
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/create" target="_blank">Object.create() - MDN - Mozilla</a></p>
 
       <p><a href="https://knowledge.reontosanta.com/archives/864" target="_blank">JavaScriptにおけるObject.createの引数</a></p>
 
       <p><a href="https://noumenon-th.net/programming/2017/02/05/object3/" target="_blank">思考の葉 オブジェクトについて[Object.create()]</a></p>
-
       
       <p><a href="https://codeday.me/jp/qa/20190606/944570.html" target="_blank">コードログ</a></p>
 
       <p><a href="http://var.blog.jp/archives/78945827.html" target="_blank">JavaScript のオブジェクトのクローンは Object.create で十分なことが多い気がする</a></p>
 
+      <p><a href="https://stackoverflow.com/questions/24744474/json-parsejson-stringifyx-purpose" target="_blank">JSON.parse(JSON.stringify(x)) Purpose?</a></p>
+    
+      <p><a href="https://qiita.com/seihmd/items/74fa9792d05278a2e898" target="_blank">JavaScriptのDeepCopyでJSON.parse/stringifyを使ってはいけない</a></p>
+    
+      <p><a href="https://qiita.com/yoshiwatanabe/items/338705a20e8475e4057e" target="_blank">Object.create(...)でオブジェクトを作る（シリーズその５）</a></p>
+
+      <!--<p><a href="" target="_blank"></a></p>-->
+    
     </div>
 
     <script src="src/object_create.js"></script>
