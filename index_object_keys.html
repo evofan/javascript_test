@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        /*
+        padding: 0;
+        margin: 0 auto;
+        text-align: center;
+        */
+      }
+
+      #container {
+        width: 90%;
+      }
+
+      h2 {
+        color: #ff0033;
+      }
+
+      div {
+        margin-top: 30px;
+      }
+
+      .blue {
+        font-weight: bold;
+        color: #3366cc;
+      }
+
+      .red {
+        font-weight: bold;
+        color: #ff0033;
+      }
+
+      /*
+    h2 {
+        font-weight: bold;
+        color: #3366cc;
+    }
+    */
+
+      pre {
+        background-color: #efefef;
+        width: 75%;
+      }
+
+      .small {
+        font-size: 80%;
+        color: #666666;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Object.keys()</h2>
+      <p>テスト内容はChromeのConsoleに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // for ～ inとObjrct(keys)の違い＋getOwnPropertyName()、getOwnPrototypeOf()を使用したパターンの検証
+        function detectProperty(obj) {
+          // 1: Object.keys() usage patteen
+          let p1 = Object.keys(obj);
+          console.log("p1: ", p1);
+
+          // 2: for-in
+          let p2 = [];
+          for (let p in obj) {
+            p2.push(p);
+          }
+          console.log("p2: ", p2);
+
+          // 3: for-in + hasOwnProperty() ... オブジェクト自身が（継承されていない）指定されたプロパティを持っているかどうかを示す真偽値を返す -> trueなら自分自身のproperty
+          let p3 = [];
+          for (let p in obj) {
+            if (obj.hasOwnProperty(p)) p3.push(p);
+          }
+          console.log("p3: ", p3);
+
+          // 4: getPropertyNames() ... オブジェクトで、これ自身の列挙可能および列挙不可能なプロパティを返す（シンボルを除く）
+          let p4 = Object.getOwnPropertyNames(obj);
+          console.log("p4: ", p4);
+
+          // 5: getPrototypeOf() ... 指定されたオブジェクトのプロトタイプ (つまり、内部プロパティ [[Prototype]] の値) を返す
+          let p5 = Object.getOwnPropertyNames(obj);
+          let proto = Object.getPrototypeOf(obj);
+          if (proto && proto !== Object.prototype) {
+            p5 = p5.concat(Object.getOwnPropertyNames(proto));
+          }
+          console.log("p5: ", p5);
+        }
+
+        // テスト用データオブジェクト1
+        let obj1 = { a: 1, b: 2, c: 3 };
+        detectProperty(obj1); // 違い無し
+        // ["a", "b", "c"]
+        // ["a", "b", "c"]
+        // ["a", "b", "c"]
+        // ["a", "b", "c"]
+        // ["a", "b", "c"]
+        console.log("");
+
+        // テスト用データオブジェクト2
+        function Fn() {
+          this.a = 1;
+          this.b = 2;
+        }
+        Fn.prototype.c = 3;
+        let obj2 = new Fn();
+        detectProperty(obj2);
+        // ["a", "b"]
+        // ["a", "b", "c"]
+        // ["a", "b"] // cはFnのプロトタイプの為、obj2自身のプロパティでは無い
+        // ["a", "b"]
+        // ["a", "b", "constructor", "c"]
+        console.log("");
+
+        // テストデータ用オブジェクト3
+        let original = {
+          c: 4,
+          d: 5
+        };
+        let obj3 = Object.create(original, {
+          a: { value: 1 },
+          b: { value: 2 },
+          c: { value: 3 }
+        });
+        detectProperty(obj3);
+        // p1:  []
+        // p2:  ["d"]
+        // p3:  []
+        // p4:  (3) ["a", "b", "c"]
+        // p5:  (5) ["a", "b", "c", "c", "d"]
+        
+        // テストデータ用オブジェクト4
+        let original2 = {
+          c: 9,
+          d: 10
+        };
+        let obj4 = Object.create(original2, {
+          a: { value: 6, enumerable: true},
+          b: { value: 7},
+          c: { value: 8}
+        });
+        detectProperty(obj4);
+
+
+        /*
+
+        let original = {
+          c: 4,
+          d: 5
+        };
+        // 継承して作成
+        let obj1 = Object.create(original, {
+          a: { value: 1, enumerable: true }, // 列挙可フラグを設定
+          b: { value: 2 },
+          c: { value: 3 }
+        });
+
+        // テスト実行
+
+        // detectProperty(obj1);
+        // p1: ["a"]
+        // p2: ["a", "d"]
+        // p3: ["a"]
+        // p4: ["a", "b", "c"]
+        // p5: {c: 4, d: 5}
+        */
+
+        // detectProperty(obj2);
+        // ["a", "b"]
+        // ["a", "b", "c"]
+        // ["a", "b"]
+        // ["a", "b"]
+        // ["a", "b", "constructor", "c"]
+
+        console.log("");
+      </script>
+
+      <p></p>
+
+      <pre>
+      <code>
+
+      </code>
+      </pre>
+
+      <p>参考サイト：</p>
+
+      <p>
+        <a
+          href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/keys"
+          target="_blank"
+          >Object.keys() - Developer Mozilla
+        </a>
+      </p>
+
+      for-inとObject.keysの違いを正しく知る - Qiita
+      https://qiita.com/cocottejs/items/66eef8fef22c0082a15f
+
+      <p><a href="" target="_blank"></a></p>
+
+      <!--<p><a href="" target="_blank"></a></p>-->
+    </div>
+
+    <script src="src/object_keys.js"></script>
+  </body>
+</html>

@@ -52,22 +52,272 @@
     <div id="conatiner">
       <h1>JavaScript Test Memo</h1>
       <h2>Object.defineProperty()</h2>
+      <h2>Object.defineProperties()</h2>
+      <h2>Object.preventExtensions()</h2>
+      <h2>Object.seal()</h2>
+      <h2>Object.freeze()</h2>
       <p>テスト内容はChromeのConsoleに表示＋参考ページを元にサンプル作成</p>
 
       <script>
-        //
-        </script>
+        console.log(Object.getOwnPropertyDescriptor({ x: 1 }, "x")); // {value: 1, writable: true, enumerable: true, configurable: true}
+        // true: 上書き可能
+        // enumerable: 列挙可能
+        let o1 = {
+          a: 1,
+          b: 2,
+          c: 3
+        };
+        console.log("o1: ", o1); // o1:  {a: 1, b: 2, c: 3}
+
+        // Object.keys()で羅列
+        let keys = Object.keys(o1);
+        console.log(keys); // ["a", "b", "c"]
+
+        // for-inで羅列
+        for (let i in o1) {
+          console.log("i: ", i + " " + o1[i]);
+        }
+        // i:  a 1
+        // i:  b 2
+        // i:  c 3
+
+        let o2 = Object.create(null, {
+          a: {
+            value: 1,
+            enumerable: true // ※defaultはfalseなのでObject.create()でオブジェクトを作った時は注意
+          },
+          b: {
+            value: 2,
+            enumerable: false
+          },
+          c: {
+            value: 3,
+            enumerable: true
+          }
+        });
+        console.log("o2: ", o2); // o2:  {a: 1, b: 2, c: 3}
+
+        let keys2 = Object.keys(o2);
+        console.log(keys2); // ["a", "c"]
+
+        for (let i in o2) {
+          console.log(i, o2[i]);
+        }
+        // a 1
+        // c 3
+        let b_org = o2.b;
+        console.log(b_org); // 2 ... ↑で列挙はされないが、プロパティ自体にはアクセス出来る事に注意
+
+        // Configurale ... プロパティの設定を変更可能かどうか。これがtrueだと書き込み不可でも値を変える事が出来る
+        // 値の変更には、Object.defineProperty()を使う
+
+        // 書き込み不可のプロパティ作成
+        let o3 = {};
+        Object.defineProperty(o3, "x", {
+          value: 1,
+          writable: false,
+          enumerable: true,
+          configurable: true
+        });
+        console.log("o3.x: ", o3.x); // o3.x:  1
+        o3.x = 10;
+        console.log("o3.x: ", o3.x); // o3.x:  1 ※上書きされてない
+
+        Object.defineProperty(o3, "x", {
+          writable: true // 書き込み可に変更
+        });
+
+        o3.x = 20;
+        console.log("o3.x: ", o3.x); // o3.x:  20
+
+        // Object.defineProperties() ... 複数のプロパティを設定
+        let o4 = {};
+        Object.defineProperties(o4, {
+          x: { value: 1, writable: true, enumerable: true, configurable: true },
+          y: { value: 2, writable: false, enumerable: true, configurable: true }
+        });
+        console.log("o4: ", o4); // o4:  {x: 1, y: 2}
+
+        // 拡張可属性（extensible）
+
+        // 新しくプロパティを追加出来ないようにする
+        let o5 = {};
+        Object.preventExtensions(o5);
+        // すでにプロパティが追加されたオブジェクトで、新しいプロパティを抑制します（すなわち、オブジェクトのさらなる拡張を抑制します）。
+        o5.x = 30;
+        console.log("o5: ", o5); // o5:  {}
+
+        // 追加は出来ないが、削除なら可
+        Object.preventExtensions(o4);
+        delete o4.x;
+        console.log("o4: ", o4); // o4:  {y: 2}
+
+        // オブジェクトの拡張・削除両方を禁止するにはObject.seal()を使う
+        Object.seal(o4);
+        // オブジェクトを封印して、新しいオブジェクトを追加することを抑制し、すべての既存のプロパティを設定変更不可にします。現存するプロパティの値は、書き込み可能である限り変更できます。
+        o4.y = 300;
+        o4.z = 400;
+        console.log("o4: ", o4); // o4:  {y: 2} ※yがwritable: trueの場合は300に変更可
+
+        // オブジェクトの変更（拡張・再定義・書き込み）を全部禁止する
+        let o6 = Object.defineProperties(
+          {},
+          {
+            x: { value: 11, writable: true, enumerable: true, configurable: true },
+            y: { value: 22, writable: false, enumerable: true, configurable: true },
+            z: { value: 33, writable: false, enumerable: true, configurable: true }
+          }
+        );
+        console.log("o6: ", o6); // o6:  {x: 11, y: 22, z: 33}
+        Object.freeze(o6);
+        // オブジェクトを凍結します。凍結されたオブジェクトは変更できなくなります。
+        // オブジェクトを凍結すると、新しいプロパティを追加したり、既存のプロパティを削除したりすることができなくなり、
+        // 既存のプロパティに対する列挙可否、構成可否、書き込み可否の変更ができなくなり、既存のプロパティの値が変更できなくなります。
+        o6.x = 10000;
+        o6.y = 0;
+        delete o6.z;
+        console.log("o6: ", o6); // o6:  {x: 11, y: 22, z: 33}
+
+        console.log("");
+      </script>
 
       <pre>
       <code>
+        console.log(Object.getOwnPropertyDescriptor({ x: 1 }, "x")); // {value: 1, writable: true, enumerable: true, configurable: true}
+        // true: 上書き可能
+        // enumerable: 列挙可能
+        let o1 = {
+          a: 1,
+          b: 2,
+          c: 3
+        };
+        console.log("o1: ", o1); // o1:  {a: 1, b: 2, c: 3}
 
-        // 
+        // Object.keys()で羅列
+        let keys = Object.keys(o1);
+        console.log(keys); // ["a", "b", "c"]
+
+        // for-inで羅列
+        for (let i in o1) {
+          console.log("i: ", i + " " + o1[i]);
+        }
+        // i:  a 1
+        // i:  b 2
+        // i:  c 3
+
+        let o2 = Object.create(null, {
+          a: {
+            value: 1,
+            enumerable: true // ※defaultはfalseなのでObject.create()でオブジェクトを作った時は注意
+          },
+          b: {
+            value: 2,
+            enumerable: false
+          },
+          c: {
+            value: 3,
+            enumerable: true
+          }
+        });
+        console.log("o2: ", o2); // o2:  {a: 1, b: 2, c: 3}
+
+        let keys2 = Object.keys(o2);
+        console.log(keys2); // ["a", "c"]
+
+        for (let i in o2) {
+          console.log(i, o2[i]);
+        }
+        // a 1
+        // c 3
+        let b_org = o2.b;
+        console.log(b_org); // 2 ... ↑で列挙はされないが、プロパティ自体にはアクセス出来る事に注意
+
+        // Configurale ... プロパティの設定を変更可能かどうか。これがtrueだと書き込み不可でも値を変える事が出来る
+        // 値の変更には、Object.defineProperty()を使う
+
+        // 書き込み不可のプロパティ作成
+        let o3 = {};
+        Object.defineProperty(o3, "x", {
+          value: 1,
+          writable: false,
+          enumerable: true,
+          configurable: true
+        });
+        console.log("o3.x: ", o3.x); // o3.x:  1
+        o3.x = 10;
+        console.log("o3.x: ", o3.x); // o3.x:  1 ※上書きされてない
+
+        Object.defineProperty(o3, "x", {
+          writable: true // 書き込み可に変更
+        });
+
+        o3.x = 20;
+        console.log("o3.x: ", o3.x); // o3.x:  20
+
+        // Object.defineProperties() ... 複数のプロパティを設定
+        let o4 = {};
+        Object.defineProperties(o4, {
+          x: { value: 1, writable: true, enumerable: true, configurable: true },
+          y: { value: 2, writable: false, enumerable: true, configurable: true }
+        });
+        console.log("o4: ", o4); // o4:  {x: 1, y: 2}
+
+        // 拡張可属性（extensible）
+
+        // 新しくプロパティを追加出来ないようにする
+        let o5 = {};
+        Object.preventExtensions(o5);
+        // すでにプロパティが追加されたオブジェクトで、新しいプロパティを抑制します（すなわち、オブジェクトのさらなる拡張を抑制します）。
+        o5.x = 30;
+        console.log("o5: ", o5); // o5:  {}
+
+        // 追加は出来ないが、削除なら可
+        Object.preventExtensions(o4);
+        delete o4.x;
+        console.log("o4: ", o4); // o4:  {y: 2}
+
+        // オブジェクトの拡張・削除両方を禁止するにはObject.seal()を使う
+        Object.seal(o4);
+        // オブジェクトを封印して、新しいオブジェクトを追加することを抑制し、すべての既存のプロパティを設定変更不可にします。現存するプロパティの値は、書き込み可能である限り変更できます。
+        o4.y = 300;
+        o4.z = 400;
+        console.log("o4: ", o4); // o4:  {y: 2} ※yがwritable: trueの場合は300に変更可
+
+        // オブジェクトの変更（拡張・再定義・書き込み）を全部禁止する
+        let o6 = Object.defineProperties(
+          {},
+          {
+            x: { value: 11, writable: true, enumerable: true, configurable: true },
+            y: { value: 22, writable: false, enumerable: true, configurable: true },
+            z: { value: 33, writable: false, enumerable: true, configurable: true }
+          }
+        );
+        console.log("o6: ", o6); // o6:  {x: 11, y: 22, z: 33}
+        Object.freeze(o6);
+        // オブジェクトを凍結します。凍結されたオブジェクトは変更できなくなります。
+        // オブジェクトを凍結すると、新しいプロパティを追加したり、既存のプロパティを削除したりすることができなくなり、
+        // 既存のプロパティに対する列挙可否、構成可否、書き込み可否の変更ができなくなり、既存のプロパティの値が変更できなくなります。
+        o6.x = 10000;
+        o6.y = 0;
+        delete o6.z;
+        console.log("o6: ", o6); // o6:  {x: 11, y: 22, z: 33}
       </pre>
 
       <p>参考サイト：</p>
 
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank">Object.defineProperty() - JavaScript | MDN - Mozilla</a></p>
 
-      <p><a href="" target="_blank"></a></p>
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperties" target="_blank">Object.defineProperties() - MDN - Mozilla</a></p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/seal" target="_blank">Object.seal() - MDN - Mozilla</a></p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions" target="_blank">Object.preventExtensions() - MDN - Mozilla</a></p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze" target="_blank">Object.freeze() - JavaScript | MDN - Mozilla</a></p>
+
+      <p><a href="https://yutapon.hatenablog.com/entry/2014/05/20/102526" target="_blank">Object.defineProperty()について調べた - yutaponのブログ</a></p>
+
+      <!--<p><a href="" target="_blank"></a></p>-->
 
     </div>
 
