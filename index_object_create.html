@@ -5,60 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>JavaScript Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      * {
-          /*
-        padding: 0;
-        margin: 0 auto;
-        text-align: center;
-        */
-      }
 
-      #container {
-        width: 90%;
-      }
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 
-      h2 {
-        color: #ff0033;
-      }
-
-      div {
-        margin-top: 30px;
-      }
-
-    .blue {
-        font-weight: bold;
-        color: #3366cc;
-    }
-
-    .red {
-        font-weight: bold;
-        color: #ff0033;
-    }
-
-/*
-    h2 {
-        font-weight: bold;
-        color: #3366cc;
-    }
-    */
-
-    pre {
-        background-color: #efefef;
-        width: 75%;
-    }
-
-    .small {
-        font-size: 80%;
-        color: #666666;
-    }
-    </style>
   </head>
 
   <body>
     <div id="conatiner">
       <h1>JavaScript Test Memo</h1>
       <h2>Object.create()</h2>
+
       <p>テスト内容はChromeのConsoleに表示＋参考ページを元にサンプル作成</p>
 
       <script>
@@ -105,9 +62,10 @@
         console.log("");
       </script>
 
-      <p>オブジェクトの作成と第二引数のパラメータ</p>
+      <p class="title">オブジェクトの作成と第二引数のパラメータ</p>
+
       <pre>
-      <code>
+      <code class="prettyprint">
 
         // 第一引数のみでObject作成作成
         let cat = {
@@ -189,7 +147,7 @@
       </script>
 
       <pre>
-      <code>
+      <code class="prettyprint">
 
         let obj = Object.create(Object.prototype);
         // let obj = {};とequal
@@ -324,9 +282,10 @@
         console.log("");
       </script>
 
-      <p>hasOwnProperty()での違い</p>
+      <p class="title">hasOwnProperty()での違い</p>
+
       <pre>
-      <code>
+      <code class="prettyprint">
 
         let CatP = function(name, age) {
           this.name = name;
@@ -426,7 +385,7 @@
       </code>
       </pre>
 
-      <p>オブジェクトのクローン（Not DeepCopy）に使用</p>
+      <p class="title">オブジェクトのクローン（Not DeepCopy）に使用</p>
 
       <script>
         // JSON.parse()とJSON.stringify()を使用したver.
@@ -487,7 +446,7 @@
       </script>
 
       <pre>
-      <code>
+      <code class="prettyprint">
 
         // JSON.parse()とJSON.stringify()を使用したver.
         let defaultParams = { a: "b" };
@@ -546,7 +505,7 @@
       </code>
       </pre>
 
-      <p>Object.create で最も単純なオブジェクトを作る</p>
+      <p class="title">Object.create で最も単純なオブジェクトを作る</p>
 
       <script>
         let obj_1 = Object.create(null);
@@ -693,8 +652,8 @@
 
       </script>
 
-      <code>
       <pre>
+      <code class="prettyprint">
 
         let obj_1 = Object.create(null);
         console.log("obj_1: ", obj_1); // obj_1:  {}
@@ -730,9 +689,10 @@
         // length: 12
         // __proto__: Array(0)
 
+      </code>
       </pre>
 
-      <p>参考サイト：</p>
+      <p class="title">参考サイト：</p>
 
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/create" target="_blank">Object.create() - MDN - Mozilla</a></p>
 

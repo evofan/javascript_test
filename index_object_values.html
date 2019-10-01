@@ -5,60 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>JavaScript Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      * {
-          /*
-        padding: 0;
-        margin: 0 auto;
-        text-align: center;
-        */
-      }
 
-      #container {
-        width: 90%;
-      }
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 
-      h2 {
-        color: #ff0033;
-      }
-
-      div {
-        margin-top: 30px;
-      }
-
-    .blue {
-        font-weight: bold;
-        color: #3366cc;
-    }
-
-    .red {
-        font-weight: bold;
-        color: #ff0033;
-    }
-
-/*
-    h2 {
-        font-weight: bold;
-        color: #3366cc;
-    }
-    */
-
-    pre {
-        background-color: #efefef;
-        width: 75%;
-    }
-
-    .small {
-        font-size: 80%;
-        color: #666666;
-    }
-    </style>
   </head>
 
   <body>
     <div id="conatiner">
       <h1>JavaScript Test Memo</h1>
       <h2>Object.values()</h2>
+      
       <p>テスト内容はChromeのConsoleに表示＋参考ページを元にサンプル作成</p>
 
       <script>
@@ -72,10 +29,10 @@
         console.log(Object.entries(obj_cat)); // [ [ "mike", { color: "三毛", age: 5 } ], [ "tama", { color: "キジ", age: 3 } ], [ "kuro", { color: "黒", age: 1 } ] ] 
       </script>
 
-      <p>Object.{keys, values, entries}</p>
+      <p class="title">Object.{keys, values, entries}</p>
 
       <pre>
-      <code>
+      <code class="prettyprint">
 
         let obj_cat = {
           mike: { color: "三毛", age: 5 },
@@ -88,7 +45,7 @@
       </code>
       </pre>
 
-      <p>参考サイト：</p>
+      <p class="title">参考サイト：</p>
       
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/values" target="_blank">Object.values() - JavaScript | MDN - Mozilla
 </a></p>

@@ -5,47 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>JavaScript Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      * {
-          /*
-        padding: 0;
-        margin: 0 auto;
-        text-align: center;
-        */
-      }
 
-      #container {
-        width: 90%;
-      }
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 
-      h2 {
-        color: #ff0033;
-      }
-
-      div {
-        margin-top: 30px;
-      }
-
-    .blue {
-        font-weight: bold;
-        color: #3366cc;
-    }
-
-    .red {
-        font-weight: bold;
-        color: #ff0033;
-    }
-
-    pre {
-        background-color: #efefef;
-        width: 75%;
-    }
-
-    .small {
-        font-size: 80%;
-        color: #666666;
-    }
-    </style>
   </head>
 
   <body>
@@ -181,8 +144,10 @@
         console.log("");
       </script>
 
+      <p class="title">Object.defineProperty()を使ったプロパティの操作</p>
+
       <pre>
-      <code>
+      <code class="prettyprint">
         console.log(Object.getOwnPropertyDescriptor({ x: 1 }, "x")); // {value: 1, writable: true, enumerable: true, configurable: true}
         // true: 上書き可能
         // enumerable: 列挙可能
@@ -301,9 +266,10 @@
         o6.y = 0;
         delete o6.z;
         console.log("o6: ", o6); // o6:  {x: 11, y: 22, z: 33}
+      </code>
       </pre>
 
-      <p>参考サイト：</p>
+      <p class="title">参考サイト：</p>
 
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank">Object.defineProperty() - JavaScript | MDN - Mozilla</a></p>
 
