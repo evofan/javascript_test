@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Array.prototype.filter()</h2>
+      
+      <p>テスト内容はChromeのConsoleに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // undefinedの値を除く
+        let cats = ["三毛", undefined, "黒猫", undefined, "たま", "白"];
+        let catsValid = cats => cats.filter(el => el !== undefined);
+        console.log("catsValid: ", catsValid(cats)); // catsValid:  (4) ["三毛", "黒猫", "たま", "白"]
+
+        // オブジェクトの中からアクティブな対象（activeプロパティがtrueなもの）且つ猫（"cat"を含む）を抜き出す
+        let users = [
+          { id: 1, name: "kuro", active: true, type: "black cat" },
+          { id: 2, name: "saba", active: false, type: "black and gray cat" },
+          { id: 3, name: "tora", active: true, type: "yellow cat" },
+          { id: 4, name: "pochi", active: true, type: "shiba dog" }
+        ];
+        let activeValid = users =>
+          users.filter(el => el.active && el.type.indexOf("cat") !== -1);
+        console.log(activeValid(users)); // [{id: 1, name: "kuro", active: true, type: "black cat"}, {id: 3, name: "tora", active: true, type: "yellow cat"}]
+
+        console.log("");
+      </script>
+
+      <p class="title">filter()を使った配列の絞り込み</p>
+
+      <pre>
+      <code class="prettyprint">
+        // undefinedの値を除く
+        let cats = ["三毛", undefined, "黒猫", undefined, "たま", "白"];
+        let catsValid = cats => cats.filter(el => el !== undefined);
+        console.log("catsValid: ", catsValid(cats)); // catsValid:  (4) ["三毛", "黒猫", "たま", "白"]
+
+        // オブジェクトの中からアクティブな対象（activeプロパティがtrueなもの）且つ猫（"cat"を含む）を抜き出す
+        let users = [
+          { id: 1, name: "kuro", active: true, type: "black cat" },
+          { id: 2, name: "saba", active: false, type: "black and gray cat" },
+          { id: 3, name: "tora", active: true, type: "yellow cat" },
+          { id: 4, name: "pochi", active: true, type: "shiba dog" }
+        ];
+        let activeValid = users =>
+          users.filter(el => el.active && el.type.indexOf("cat") !== -1);
+        console.log(activeValid(users)); // [{id: 1, name: "kuro", active: true, type: "black cat"}, {id: 3, name: "tora", active: true, type: "yellow cat"}]
+      </code>
+      </pre>
+
+      <script>
+        // filter()を使わない書き方
+        // 文字列の配列の中から3文字の文字列のみ取り出す
+        let animals = ["cat", "dog", "fish", "bird", "rabbit", "cow"];
+        let resluts_animals = [];
+        let leng = animals.length;
+        for (let count = 0; count < leng; count++) {
+          if (animals[count].length === 3) {
+            resluts_animals.push(animals[count]);
+          }
+        }
+        console.log(resluts_animals); // ["cat", "dog", "cow"]
+
+        // filter()を使った書き方
+        let resluts_animals_filter = [];
+        resluts_animals_filter = animals.filter(function(animals) {
+          return animals.length === 3;
+        });
+        console.log("resluts_animals_filter: ", resluts_animals_filter); // resluts_animals_filter: ["cat", "dog", "cow"]
+
+        // filter()+arrow function
+        let resluts_animals_filter_arrow = animals.filter(el => el.length === 3);
+        console.log("resluts_animals_filter_arrow: ", resluts_animals_filter_arrow); // resluts_animals_filter_arrow:  (3) ["cat", "dog", "cow"]
+
+        // 読みやすさと柔軟性(メンテナンス性等)を考慮した書き方
+        function exactlyThree(word) {
+          return word.length === 3;
+        }
+        let threeLetterAnimals = animals.filter(exactlyThree);
+        console.log("threeLetterAnimals: ", threeLetterAnimals); // threeLetterAnimals: ["cat", "dog", "cow"]
+
+        // MapとReduceの紹介、※Map, reduceテスト後に記載
+        // Map、Reduce、Filterのチェーン、※Map, reduceテスト後に記載
+
+        // フィルターのパフォーマンス
+
+        // ブラウザーやJavaScriptエンジンがまだ新しいArrayメソッドに最適化されていないため、
+        // filterメソッドはforループよりわずかに遅いことは知っておいてください（jsPerf）。
+
+        // たとえ実行速度が多少遅くとも、説明してきたとおり、ループではなく、
+        // きれいなコードを書ける関数型Arrayメソッドを使うことをおすすめします。
+        // きれいでメンテナンスしやすいことを最重視してコードを書き、
+        // 実際の使用環境でパフォーマンス改善が必要になったときにだけ最適化するのが良いでしょう。
+      </script>
+
+      <p class="title">filter()を使った書き方のパターン、filter()のパフォーマンス</p>
+
+      <pre>
+      <code class="prettyprint">
+        // filter()を使わない書き方
+        // 文字列の配列の中から3文字の文字列のみ取り出す
+        let animals = ["cat", "dog", "fish", "bird", "rabbit", "cow"];
+        let resluts_animals = [];
+        let leng = animals.length;
+        for (let count = 0; count < leng; count++) {
+          if (animals[count].length === 3) {
+            resluts_animals.push(animals[count]);
+          }
+        }
+        console.log(resluts_animals); // ["cat", "dog", "cow"]
+
+        // filter()を使った書き方
+        let resluts_animals_filter = [];
+        resluts_animals_filter = animals.filter(function(animals) {
+          return animals.length === 3;
+        });
+        console.log("resluts_animals_filter: ", resluts_animals_filter); // resluts_animals_filter: ["cat", "dog", "cow"]
+
+        // filter()+arrow function
+        let resluts_animals_filter_arrow = animals.filter(el => el.length === 3);
+        console.log("resluts_animals_filter_arrow: ", resluts_animals_filter_arrow); // resluts_animals_filter_arrow:  (3) ["cat", "dog", "cow"]
+
+        // 読みやすさと柔軟性(メンテナンス性等)を考慮した書き方
+        function exactlyThree(word) {
+          return word.length === 3;
+        }
+        let threeLetterAnimals = animals.filter(exactlyThree);
+        console.log("threeLetterAnimals: ", threeLetterAnimals); // threeLetterAnimals: ["cat", "dog", "cow"]
+
+        // ■MapとReduceの紹介、※Map, reduceテスト後に記載
+        // ■Map、Reduce、Filterのチェーン、※Map, reduceテスト後に記載
+
+        // フィルターのパフォーマンス
+
+        // ブラウザーやJavaScriptエンジンがまだ新しいArrayメソッドに最適化されていないため、
+        // filterメソッドはforループよりわずかに遅いことは知っておいてください（jsPerf）。
+
+        // たとえ実行速度が多少遅くとも、説明してきたとおり、ループではなく、
+        // きれいなコードを書ける関数型Arrayメソッドを使うことをおすすめします。
+        // きれいでメンテナンスしやすいことを最重視してコードを書き、
+        // 実際の使用環境でパフォーマンス改善が必要になったときにだけ最適化するのが良いでしょう。
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" target="_blank">Array.prototype.filter() - JavaScript | MDN - Mozilla</a></p>
+
+      <p><a href="https://ginpen.com/2018/12/12/array-filter/" target="_blank">その名の通りのfilter()で絞り込み。（配列とかおれおれAdvent Calendar2018 – 12日目）</a></p>
+
+      <p><a href="https://www.webprofessional.jp/filtering-and-chaining-in-functional-javascript/" target="_blank">意外と知らないES5の新機能でJavaScriptのコードをメンテナブルに書き直す方法</a></p>
+
+      <!--<p><a href="" target="_blank"></a></p>-->
+    
+    </div>
+
+    <script src="src/filter.js"></script>
+  </body>
+</html>

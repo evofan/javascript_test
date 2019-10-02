@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Array.prototype.map()</h2>
+      
+      <p>テスト内容はChromeのConsoleに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // map()を使わない場合
+        // 配列内の要素の”文字数”を調べる
+        let animals = ["cat", "dog", "fish", "bird", "cow"];
+        let lengths = [];
+        let item;
+        let count;
+        let loops = animals.length;
+        for (count = 0; count < loops; count++) {
+          item = animals[count];
+          lengths.push(item.length);
+        }
+        console.log("lengths: ", lengths); // lengths: [3, 3, 4, 4, 3]
+
+        // map()を使った方法
+        let lengths2 = [];
+        lengths2 = animals.map(function(elem) {
+          return elem.length;
+        });
+        console.log("lengths2: ", lengths2); // lengths2: [3, 3, 4, 4, 3]
+        // 特徴として、（１）短いコードで済む、（２）変数の指定が殆ど要らない
+        // 後から変更出来ない変数＝Immutability in JavaScript（https://www.sitepoint.com/immutability-javascript/）
+        // （３）汎用性が高まる
+        let lengths3 = [];
+        function getLength(word) {
+          return word.length;
+        }
+        console.log(animals.map(getLength)); // [3, 3, 4, 4, 3]
+
+        // 関手（かんしゅ）、Functorとは何か
+        // 関数型プログラミングでは、以下の基準を満たす物を関手という
+        // （１）1組の値がある
+        // （２）各要素に実行するMap関数を実装している
+        // （３）Map関数は同じサイズの関手を返す
+        // 関手について詳しく知りたい場合はこちら（https://medium.com/@mpjme/functors-i-was-wrong-funfunfunction-video-11-5f794a1ca246#.ek9iomx1e）
+
+        // ■Reduceメソッドを使う、※reduce()テスト後に記載
+
+        console.log("");
+      </script>
+
+      <p class="title">map()を使わない場合と、使った場合の記述の違い</p>
+
+      <pre>
+      <code class="prettyprint">
+        // map()を使わない場合
+        // 配列内の要素の”文字数”を調べる
+        let animals = ["cat", "dog", "fish", "bird", "cow"];
+        let lengths = [];
+        let item;
+        let count;
+        let loops = animals.length;
+        for (count = 0; count < loops; count++) {
+          item = animals[count];
+          lengths.push(item.length);
+        }
+        console.log("lengths: ", lengths); // lengths: [3, 3, 4, 4, 3]
+
+        // map()を使った方法
+        let lengths2 = [];
+        lengths2 = animals.map(function(elem) {
+          return elem.length;
+        });
+        console.log("lengths2: ", lengths2); // lengths2: [3, 3, 4, 4, 3]
+        // 特徴として、（１）短いコードで済む、（２）変数の指定が殆ど要らない
+        // 後から変更出来ない変数＝Immutability in JavaScript（https://www.sitepoint.com/immutability-javascript/）
+        // （３）汎用性が高まる
+        let lengths3 = [];
+        function getLength(word) {
+          return word.length;
+        }
+        console.log(animals.map(getLength)); // [3, 3, 4, 4, 3]
+
+        // 関手（かんしゅ）、Functorとは何か
+        // 関数型プログラミングでは、以下の基準を満たす物を関手という
+        // （１）1組の値がある
+        // （２）各要素に実行するMap関数を実装している
+        // （３）Map関数は同じサイズの関手を返す
+        // 関手について詳しく知りたい場合はこちら（https://medium.com/@mpjme/functors-i-was-wrong-funfunfunction-video-11-5f794a1ca246#.ek9iomx1e）
+
+        // ■Reduceメソッドを使う、※reduce()テスト後に記載
+      </code>
+      </pre>
+
+      <script>
+        // 文字列の配列をmap()を使って小文字→大文字変換
+        let array_word = ["japan", "china", "korea", "usa"];
+        let chageUpper = words => words.map(elem => elem.toUpperCase()); // must arg is String.
+        console.log(chageUpper(array_word)); // ["JAPAN", "CHINA", "KOREA", "USA"]
+
+        // ary -> obj
+        let array2 = [1, 2, 3, 4, 5];
+        let obj2 = array2.map(elem => `{key: ${elem}}`);
+        console.log("obj2: ", obj2); // obj2: ["{key: 1}", "{key: 2}", "{key: 3}", "{key: 4}", "{key: 5}"]
+
+        // obj(key: prop) -> ary(prop)
+        let cats = [{ name: "三毛" }, { name: "クロ" }, { name: "トラ" }];
+        let cats_ary = cats.map(elm => elm.name);
+        console.log(cats_ary); // ["三毛", "クロ", "トラ"]
+
+        // use index
+        let array3 = ["mike", "tama", "shiro", "cyatora"];
+        let index3 = array3.map((elm, index /*, array3*/) => index);
+        console.log("index3: ", index3); // index3: [0, 1, 2, 3]
+        
+        // indexを使うケースとして、2つの配列を結合させたい場合等
+        let age3 = [5, 3, 10, 6];
+        let cats_obj = array3.map(
+          (elm, i) => `{ name : ${array3[i]}, age: ${age3[i]}}`
+        ); // elmは使わなくてもよい、第二引数のindex使うので記述は必要
+        console.log(cats_obj); // ["{ name : mike, age: 5}", "{ name : tama, age: 3}", "{ name : shiro, age: 10}", "{ name : cyatora, age: 6}"]
+
+        // 配列内を連番で埋める
+        let num_ary = Array(5).map((elm, idx) => idx + 1); // ※fill(null) must
+        console.log(num_ary); // [empty × 5]
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
+        let num_ary2 = Array(5)
+          .fill(null)
+          .map((elm, idx) => idx + 1);
+        console.log(num_ary2); // [1, 2, 3, 4, 5]
+
+        // 1月～12月までの文字列を作る、関数チェーンで
+        let months = Array(12)
+          .fill(null)
+          .map((elm, idx) => idx + 1)
+          .map(month => `${month}月`);
+        console.log(months); // ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+
+        console.log("");
+      </script>
+
+      <p class="title">map()の使いから色々な例</p>
+
+      <pre>
+      <code class="prettyprint">
+        // 文字列の配列をmap()を使って小文字→大文字変換
+        let array_word = ["japan", "china", "korea", "usa"];
+        let chageUpper = words => words.map(elem => elem.toUpperCase()); // must arg is String.
+        console.log(chageUpper(array_word)); // ["JAPAN", "CHINA", "KOREA", "USA"]
+
+        // ary -> obj
+        let array2 = [1, 2, 3, 4, 5];
+        let obj2 = array2.map(elem => `{key: ${elem}}`);
+        console.log("obj2: ", obj2); // obj2: ["{key: 1}", "{key: 2}", "{key: 3}", "{key: 4}", "{key: 5}"]
+
+        // obj(key: prop) -> ary(prop)
+        let cats = [{ name: "三毛" }, { name: "クロ" }, { name: "トラ" }];
+        let cats_ary = cats.map(elm => elm.name);
+        console.log(cats_ary); // ["三毛", "クロ", "トラ"]
+
+        // use index
+        let array3 = ["mike", "tama", "shiro", "cyatora"];
+        let index3 = array3.map((elm, index /*, array3*/) => index);
+        console.log("index3: ", index3); // index3: [0, 1, 2, 3]
+
+        // indexを使うケースとして、2つの配列を結合させたい場合等
+        let age3 = [5, 3, 10, 6];
+        let cats_obj = array3.map(
+          (elm, i) => `{ name : ${array3[i]}, age: ${age3[i]}}`
+        ); // elmは使わなくてもよい、第二引数のindex使うので記述は必要
+        console.log(cats_obj); // ["{ name : mike, age: 5}", "{ name : tama, age: 3}", "{ name : shiro, age: 10}", "{ name : cyatora, age: 6}"]
+
+        // 配列内を連番で埋める
+        let num_ary = Array(5).map((elm, idx) => idx + 1); // ※fill(null) must
+        console.log(num_ary); // [empty × 5]
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
+        let num_ary2 = Array(5)
+          .fill(null)
+          .map((elm, idx) => idx + 1);
+        console.log(num_ary2); // [1, 2, 3, 4, 5]
+
+        // 1月～12月までの文字列を作る、関数チェーンで
+        let months = Array(12)
+          .fill(null)
+          .map((elm, idx) => idx + 1)
+          .map(month => `${month}月`);
+        console.log(months); // ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+      
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">Array.prototype.map() - JavaScript | MDN - Mozilla</a></p>
+
+      <p><a href="https://www.webprofessional.jp/map-reduce-functional-javascript/" target="_blank">JavaScriptプログラマーならMap()とReduce()で関数型プログラミングを始めてみない？</a></p>
+
+      <p><a href="https://hfuji.hatenablog.jp/entry/2016/06/28/232820" target="_blank">【JavaScript】Arrayのmapメソッドは習うより慣れろって感じ</a></p>
+      
+      <!--<p><a href="" target="_blank"></a></p>-->
+    
+    </div>
+
+    <script src="src/map.js"></script>
+  </body>
+</html>

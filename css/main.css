@@ -16,10 +16,21 @@ a {
     text-decoration: none;
 }
 
-a:link { color: #ff0033; }
-a:visited { color: #336699; }
-a:hover { color: #ff0033; }
-a:active { color: #ff0033; }
+a:link {
+    color: #ff0033;
+}
+
+a:visited {
+    color: #336699;
+}
+
+a:hover {
+    color: #ff0033;
+}
+
+a:active {
+    color: #ff0033;
+}
 
 .gray {
     color: #999999;
@@ -28,35 +39,35 @@ a:active { color: #ff0033; }
 .summary {
     color: #666666;
     font-weight: bold;
-    padding-bottom: 15px;
+    padding-bottom: 20px;
 }
 
 h2 {
-color: #ff0033;
+    color: #ff0033;
 }
 
 
 .blue {
-font-weight: bold;
-color: #3366cc;
+    font-weight: bold;
+    color: #3366cc;
 }
 
 .red {
-font-weight: bold;
-color: #ff0033;
+    font-weight: bold;
+    color: #ff0033;
 }
 
 pre {
-background-color: #efefef;
-width: 75%;
+    background-color: #efefef;
+    width: 75%;
 }
 
 .small {
-font-size: 80%;
-color: #666666;
+    font-size: 80%;
+    color: #666666;
 }
 
 .title {
-font-weight: bold;
-color: #339966;
+    font-weight: bold;
+    color: #339966;
 }

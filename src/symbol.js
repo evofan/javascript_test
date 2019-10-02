@@ -48,7 +48,7 @@ console.log("");
 // Object.getOwnPropertySymbols()は、symbolの配列を返すが、
 // 全てのオブジェクトは初期値ではsymbolの配列を持たない（空）なので注意
 
-// ■プロパティ
+// ■ プロパティ
 // Symbol.length ... 値が0
 // Symbol.prototype ... Symbolコンストラクタの為のプロトタイプ
 
@@ -71,7 +71,7 @@ console.log("");
 //  Symbol.toPrimitive ... オブジェクトをプリミティブ値に変換する関数
 //  Symbol.toStringTag ... オブジェクトの既定の説明に使われる文字列値。Object.prototype.toString()で使用される
 
-// ■メソッド
+// ■ メソッド
 // Symbol.for(key) ... 与えられたkeyで存在するシンボルを検索し、見つかれば返す。もしくはグローバルSymbolレジストリーにこのkeyで新しいsymbolを生成する
 // Symbol.keyFor(sym) ... グローバルSymbolレジストリから、与えられたsymbolの為の共有symbol Keyを取得する
 

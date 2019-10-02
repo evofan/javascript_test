@@ -33,8 +33,8 @@ let obj2 = { 0: "a", 1: "b", 2: "c" };
 console.log(Object.values(obj2)); // ["a", "b", "c"]
 
 // ランダムなキーを持つ配列様オブジェクト
-let obj3 = { 100: "a", 2: "b", 7: "c" }; // ["b", "c", "a"]
-console.log(Object.values(obj3));
+let obj3 = { 100: "a", 2: "b", 7: "c" };
+console.log(Object.values(obj3)); // ["b", "c", "a"]
 
 // 列挙可能でないプロパティがあった場合
 let my_obj = Object.create(
@@ -54,4 +54,3 @@ console.log(Object.values(my_obj)); // ["bar"] ※getFooは取得されない
 let f_str = "ABC";
 console.log(Object.values(f_str)); // ["A", "B", "C"]
 console.log(Object.keys(f_str)); // ["0", "1", "2"]
-

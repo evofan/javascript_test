@@ -7,25 +7,25 @@
 const object1 = {};
 
 Object.defineProperty(object1, "property1", {
-	value: 42,
-	writable: false
+  value: 42,
+  writable: false
 });
 
 object1.property1 = 77; // 書き込み禁止の為、上書き不可
 console.log(object1.property1); // 42
 
-// ■Syntax
+// ■ Syntax
 // Object.defineProperty(obj, prop, descriptor)
 
-// ■引数
+// ■ 引数
 // obj ... プロパティを定義するオブジェクト
 // prop ... 定義or変更するプロパティ名
 // descriptor ... 定義or変更されるプロパティのディスクリプタ（記述子）
 
-// ■戻り値
+// ■ 戻り値
 // 渡されたオブジェクトをそのまま返す
 
-// ■解説
+// ■ 解説
 // ・このメソッドで、あるオブジェクトのプロパティを明示的に追加または変更する事が出来る
 // ・通常のプロパティ追加 ＝＞ プロパティ列挙 (for...in ループや Object.keys メソッド) に現れ、値は変更可能で、また削除も可能
 // ・＝＞この命令では既定値では変更不可能（変更可）
@@ -34,7 +34,7 @@ console.log(object1.property1); // 42
 // ・アクセ記述子は関数のgetterとsetterで表されるプロパティ（データはこれと↑のどちらかの形になる）
 // ・ディスクリプタはオブジェクトで表現される
 
-// ■ディスクリプタの共通して持てるキー
+// ■ ディスクリプタの共通して持てるキー
 //
 // configurable：trueである場合、記述子の変更や、プロパティの削除が出来る
 // default: false
@@ -42,19 +42,19 @@ console.log(object1.property1); // 42
 // enumerable：trueの場合、列挙可能なオブジェクトとして表示される
 // default: false
 
-// ■データディスクリプタの時に持てるキー
-//
+// ■ データディスクリプタの時に持てるキー
+// 
 // value：プロパティの値
 // default: undefined
 //
 // writable：trueの場合、プロパティの値を代入で変更出来る
 // default: false
 
-// ■アクセサディスクリプタの時に持てるキー
-//
+// ■ アクセサディスクリプタの時に持てるキー
+// 
 // get：プロパティのゲッターとなる関数
 // default: undefined
-//
+// 
 // set：プロパティのセッターとなる関数
 // default: undefined
 
@@ -63,40 +63,40 @@ let obj = {};
 let descriptor = Object.create(null); // 意図しないキーの継承を防ぐ
 
 // デフォルトの挙動により、継承不能、変更不能、書き替え不能なプロパティとなる
-descriptor.value = "static";
-Object.defineProperty(obj, "key", descriptor);
+descriptor.value = 'static';
+Object.defineProperty(obj, 'key', descriptor);
 
 // 明示的な指定
-Object.defineProperty(obj, "key", {
-	enumerable: false,
-	configurable: false,
-	writable: false,
-	value: "static"
+Object.defineProperty(obj, 'key', {
+    enumerable: false,
+    configurable: false,
+    writable: false,
+    value: 'static'
 });
 
 // 同じオブジェクトを再利用
 function withValue(value) {
-	let d =
-		withValue.d ||
-		(withValue.d = {
-			enumerable: false,
-			writable: false,
-			configurable: false,
-			value: null
-		});
+    let d = withValue.d || (
+        withValue.d = {
+            enumerable: false,
+            writable: false,
+            configurable: false,
+            value: null
+        }
+    );
 
-	// 値の代入で重複操作を防ぐ
-	if (d.value !== value) d.value = value;
+    // 値の代入で重複操作を防ぐ
+    if (d.value !== value) d.value = value;
 
-	return d;
+    return d;
 }
 // 使い方
-Object.defineProperty(obj, "key", withValue("static"));
+Object.defineProperty(obj, 'key', withValue('static'));
 
 // freezeが利用出来るならそれを使ってオブジェクトのプロトタイプのプロパティの追加・削除を防げる
 (Object.freeze || Object)(Object.prototype);
 
-// ■例
+// ■ 例
 
 // □プロパティの生成
 // オブジェクトに指定されたプロパティが存在しない時、新たなプロパティを生成する
@@ -107,24 +107,20 @@ let obj2 = {}; // 新しいオブジェクトの作成
 // データディスクリプタにより、definePropertyを用いてオブジェクトを追加する例
 let prop = "a";
 Object.defineProperty(obj2, prop, {
-	value: 37,
-	writable: true,
-	enumerable: true,
-	configurable: true
+    value: 37,
+    writable: true,
+    enumerable: true,
+    configurable: true
 });
 console.log(obj2.a); // 37
 
 // アクセサディスクリプタにより、definePropertyを用いてオブジェクトを追加する例
 let bValue = 38;
 Object.defineProperty(obj2, "b", {
-	get() {
-		return bValue;
-	}, // ES2015のショートハンド、get function() {}と同じ
-	set(newValue) {
-		bValue = newValue;
-	},
-	enumerable: true,
-	configurable: true
+    get() { return bValue;}, // ES2015のショートハンド、get function() {}と同じ
+    set(newValue) { bValue = newValue;},
+    enumerable: true,
+    configurable: true
 });
 console.log(obj2.b); // 38
 
@@ -136,14 +132,14 @@ Object.defineProperty(obj2, 'conflict', { // Uncaught TypeError: Invalid propert
 });
 */
 
-// □プロパティの変更
+// □ プロパティの変更
 
 // witable属性がfalseの時に、そのプロパティは書き替え可
 let obj3 = {};
 
-Object.defineProperty(obj3, "a", {
-	value: 7,
-	writable: false
+Object.defineProperty(obj3, 'a', {
+    value: 7,
+    writable: false
 });
 
 console.log(obj3.a); // 7
@@ -167,31 +163,31 @@ console.log(obj3.a); // 7のまま、代入文では動作負荷
 // Enumerable属性
 let obj4 = {};
 Object.defineProperty(obj4, "a", {
-	value: 1,
-	enumerable: true
+    value: 1,
+    enumerable: true
 });
 Object.defineProperty(obj4, "b", {
-	value: 2,
-	enumerable: false
+    value: 2,
+    enumerable: false
 });
 Object.defineProperty(obj4, "c", {
-	value: 3
+    value: 3,
 }); // 設定しない時はdefaultの enumerable: false
 
 obj4.d = 4; // 代入で直接プロパティを生成する時、enumerableはtrue
 
 Object.defineProperty(obj4, Symbol.for("e"), {
-	value: 5,
-	enumerable: true
+    value: 5,
+    enumerable: true
 });
 
 Object.defineProperty(obj4, Symbol.for("f"), {
-	value: 6,
-	enumerable: false
+    value: 6,
+    enumerable: false
 });
 
 for (let i in obj4) {
-	console.log(i, obj4[i]); // a 1, d 4
+    console.log(i, obj4[i]); // a 1, d 4
 }
 
 console.log(Object.keys(obj4)); // (2) ["a", "d"]
@@ -208,18 +204,16 @@ console.log(p.a); // 1
 console.log(p.b); // undefined
 console.log(p.c); // undefined
 console.log(p.d); // 4
-console.log(p[Symbol.for("e")]); // 5
-console.log(p[Symbol.for("f")]); // undefined
+console.log(p[Symbol.for('e')]); // 5 
+console.log(p[Symbol.for('f')]); // undefined
 
 // Configurable属性…configurable属性はプロパティをオブジェクトから削除出来るかどうか、プロパティの属性（valueとwritable以外）を変更出来るかを制御
 
 let obj5 = {};
 
 Object.defineProperty(obj5, "a", {
-	get() {
-		return 1;
-	},
-	configurable: false
+    get() {return 1;},
+    configurable: false
 });
 
 /*
@@ -258,9 +252,30 @@ delete obj5.a; // configurable属性がfalseのため、削除不可（エラー
 
 console.log(obj5.a); // 1
 
-// □プロパティ及び既定値の追加、値の割り当てにドット表記を用いた場合と、Object.defineProperty()を用いた場合とでは違いがある。
+
+// □ プロパティ及び既定値の追加、値の割り当てにドット表記を用いた場合と、Object.defineProperty()を用いた場合とでは違いがある。
 
 let obj6 = {};
+obj.a = 1;
+// 以下と同じ
+Object.defineProperty(obj, "a", {
+    value: 1,
+    writable: true,
+    configurable: true,
+    enumerable: true
+});
 
-// ■ポリフィル
-// （省略）
+// その一方で
+Object.defineProperty(obj, "b", { value: 2});
+// は、以下と同じ
+Object.defineProperty(obj, "b", {
+    value: 2,
+    writable: false,
+    configurable: false,
+    enumerable: false
+});
+
+// □ 独自のゲッターおよびセッター
+// …
+// □ プロパティの継承
+// …

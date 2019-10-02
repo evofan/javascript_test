@@ -53,9 +53,11 @@ console.log(Object.keys(myObj)); // ["foo"]
 
 // ※列挙可能では無いものを含むプロパティを取得したい場合は、
 // Object.getOwnPropertyNames()を使う
+// https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames
+// Object.getOwnPropertyNames() メソッドは、与えられたオブジェクトで発見されたすべての直接のプロパティを含む配列を (シンボルを使用したものを除き、
+// 列挙不可能なプロパティを含んで) 返します。
 
 // メモ
 // ES2015では、引数がオブジェクトでは無い場合（＝プリミティブ値）、強制的に（文字列に）変換される
 // ES5ではエラーが出る
 console.log(Object.keys("foo")); // ["0", "1", "2"]
-

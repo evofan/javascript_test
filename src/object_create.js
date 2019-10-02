@@ -5,10 +5,10 @@
 // 新しいオブジェクトを生成します。
 
 const person = {
-	isHuman: false,
-	printIntroduction: function() {
-		console.log(`My Name is ${this.name}。私は人間か？=${this.isHuman}`);
-	}
+  isHuman: false,
+  printIntroduction: function() {
+    console.log(`My Name is ${this.name}。私は人間か？=${this.isHuman}`);
+  }
 };
 
 const me = Object.create(person);
@@ -33,20 +33,20 @@ me.printIntroduction(); // My Name is 山田太郎。私は人間か？=true
 
 // Shape - superclass
 function Shape() {
-	this.x = 0;
-	this.y = 0;
+  this.x = 0;
+  this.y = 0;
 }
 
 // superclass method
 Shape.prototype.move = function(x, y) {
-	this.x += x;
-	this.y += y;
-	console.info("Shape moved");
+  this.x += x;
+  this.y += y;
+  console.info("Shape moved");
 };
 
 // Rectangle - subclass
 function Rectangle() {
-	Shape.call(this); // call super constructor.
+  Shape.call(this); // call super constructor.
 }
 
 // subclass extends superclass
@@ -103,30 +103,30 @@ console.log(typeof o === typeof o2); // true
 console.log("");
 
 // いくつかのオブジェクトを作成する例
-// サンプルプロパティ。 （2番目のパラメーターはキーを*プロパティ記述子*にマップします。）
+// サンプルプロパティ。 （2番目のパラメーターはキーを*プロパティ記述子*にマップします）
 let o3 = Object.create(Object.prototype, {
-	// fooは通常の「値プロパティ」です
-	foo: {
-		writable: true,
-		configurable: true,
-		value: "hello"
-	},
-	// barは、getter-and-setter（アクセサ）プロパティです
-	bar: {
-		configurable: false,
-		get: function() {
-			return 10;
-		},
-		set: function(value) {
-			console.log("Setting `o.bar` to", value);
-		}
+  // fooは通常の「値プロパティ」です
+  foo: {
+    writable: true,
+    configurable: true,
+    value: "hello"
+  },
+  // barは、getter-and-setter（アクセサ）プロパティです
+  bar: {
+    configurable: false,
+    get: function() {
+      return 10;
+    },
+    set: function(value) {
+      console.log("Setting `o.bar` to", value);
+    }
 
-		/* ES2015アクセサーを使用すると、コードは次のようになります。
+    /* ES2015アクセサーを使用すると、コードは次のようになります。
     get() { return 10; },
     set(value) {
       console.log('Setting `o.bar` to', value);
     } */
-	}
+  }
 });
 console.log("o3: ", o3);
 /*
@@ -143,14 +143,14 @@ console.log("");
 
 let o4;
 function Constructor() {
-	o4 = new Constructor();
-	// 下と同等
-	let o5 = Object.create(Constructor.prototype);
-	console.log(o4 === o5);
-	console.log(typeof o4 === typeof o5);
-	//もちろん、実際の初期化コードがある場合
-	// Constructor関数で、
-	// Object.create（）はそれを反映できません
+  o4 = new Constructor();
+  // 下と同等
+  let o5 = Object.create(Constructor.prototype);
+  console.log(o4 === o5);
+  console.log(typeof o4 === typeof o5);
+  //もちろん、実際の初期化コードがある場合
+  // Constructor関数で、
+  // Object.create（）はそれを反映できません
 }
 // console.log(Constructor()); // Uncaught RangeError: Maximum call stack size exceeded
 
@@ -166,22 +166,22 @@ console.log("o6.p: ", o6.p); // o6.p:  42、※上書きされない
 
 o6.q = 12;
 for (prop in o6) {
-	console.log(prop); // q
+  console.log(prop); // q
 }
 
 console.log(delete o6.p); // false
 
 // ES3プロパティを指定します
 let o7 = Object.create(
-	{},
-	{
-		p: {
-			value: 42,
-			writable: true,
-			enumerable: true,
-			configurable: true
-		}
-	}
+  {},
+  {
+    p: {
+      value: 42,
+      writable: true,
+      enumerable: true,
+      configurable: true
+    }
+  }
 );
 // ↑は次と同等です：
 // o7 = Object.create({p: 42})
@@ -240,9 +240,9 @@ console.log("-");
 // 単純な一般的なデバッグ機能：
 // 最上位のプロパティ名を表示：指定されたオブジェクトの値のペア
 function ShowProperties(b) {
-	for (var i in b) {
-		console.log(i + ": " + b[i] + "\n");
-	}
+  for (var i in b) {
+    console.log(i + ": " + b[i] + "\n");
+  }
 }
 
 // そのような単純な結果ではありません：（特に、サイレントエラートラップがエラーメッセージを隠した場合）
@@ -337,7 +337,7 @@ console.log(ShowProperties(ob10));
 
 console.log("-------");
 
-let ocn6 = Object.create(null);
+let ocn6 = Object.create( null );
 Object.setPrototypeOf(ocn6, Object.prototype); // 新しいオブジェクトのプロトタイプを「汎用」オブジェクトに設定します（標準オブジェクトではありません）
 
 //（上記のすべての文字列関連関数に加えて、これも追加します:)
