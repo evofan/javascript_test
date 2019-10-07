@@ -184,7 +184,7 @@ console.log("countedNames1: ", countedNames1); // countedNames1:  {Alice: 2, Bob
 // {Alice: 1, Bob: 1, Tiff: 1, Bruce: 1}
 // {Alice: 2, Bob: 1, Tiff: 1, Bruce: 1}
 
-// ■★ プロパティによってオブジェクトをグループ化する
+// ■★ オブジェクト内の（ある特定の）プロパティによってオブジェクトをグループ化する
 let people1 = [
   // ※中の要素がオブジェクトの配列
   { name: "Alice", age: 21 },
@@ -312,7 +312,7 @@ runPromiseInsSequence(promiseArr, 10).then(console.log); // 1200
 
 console.log("");
 
-// ■パイプによって関数を実行する
+// ■ パイプによって関数を実行する
 // 構成に使用するビルディングブロック
 const double = x => 2 * x; // 引数を2倍
 const triple = x => 3 * x; // 引数を3倍

@@ -6,36 +6,990 @@
     <title>JavaScript Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-
   </head>
 
   <body>
     <div id="conatiner">
       <h1>JavaScript Test Memo</h1>
       <h2>Array.prototype.reduce()</h2>
-      
+
       <p>テスト内容はChromeのConsoleに表示＋参考ページを元にサンプル作成</p>
 
       <script>
-    
+        // 初期値をそのまま返す例
+        const cats_ary = ["mike", "kuro", "shiro", "tora"];
+        const initial_value = {};
+        const result_ary = cats_ary.reduce(
+          (accumulator, current_value, current_index, source_ary) => {
+            console.log(
+              "source_ary: ",
+              source_ary,
+              "current_index: ",
+              current_index,
+              "current_value: ",
+              current_value,
+              accumulator === initial_value
+            );
+            return accumulator;
+          },
+          initial_value
+        );
+        console.log("");
+        // source_ary: ["mike", "kuro", "shiro", "tora"] current_index:  0 current_value:  mike true
+        // source_ary: ["mike", "kuro", "shiro", "tora"] current_index:  1 current_value:  kuro true
+        // source_ary: ["mike", "kuro", "shiro", "tora"] current_index:  2 current_value:  shiro true
+        // source_ary: ["mike", "kuro", "shiro", "tora"] current_index:  3 current_value:  tora true
+
+        // 初回だけ初期値を返す
+        const cats_ary2 = ["tama", "dai", "mie"];
+        const initial_value2 = {};
+        const result_ary2 = cats_ary2.reduce(
+          (accumulator, current_value, current_index, source_ary) => {
+            console.log(
+              "source_ary: ",
+              source_ary,
+              "current_index: ",
+              current_index,
+              "current_value",
+              current_value,
+              accumulator === initial_value2
+            );
+            return { ...accumulator };
+          },
+          initial_value2
+        );
+        // source_ary: ["tama", "dai", "mie"] current_index:  0 current_value tama true
+        // source_ary: ["tama", "dai", "mie"] current_index:  1 current_value dai false
+        // source_ary: ["tama", "dai", "mie"] current_index:  2 current_value mie false
+        console.log("");
+
+        // sum
+        let sum_ary = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+        let sum = sum_ary.reduce((accumulator, current_value) => {
+          return accumulator + current_value;
+        });
+        console.log("sum: ", sum); // sum:  66
+
+        // Math.max()の代わり
+        let rnd_ary = [58, 16, 35, 14, 87, 67, 92, 70];
+        let max = rnd_ary.reduce((accumulator, current_value) => {
+          return accumulator > current_value ? accumulator : current_value;
+        });
+        console.log("max: ", max); // max:  92
+        let max2 = Math.max(...rnd_ary);
+        console.log("max2: ", max2); // max2:  92
+
+        // map()の代わり
+        let num_ary = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let num_result = num_ary.reduce(
+          (accumulator, current_value, current_index) => {
+            accumulator[current_index] = 1000 + current_value;
+            return accumulator;
+          },
+          []
+        );
+        console.log(num_result); // [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010]
+
+        // filter()の代わり
+        let num_result2 = num_ary.reduce((accumulator, current_value) => {
+          if (current_value % 3 === 0) {
+            // 3で割った剰余が0＝3の倍数
+            accumulator.push(current_value); // の時のみ新し配列に追加
+          }
+          return accumulator;
+        }, []); // indexValue、配列で返す時は""でなく空配列を初期値として渡す
+        console.log(num_result2); // [3, 6, 9]
+
+        // find()の代わり
+        let cats_ary3 = [
+          { name: "mike", age: 10 },
+          { name: "kuro", age: 4 },
+          { name: "saba", age: 6 }
+        ];
+        let result_ary3 = cats_ary3.reduce((accumulator, current_value) => {
+          if (accumulator !== "") {
+            // undefinedが初期値の場合： if (accumulator) {
+            return accumulator;
+          }
+          if (current_value.age >= 10) {
+            return current_value;
+          }
+        }, "" /* undefined */); // 明示的に未定義を渡す => 空で無ければ
+        console.log(result_ary3); // {name: "mike", age: 10}
+
+        // forEach()の代わり
+        let num_ary3 = [100, 200, 300, 400];
+        let num_result3 = num_ary3.reduce(
+          (accumulator, current_value, current_index) => {
+            console.log(
+              "index: ",
+              current_index,
+              "value: ",
+              current_value,
+              "accumulator: ",
+              accumulator
+            );
+          },
+          // "" // 初回のみ""、後はunedefinedになる
+          undefined
+        );
+        // index:  0 value:  100 accumulator:  undefined
+        // index:  1 value:  200 accumulator:  undefined
+        // index:  2 value:  300 accumulator:  undefined
+        // index:  3 value:  400 accumulator:  undefined
+
+        // オブジェクトの"id"を識別子として抽出して新たなオブジェクトを作る
+        let cats_ary4 = [
+          { id: 58, name: "mike" },
+          { id: 69, name: "kuro" },
+          { id: 71, name: "sabi" }
+        ];
+        let result4 = cats_ary4.reduce((accumulator, current_value) => {
+          accumulator[current_value["id"]] = current_value;
+          return accumulator;
+        }, {});
+        console.log(result4); // {58: {id: 58, name: "mike"}, 69: {id: 69, name: "kuro"}, 71: {id: 71, name: "sabi"}
+
+        // Objectの複製（シャローコピー）
+        let cat_obj = {
+          name: "tama",
+          chiro: {
+            age: 4,
+            //  "alu": {
+            bark: function() {
+              console.log("myau!");
+            }
+            //   }
+          }
+        };
+        console.log("cat_obj: ", cat_obj); // cat_obj:  {name: "tama", chiro: {…}}
+        let cat_obj_copied = Object.entries(cat_obj).reduce(
+          (accumulator, [key, current_value]) => {
+            accumulator[key] = current_value;
+            return accumulator;
+          },
+          {}
+        );
+        console.log(cat_obj_copied); // {name: "tama", chiro: {age: 4, alu: {bark: ƒ}, name: "chiro"}}
+        console.log(cat_obj.chiro === cat_obj_copied.chiro); // true
+
+        // Objectのコピー（これもシャローコピー）
+        let cat_obj_copied2 = { ...cat_obj };
+        console.log(cat_obj_copied2); // {name: "tama", chiro: {…}}
+        console.log(cat_obj.chiro === cat_obj_copied2.chiro); // true
+
+        console.log(cat_obj_copied2.chiro.age); // 4
+        cat_obj.chiro.bark = function() {
+          // myau! コピー元を変更
+          console.log("wang!");
+        };
+        cat_obj_copied2.chiro.bark(); // wang! 参照なので影響を受ける
+
+        // Objectのコピー（ディープコピー）
+        const deepCopy = o =>
+          Object.entries(o).reduce((accumulator, [key, current_value]) => {
+            if (typeof current_value === "object") {
+              accumulator[key] = deepCopy(current_value);
+            } else {
+              accumulator[key] = current_value;
+            }
+            return accumulator;
+          }, {});
+        let cat_obj_copied3 = deepCopy(cat_obj);
+        console.log("cat_obj_copied3: ", cat_obj_copied3); // cat_obj_copied3:  {name: "tama", chiro: {…}}
+        console.log(cat_obj.chiro === cat_obj_copied3.chiro); // false
+        cat_obj.chiro.bark = function() {
+          console.log("gao!");
+        };
+        cat_obj.chiro.bark(); // gao!
+        cat_obj_copied3.chiro.bark(); // wang! 値コピーなので影響を受けない
+
+        console.log("");
+
+        // HTMLの出現要素を数を数える
+        let elements = [...document.querySelectorAll("*")];
+        let counts = elements.reduce((accumulator, element) => {
+          let name = element.tagName.toLocaleLowerCase();
+          if (!accumulator[name]) {
+            accumulator[name] = 0;
+          }
+          accumulator[name] += 1;
+          return accumulator;
+        }, {});
+        console.log("counts: ", counts); // counts: {body: 1, div: 1, h1: 1, h2: 1, head: 1, html: 1, link: 2, meta: 3, p: 1, script: 1, title: 1}
+        console.log("");
       </script>
 
-      <p class="title">タイトル</p>
+      <p class="title">reduce()を使った様々な配列の操作例</p>
+
+      <pre>
+      <code class="prettyprint">
+        // 初期値をそのまま返す例
+        const cats_ary = ["mike", "kuro", "shiro", "tora"];
+        const initial_value = {};
+        const result_ary = cats_ary.reduce(
+          (accumulator, current_value, current_index, source_ary) => {
+            console.log(
+              "source_ary: ",
+              source_ary,
+              "current_index: ",
+              current_index,
+              "current_value: ",
+              current_value,
+              accumulator === initial_value
+            );
+            return accumulator;
+          },
+          initial_value
+        );
+        console.log("");
+        // source_ary: ["mike", "kuro", "shiro", "tora"] current_index:  0 current_value:  mike true
+        // source_ary: ["mike", "kuro", "shiro", "tora"] current_index:  1 current_value:  kuro true
+        // source_ary: ["mike", "kuro", "shiro", "tora"] current_index:  2 current_value:  shiro true
+        // source_ary: ["mike", "kuro", "shiro", "tora"] current_index:  3 current_value:  tora true
+
+        // 初回だけ初期値を返す
+        const cats_ary2 = ["tama", "dai", "mie"];
+        const initial_value2 = {};
+        const result_ary2 = cats_ary2.reduce(
+          (accumulator, current_value, current_index, source_ary) => {
+            console.log(
+              "source_ary: ",
+              source_ary,
+              "current_index: ",
+              current_index,
+              "current_value",
+              current_value,
+              accumulator === initial_value2
+            );
+            return { ...accumulator };
+          },
+          initial_value2
+        );
+        // source_ary: ["tama", "dai", "mie"] current_index:  0 current_value tama true
+        // source_ary: ["tama", "dai", "mie"] current_index:  1 current_value dai false
+        // source_ary: ["tama", "dai", "mie"] current_index:  2 current_value mie false
+        console.log("");
+
+        // sum
+        let sum_ary = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+        let sum = sum_ary.reduce((accumulator, current_value) => {
+          return accumulator + current_value;
+        });
+        console.log("sum: ", sum); // sum:  66
+
+        // Math.max()の代わり
+        let rnd_ary = [58, 16, 35, 14, 87, 67, 92, 70];
+        let max = rnd_ary.reduce((accumulator, current_value) => {
+          return accumulator > current_value ? accumulator : current_value;
+        });
+        console.log("max: ", max); // max:  92
+        let max2 = Math.max(...rnd_ary);
+        console.log("max2: ", max2); // max2:  92
+
+        // map()の代わり
+        let num_ary = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let num_result = num_ary.reduce(
+          (accumulator, current_value, current_index) => {
+            accumulator[current_index] = 1000 + current_value;
+            return accumulator;
+          },
+          []
+        );
+        console.log(num_result); // [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010]
+
+        // filter()の代わり
+        let num_result2 = num_ary.reduce((accumulator, current_value) => {
+          if (current_value % 3 === 0) {
+            // 3で割った剰余が0＝3の倍数
+            accumulator.push(current_value); // の時のみ新し配列に追加
+          }
+          return accumulator;
+        }, []); // indexValue、配列で返す時は""でなく空配列を初期値として渡す
+        console.log(num_result2); // [3, 6, 9]
+
+        // find()の代わり
+        let cats_ary3 = [
+          { name: "mike", age: 10 },
+          { name: "kuro", age: 4 },
+          { name: "saba", age: 6 }
+        ];
+        let result_ary3 = cats_ary3.reduce((accumulator, current_value) => {
+          if (accumulator !== "") {
+            // undefinedが初期値の場合： if (accumulator) {
+            return accumulator;
+          }
+          if (current_value.age >= 10) {
+            return current_value;
+          }
+        }, "" /* undefined */); // 明示的に未定義を渡す => 空で無ければ
+        console.log(result_ary3); // {name: "mike", age: 10}
+
+        // forEach()の代わり
+        let num_ary3 = [100, 200, 300, 400];
+        let num_result3 = num_ary3.reduce(
+          (accumulator, current_value, current_index) => {
+            console.log(
+              "index: ",
+              current_index,
+              "value: ",
+              current_value,
+              "accumulator: ",
+              accumulator
+            );
+          },
+          // "" // 初回のみ""、後はunedefinedになる
+          undefined
+        );
+        // index:  0 value:  100 accumulator:  undefined
+        // index:  1 value:  200 accumulator:  undefined
+        // index:  2 value:  300 accumulator:  undefined
+        // index:  3 value:  400 accumulator:  undefined
+
+        // オブジェクトの"id"を識別子として抽出して新たなオブジェクトを作る
+        let cats_ary4 = [
+          { id: 58, name: "mike" },
+          { id: 69, name: "kuro" },
+          { id: 71, name: "sabi" }
+        ];
+        let result4 = cats_ary4.reduce((accumulator, current_value) => {
+          accumulator[current_value["id"]] = current_value;
+          return accumulator;
+        }, {});
+        console.log(result4); // {58: {id: 58, name: "mike"}, 69: {id: 69, name: "kuro"}, 71: {id: 71, name: "sabi"}
+
+        // Objectの複製（シャローコピー）
+        let cat_obj = {
+          name: "tama",
+          chiro: {
+            age: 4,
+            //  "alu": {
+            bark: function() {
+              console.log("myau!");
+            }
+            //   }
+          }
+        };
+        console.log("cat_obj: ", cat_obj); // cat_obj:  {name: "tama", chiro: {…}}
+        let cat_obj_copied = Object.entries(cat_obj).reduce(
+          (accumulator, [key, current_value]) => {
+            accumulator[key] = current_value;
+            return accumulator;
+          },
+          {}
+        );
+        console.log(cat_obj_copied); // {name: "tama", chiro: {age: 4, alu: {bark: ƒ}, name: "chiro"}}
+        console.log(cat_obj.chiro === cat_obj_copied.chiro); // true
+
+        // Objectのコピー（これもシャローコピー）
+        let cat_obj_copied2 = { ...cat_obj };
+        console.log(cat_obj_copied2); // {name: "tama", chiro: {…}}
+        console.log(cat_obj.chiro === cat_obj_copied2.chiro); // true
+
+        console.log(cat_obj_copied2.chiro.age); // 4
+        cat_obj.chiro.bark = function() {
+          // myau! コピー元を変更
+          console.log("wang!");
+        };
+        cat_obj_copied2.chiro.bark(); // wang! 参照なので影響を受ける
+
+        // Objectのコピー（ディープコピー）
+        const deepCopy = o =>
+          Object.entries(o).reduce((accumulator, [key, current_value]) => {
+            if (typeof current_value === "object") {
+              accumulator[key] = deepCopy(current_value);
+            } else {
+              accumulator[key] = current_value;
+            }
+            return accumulator;
+          }, {});
+        let cat_obj_copied3 = deepCopy(cat_obj);
+        console.log("cat_obj_copied3: ", cat_obj_copied3); // cat_obj_copied3:  {name: "tama", chiro: {…}}
+        console.log(cat_obj.chiro === cat_obj_copied3.chiro); // false
+        cat_obj.chiro.bark = function() {
+          console.log("gao!");
+        };
+        cat_obj.chiro.bark(); // gao!
+        cat_obj_copied3.chiro.bark(); // wang! 値コピーなので影響を受けない
+
+        console.log("");
+
+        // HTMLの出現要素を数を数える
+        let elements = [...document.querySelectorAll("*")];
+        let counts = elements.reduce((accumulator, element) => {
+          let name = element.tagName.toLocaleLowerCase();
+          if (!accumulator[name]) {
+            accumulator[name] = 0;
+          }
+          accumulator[name] += 1;
+          return accumulator;
+        }, {});
+        console.log("counts: ", counts); // counts: {body: 1, div: 1, h1: 1, h2: 1, head: 1, html: 1, link: 2, meta: 3, p: 1, script: 1, title: 1}
+        console.log("");
+      </code>
+      </pre>
+
+      <script>
+        // reduce()の色々な使用方法
+
+        // ■ 配列で、最大文字列の要素の文字数を取得
+        // （引数のコールバックとその引数を外部で指定）
+        let word_ary = ["mike", "kuro", "mie", "daigorou"];
+        let getMaxLeng = (length, word) => {
+          return length > word.length ? length : word.length;
+        };
+        let result_word = word_ary.reduce(getMaxLeng, 0); // 0 = indexValue
+        console.log("result_word: ", result_word); // result_word:  8
+
+        // ↑上記のスプレッド演算子+map()を使用したver.
+        let result_word2 = Math.max(...word_ary.map(v => v.length)); // v = current_value
+        console.log("result_word2: ", result_word2); // result_word2:  8
+
+        // ■ 二次元配列を一次元にflatten
+        let dim2_ary = [["mike", "kuro"], ["saba", "tama"]];
+        // let dim1_ary = dim2_ary.reduce((a, v) => a.concat(v));
+        // ↓
+        let dim1_ary = dim2_ary.reduce((accumulator, current_value) => {
+          // ※ {} と returnは一行なので省略可、indexValueも無しで可（0番目が初期値になってもokなので）、
+          return accumulator.concat(current_value);
+        }, []);
+        console.log("dim1_ary: ", dim1_ary); // dim1_ary:  (4) ["mike", "kuro", "saba", "tama"]
+
+        // ■ 配列オブジェクトで、特定のキーの値（数値）の合計値を取得する
+        let cats_ary5 = [
+          { name: "mike", age: 10 },
+          { name: "kuro", age: 4 },
+          { name: "saba", age: 6 },
+          { name: "tora", age: 15 }
+        ];
+        let cats_ages = cats_ary5.reduce((a, c) => a + c.age, 0); // 0 = indexValue
+        // ↑と同じ
+        let cats_ages2 = cats_ary5.reduce((accumulator, current_value) => {
+          return accumulator + current_value["age"];
+        }, 0);
+        console.log("cats_ages: ", cats_ages); // cats_ages:  35
+        console.log("cats_ages2: ", cats_ages2); // cats_ages2:  35
+
+        // ■ 配列オブジェクトで、条件別に特定のキーの値の合計値を取得する
+        let cats_ary6 = [
+          { name: "mike", age: 10, sex: "female" },
+          { name: "kuro", age: 4, sex: "male" },
+          { name: "saba", age: 6, sex: "female" },
+          { name: "tora", age: 15, sex: "male" }
+        ];
+        let cats_ages3 = cats_ary6.reduce(
+          (a, c) => {
+            c.sex === "female" ? (a["female"] += c.age) : (a["male"] += c.age);
+            return a;
+          },
+          { female: 0, male: 0 }
+        ); // indexValueで複数の値を指定
+        console.log("cats_ages3: ", cats_ages3); // cats_ages3:  {female: 16, male: 19}
+
+        // ■ Object.values()と組み合わせて、オブジェクト内の特定のkeyの数値の合計値を取得
+        let cats_obj1 = {
+          mike: { age: 10, sex: "female" },
+          kuro: { age: 4, sex: "male" },
+          saba: { age: 6, sex: "female" },
+          tora: { age: 15, sex: "male" }
+        };
+        let cats_ages4 = Object.values(cats_obj1).reduce((a, c) => {
+          console.log("a: ", a);
+          // a:  0
+          // a:  10
+          // a:  14
+          // a:  20
+          console.log("c: ", c);
+          // c:  {age: 10, sex: "female"}
+          // c:  {age: 4, sex: "male"}
+          // c:  {age: 6, sex: "female"}
+          // c:  {age: 15, sex: "male"}
+          console.log("c.age: ", c.age);
+          // c.age:  10
+          // c.age:  4
+          // c.age:  6
+          // c.age:  15
+          return a + c.age;
+        }, 0);
+        console.log("cats_ages4: ", cats_ages4); // cats_ages4:  35
+
+        // ■ 初期値を空の配列[]にしてpush()で配列化
+        let oldcat_ary = cats_ary5.reduce((a, c) => {
+          if (c.age >= 10) {
+            // 10歳以上の猫のみ抽出
+            a.push(c.name);
+          }
+          return a;
+        }, []); // indexValue
+        console.log("oldcat_ary: ", oldcat_ary); // oldcat_ary: ["mike", "tora"]
+
+        console.log("");
+
+      </script>
+
+
+      <p class="title">reduce()の色々な使用方法</p>
 
       <pre>
       <code class="prettyprint">
 
+        // ■ 配列で、最大文字列の要素の文字数を取得
+        // （引数のコールバックとその引数を外部で指定）
+        let word_ary = ["mike", "kuro", "mie", "daigorou"];
+        let getMaxLeng = (length, word) => {
+          return length > word.length ? length : word.length;
+        };
+        let result_word = word_ary.reduce(getMaxLeng, 0); // 0 = indexValue
+        console.log("result_word: ", result_word); // result_word:  8
+
+        // ↑上記のスプレッド演算子+map()を使用したver.
+        let result_word2 = Math.max(...word_ary.map(v => v.length)); // v = current_value
+        console.log("result_word2: ", result_word2); // result_word2:  8
+
+        // ■ 二次元配列を一次元にflatten
+        let dim2_ary = [["mike", "kuro"], ["saba", "tama"]];
+        // let dim1_ary = dim2_ary.reduce((a, v) => a.concat(v));
+        // ↓
+        let dim1_ary = dim2_ary.reduce((accumulator, current_value) => {
+          // ※ {} と returnは一行なので省略可、indexValueも無しで可（0番目が初期値になってもokなので）、
+          return accumulator.concat(current_value);
+        }, []);
+        console.log("dim1_ary: ", dim1_ary); // dim1_ary:  (4) ["mike", "kuro", "saba", "tama"]
+
+        // ■ 配列オブジェクトで、特定のキーの値（数値）の合計値を取得する
+        let cats_ary5 = [
+          { name: "mike", age: 10 },
+          { name: "kuro", age: 4 },
+          { name: "saba", age: 6 },
+          { name: "tora", age: 15 }
+        ];
+        let cats_ages = cats_ary5.reduce((a, c) => a + c.age, 0); // 0 = indexValue
+        // ↑と同じ
+        let cats_ages2 = cats_ary5.reduce((accumulator, current_value) => {
+          return accumulator + current_value["age"];
+        }, 0);
+        console.log("cats_ages: ", cats_ages); // cats_ages:  35
+        console.log("cats_ages2: ", cats_ages2); // cats_ages2:  35
+
+        // ■ 配列オブジェクトで、条件別に特定のキーの値の合計値を取得する
+        let cats_ary6 = [
+          { name: "mike", age: 10, sex: "female" },
+          { name: "kuro", age: 4, sex: "male" },
+          { name: "saba", age: 6, sex: "female" },
+          { name: "tora", age: 15, sex: "male" }
+        ];
+        let cats_ages3 = cats_ary6.reduce(
+          (a, c) => {
+            c.sex === "female" ? (a["female"] += c.age) : (a["male"] += c.age);
+            return a;
+          },
+          { female: 0, male: 0 }
+        ); // indexValueで複数の値を指定
+        console.log("cats_ages3: ", cats_ages3); // cats_ages3:  {female: 16, male: 19}
+
+        // ■ Object.values()と組み合わせて、オブジェクト内の特定のkeyの数値の合計値を取得
+        let cats_obj1 = {
+          mike: { age: 10, sex: "female" },
+          kuro: { age: 4, sex: "male" },
+          saba: { age: 6, sex: "female" },
+          tora: { age: 15, sex: "male" }
+        };
+        let cats_ages4 = Object.values(cats_obj1).reduce((a, c) => {
+          console.log("a: ", a);
+          // a:  0
+          // a:  10
+          // a:  14
+          // a:  20
+          console.log("c: ", c);
+          // c:  {age: 10, sex: "female"}
+          // c:  {age: 4, sex: "male"}
+          // c:  {age: 6, sex: "female"}
+          // c:  {age: 15, sex: "male"}
+          console.log("c.age: ", c.age);
+          // c.age:  10
+          // c.age:  4
+          // c.age:  6
+          // c.age:  15
+          return a + c.age;
+        }, 0);
+        console.log("cats_ages4: ", cats_ages4); // cats_ages4:  35
+
+        // ■ 初期値を空の配列[]にしてpush()で配列化
+        let oldcat_ary = cats_ary5.reduce((a, c) => {
+          if (c.age >= 10) {
+            // 10歳以上の猫のみ抽出
+            a.push(c.name);
+          }
+          return a;
+        }, []); // indexValue
+        console.log("oldcat_ary: ", oldcat_ary); // oldcat_ary: ["mike", "tora"]
       </code>
       </pre>
+
+      <script>
+        // ■ 配列オブジェクトをオブジェクトにする
+        let cats_ary7 = [
+          { name: "mike", age: 10, sex: "female" },
+          { name: "kuro", age: 4, sex: "male" },
+          { name: "saba", age: 6, sex: "female" },
+          { name: "tora", age: 15, sex: "male" }
+        ];
+        let cats_obj7 = cats_ary7.reduce((accumulator, current_value) => {
+          accumulator[current_value.name] = current_value.age;
+          return accumulator;
+        }, {}); // indexValueとして空のオブジェクトを渡す
+        console.log("cats_obj7: ", cats_obj7); // cats_obj7:  {mike: 10, kuro: 4, saba: 6, tora: 15}、※余分なsexプロパティが無くなっている
+
+        // ■ 配列をインデックス付きのオブジェクトにする
+        let cats_obj8 = cats_ary7.reduce((acc, val, idx) => {
+          acc[idx + 1] = val;
+          return acc;
+        }, {}); // indexValueとして初期値を渡す
+        console.log("cats_obj8: ", cats_obj8);
+        // {
+        // 1: {name: "mike", age: 10, sex: "female"}
+        // 2: {name: "kuro", age: 4, sex: "male"}
+        // 3: {name: "saba", age: 6, sex: "female"}
+        // 4: {name: "tora", age: 15, sex: "male"}
+        // }
+
+        // ■ 配列内の要素から不要な値を削除する
+        let cats_ary8 = cats_ary7.reduce((acc, value) => {
+          let { name, age } = value; // 分割代入
+          acc.push({ name, age });
+          return acc;
+        }, []);
+        console.log("cats_ary8: ", cats_ary8);
+        // [
+        //  {name: "mike", age: 10}
+        //  {name: "kuro", age: 4}
+        //  {name: "saba", age: 6}
+        //  {name: "tora", age: 15}
+        // ]
+
+        // ■ 多次元配列を一次元配列にflattenする、reduce()+再帰の使用
+        let dim_multi_ary = [
+          ["mike", "kuro"],
+          ["saba", ["tama", "hai", ["mie", "shiro"]]]
+        ];
+
+        // 多次元 → 一次元
+        let mergeAry = ary => {
+          let result = ary.reduce((acc, val) => {
+            return acc.concat(val);
+          }, []);
+          return result;
+        };
+
+        // 配列内に配列があるか走査
+        let hasAry = ary => {
+          return ary.some(item => Array.isArray(item));
+        };
+
+        // 配列が中にある限り再帰で繰り返す
+        let mergeAll = ary => {
+          if (!hasAry(ary)) {
+            return ary;
+          }
+          let result = mergeAry(ary);
+          return mergeAll(result);
+        };
+
+        console.log(mergeAll(dim_multi_ary)); // (7) ["mike", "kuro", "saba", "tama", "hai", "mie", "shiro"]
+
+        // ■ 条件にマッチする要素から値を取り出す（条件判定の関数と組み合わせ）
+        let cats_ary9 = [
+          { name: "mike", age: 10, sex: "female", house: "YamadaSan" },
+          { name: "kuro", age: 4, sex: "male", house: "Nora" },
+          { name: "saba", age: 6, sex: "female", house: "SuzukiSan" },
+          { name: "tora", age: 15, sex: "male", house: "Nora" },
+          { name: "tama", age: 2, sex: "female", house: "TakahashiSan" }
+        ];
+
+        // 雌かどうか判定
+        let isFemale = cat => cat.sex === "female";
+
+        // 子猫（今回2歳以下で子猫）かどうか判定
+        let isChild = cat => cat.age <= 2;
+
+        // フル名前取得
+        let catName = cat => `${cat.house} の家の ${cat.name}`;
+
+        // 条件を指定して取得
+        let result_ary4 = cats_ary9.reduce((a, c, i) => {
+          if (isFemale(c) && isChild(c)) {
+            a.push(catName(c));
+          }
+          return a;
+        }, []);
+        console.log("result_ary4: ", result_ary4); // result_ary4:  ["TakahashiSan の家の tama"]
+
+        // ■ 配列内の重複している値を削除（unique）
+        let temp_ary = [1, 2, 3, 4, 2, 3, "a", "b", "a", "c"];
+
+        // 既にその値が配列内の要素にあるか確認する
+        const hasValue = (value, ary) => ary.some(item => item === value);
+
+        const result_ary5 = temp_ary.reduce((a, c) => {
+          if (!hasValue(c, a)) {
+            a.push(c);
+          }
+          return a;
+        }, []);
+        console.log("result_ary5: ", result_ary5); // result_ary5: [1, 2, 3, 4, "a", "b", "c"]
+
+        // ■ filter()+map()の代わりに使う
+        let cats_ary10 = [
+          { id: 1, name: "mike" },
+          { id: 2, name: "kuro" },
+          { id: 3, name: "saba" },
+          { id: 4, name: "tora" }
+        ];
+
+        // 除外判定
+        const iSExclude = item => item.id === 2;
+
+        // テンプレートを返す
+        const template = item => `<li>id: ${item.id} / name: ${item.name}</li>`;
+
+        // パターン1（filter + map）
+        const result_ary6 = cats_ary10.filter(item => !iSExclude(item)).map(template);
+
+        // パターン2（reduce）
+        const result_ary7 = cats_ary10.reduce((acc, val) => {
+          if (!iSExclude(val)) {
+            acc.push(template(val));
+          }
+          return acc;
+        }, []);
+        console.log("result_ary6: ", result_ary6); //  ["<li>id: 1 / name: mike</li>", "<li>id: 3 / name: saba</li>", "<li>id: 4 / name: tora</li>"]
+        console.log("result_ary7: ", result_ary7); //  ["<li>id: 1 / name: mike</li>", "<li>id: 3 / name: saba</li>", "<li>id: 4 / name: tora</li>"]
+
+        // ■ テンプレートリテラルのタグ関数に使う
+        const name = "mike";
+        const country = "japan";
+        const food = "sashimi";
+
+        // ↑変数の先頭の一文字を大文字にしたい
+
+        // 先頭一文字を大文字に変換する
+        let upperChar1st = function(str) {
+          return str.charAt(0).toUpperCase() + str.slice(1);
+        };
+
+        // タグ関数：
+        // 変数内の先頭の1文字を大文字にする
+        let upperVarChar1st = function(strings, ...values) {
+          const textUppered = values.reduce((a, c) => {
+            a.push(upperChar1st(c));
+            return a;
+          }, []);
+
+          return strings.reduce((a, c, i) => {
+            return a + c + (textUppered[i] ? textUppered[i] : "");
+          }, "");
+        };
+
+        console.log(
+          upperVarChar1st`My name is ${name}. I live in ${country}. I like ${food}.`
+        ); // My name is Mike. I live in Japan. I like Sashimi.
+
+        console.log("");
+
+      </script>
+
+      <p class="title">reduce()を使ったサンプル集</p>
+
+      <pre>
+      <code class="prettyprint">
+
+        // ■ 配列オブジェクトをオブジェクトにする
+        let cats_ary7 = [
+          { name: "mike", age: 10, sex: "female" },
+          { name: "kuro", age: 4, sex: "male" },
+          { name: "saba", age: 6, sex: "female" },
+          { name: "tora", age: 15, sex: "male" }
+        ];
+        let cats_obj7 = cats_ary7.reduce((accumulator, current_value) => {
+          accumulator[current_value.name] = current_value.age;
+          return accumulator;
+        }, {}); // indexValueとして空のオブジェクトを渡す
+        console.log("cats_obj7: ", cats_obj7); // cats_obj7:  {mike: 10, kuro: 4, saba: 6, tora: 15}、※余分なsexプロパティが無くなっている
+
+        // ■ 配列をインデックス付きのオブジェクトにする
+        let cats_obj8 = cats_ary7.reduce((acc, val, idx) => {
+          acc[idx + 1] = val;
+          return acc;
+        }, {}); // indexValueとして初期値を渡す
+        console.log("cats_obj8: ", cats_obj8);
+        // {
+        // 1: {name: "mike", age: 10, sex: "female"}
+        // 2: {name: "kuro", age: 4, sex: "male"}
+        // 3: {name: "saba", age: 6, sex: "female"}
+        // 4: {name: "tora", age: 15, sex: "male"}
+        // }
+
+        // ■ 配列内の要素から不要な値を削除する
+        let cats_ary8 = cats_ary7.reduce((acc, value) => {
+          let { name, age } = value; // 分割代入
+          acc.push({ name, age });
+          return acc;
+        }, []);
+        console.log("cats_ary8: ", cats_ary8);
+        // [
+        //  {name: "mike", age: 10}
+        //  {name: "kuro", age: 4}
+        //  {name: "saba", age: 6}
+        //  {name: "tora", age: 15}
+        // ]
+
+        // ■ 多次元配列を一次元配列にflattenする、reduce()+再帰の使用
+        let dim_multi_ary = [
+          ["mike", "kuro"],
+          ["saba", ["tama", "hai", ["mie", "shiro"]]]
+        ];
+
+        // 多次元 → 一次元
+        let mergeAry = ary => {
+          let result = ary.reduce((acc, val) => {
+            return acc.concat(val);
+          }, []);
+          return result;
+        };
+
+        // 配列内に配列があるか走査
+        let hasAry = ary => {
+          return ary.some(item => Array.isArray(item));
+        };
+
+        // 配列が中にある限り再帰で繰り返す
+        let mergeAll = ary => {
+          if (!hasAry(ary)) {
+            return ary;
+          }
+          let result = mergeAry(ary);
+          return mergeAll(result);
+        };
+
+        console.log(mergeAll(dim_multi_ary)); // (7) ["mike", "kuro", "saba", "tama", "hai", "mie", "shiro"]
+
+        // ■ 条件にマッチする要素から値を取り出す（条件判定の関数と組み合わせ）
+        let cats_ary9 = [
+          { name: "mike", age: 10, sex: "female", house: "YamadaSan" },
+          { name: "kuro", age: 4, sex: "male", house: "Nora" },
+          { name: "saba", age: 6, sex: "female", house: "SuzukiSan" },
+          { name: "tora", age: 15, sex: "male", house: "Nora" },
+          { name: "tama", age: 2, sex: "female", house: "TakahashiSan" }
+        ];
+
+        // 雌かどうか判定
+        let isFemale = cat => cat.sex === "female";
+
+        // 子猫（今回2歳以下で子猫）かどうか判定
+        let isChild = cat => cat.age &lt;= 2;
+
+        // フル名前取得
+        let catName = cat => `${cat.house} の家の ${cat.name}`;
+
+        // 条件を指定して取得
+        let result_ary4 = cats_ary9.reduce((a, c, i) => {
+          if (isFemale(c) && isChild(c)) {
+            a.push(catName(c));
+          }
+          return a;
+        }, []);
+        console.log("result_ary4: ", result_ary4); // result_ary4:  ["TakahashiSan の家の tama"]
+
+        // ■ 配列内の重複している値を削除（unique）
+        let temp_ary = [1, 2, 3, 4, 2, 3, "a", "b", "a", "c"];
+
+        // 既にその値が配列内の要素にあるか確認する
+        const hasValue = (value, ary) => ary.some(item => item === value);
+
+        const result_ary5 = temp_ary.reduce((a, c) => {
+          if (!hasValue(c, a)) {
+            a.push(c);
+          }
+          return a;
+        }, []);
+        console.log("result_ary5: ", result_ary5); // result_ary5: [1, 2, 3, 4, "a", "b", "c"]
+
+        // ■ filter()+map()の代わりに使う
+        let cats_ary10 = [
+          { id: 1, name: "mike" },
+          { id: 2, name: "kuro" },
+          { id: 3, name: "saba" },
+          { id: 4, name: "tora" }
+        ];
+
+        // 除外判定
+        const iSExclude = item => item.id === 2;
+
+        // テンプレートを返す
+        const template = item => &#112;&lt;li&gt;id: ${item.id} / name: ${item.name}&lt;/li&gt;&#112;;
+
+        // パターン1（filter + map）
+        const result_ary6 = cats_ary10.filter(item => !iSExclude(item)).map(template);
+
+        // パターン2（reduce）
+        const result_ary7 = cats_ary10.reduce((acc, val) => {
+          if (!iSExclude(val)) {
+            acc.push(template(val));
+          }
+          return acc;
+        }, []);
+        console.log("result_ary6: ", result_ary6); //  ["&lt;li&gt;id: 1 / name: mike&lt;/li&gt;", "&lt;li&gt;id: 3 / name: saba&lt;/li&gt;", "&lt;li>id: 4 / name: tora&lt;/li&gt;"]
+        console.log("result_ary7: ", result_ary7); //  ["&lt;li&gt;id: 1 / name: mike&lt;/li&gt;", "&lt;li&gt;id: 3 / name: saba&lt;/li&gt;", "&lt;li>id: 4 / name: tora&lt;/li&gt;"]
+
+        // ■ テンプレートリテラルのタグ関数に使う
+        const name = "mike";
+        const country = "japan";
+        const food = "sashimi";
+
+        // ↑変数の先頭の一文字を大文字にしたい
+
+        // 先頭一文字を大文字に変換する
+        let upperChar1st = function(str) {
+          return str.charAt(0).toUpperCase() + str.slice(1);
+        };
+
+        // タグ関数：
+        // 変数内の先頭の1文字を大文字にする
+        let upperVarChar1st = function(strings, ...values) {
+          const textUppered = values.reduce((a, c) => {
+            a.push(upperChar1st(c));
+            return a;
+          }, []);
+
+          return strings.reduce((a, c, i) => {
+            return a + c + (textUppered[i] ? textUppered[i] : "");
+          }, "");
+        };
+
+        console.log(
+          upperVarChar1st`My name is ${name}. I live in ${country}. I like ${food}.`
+        ); // My name is Mike. I live in Japan. I like Sashimi.
+      </code>
+      </pre>
+
+      <script>
+        console.log("");
+      </script>
 
       <p class="title">参考サイト：</p>
 
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target="_blank">Array.prototype.reduce()</a></p>
-      
+
+      <p><a href="https://ginpen.com/2018/12/23/array-reduce/" target="_blank">reduce()はArrayにて最強……おぼえておけ。（配列とかおれおれAdvent Calendar2018 – 23日目）</a></p>
+
+      <p><a href="https://iwb.jp/javascript-reduce-howto-use/" target="_blank">意外と知られていないJavaScriptのreduceの使用方法</a></p>
+
+      <p><a href="https://kde.hateblo.jp/entry/2018/10/13/065738" target="_blank">【JavaScript基礎】Array.prototype.reduce() をしっかり理解する＆サンプル集s</a></p>
+
+
       <!--<p><a href="" target="_blank"></a></p>-->
-    
     </div>
 
     <script src="src/reduce.js"></script>

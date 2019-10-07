@@ -54,7 +54,23 @@
         // （３）Map関数は同じサイズの関手を返す
         // 関手について詳しく知りたい場合はこちら（https://medium.com/@mpjme/functors-i-was-wrong-funfunfunction-video-11-5f794a1ca246#.ek9iomx1e）
 
-        // ■Reduceメソッドを使う、※reduce()テスト後に記載
+        // Reduceメソッドを使う
+        // reduce()はmap()に似た機能だが、別の関手を生成する代わりに、どのタイプにも成りうる1つの結果を返す
+
+        // 例：animals配列の全ての文字数の単語を数える（for loop）
+        let total_num = 0;
+        let item_num;
+        for (let count = 0, loops = animals.length; count < loops; count++) {
+          item_num = animals[count];
+          total_num += item_num.length;
+        }
+        console.log("total_num: ", total_num); // total_num: 17
+
+        // reduce()を使ってanimals配列の全ての文字数の単語を数える
+        let total_num2 = animals.reduce((accumulator, current_value) => {
+          return accumulator + current_value.length;
+        }, 0); // indexValue
+        console.log("total_num2: ", total_num2); // total_num2:  17
 
         console.log("");
       </script>
@@ -98,7 +114,24 @@
         // （３）Map関数は同じサイズの関手を返す
         // 関手について詳しく知りたい場合はこちら（https://medium.com/@mpjme/functors-i-was-wrong-funfunfunction-video-11-5f794a1ca246#.ek9iomx1e）
 
-        // ■Reduceメソッドを使う、※reduce()テスト後に記載
+        // Reduceメソッドを使う
+        // reduce()はmap()に似た機能だが、別の関手を生成する代わりに、どのタイプにも成りうる1つの結果を返す
+
+        // 例：animals配列の全ての文字数の単語を数える（for loop）
+        let total_num = 0;
+        let item_num;
+        for (let count = 0, loops = animals.length; count < loops; count++) {
+          item_num = animals[count];
+          total_num += item_num.length;
+        }
+        console.log("total_num: ", total_num); // total_num: 17
+
+        // reduce()を使ってanimals配列の全ての文字数の単語を数える
+        let total_num2 = animals.reduce((accumulator, current_value) => {
+          return accumulator + current_value.length;
+        }, 0); // indexValue
+        console.log("total_num2: ", total_num2); // total_num2:  17
+
       </code>
       </pre>
 
