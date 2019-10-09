@@ -19,20 +19,1013 @@
       <p>テスト内容はChromeのConsoleに表示＋参考ページを元にサンプル作成</p>
 
       <script>
-    
+        // スプレッド演算子（Spread Operator）
+
+        // 配列
+        let tempNum = [0, 1, 2];
+
+        // スプレッド演算子を使った配列のクローン
+        let cloneNum = [...tempNum];
+        console.log("cloneNum: ", cloneNum); // cloneNum: [0, 1, 2]
+
+        // スプレッド演算子+要素の追加
+        let cloneNum2 = [...tempNum, 3, 4, 5];
+        console.log("cloneNum2: ", cloneNum2); // cloneNum2: [0, 1, 2, 3, 4, 5]
+
+        // ↑concat()と同じ
+        let cloneNum3 = cloneNum.concat([3, 4, 5]);
+        console.log("cloneNum3: ", cloneNum3); // cloneNum3: [0, 1, 2, 3, 4, 5]
+
+        // 配列のマージ
+        let mergeNum = [cloneNum, cloneNum2];
+        console.log(mergeNum); // [[0, 1, 2], [0, 1, 2, 3, 4, 5]]
+
+        let mergeNumCorrect = [...cloneNum, ...cloneNum2];
+        console.log(mergeNumCorrect); // [0, 1, 2, 0, 1, 2, 3, 4, 5]
+
+        // オブジェクト
+        let tempObj = { a: 1, b: 2, c: 3 };
+
+        // スプレッド演算子を使ったオブジェクトのクローン
+        let clonedObj = { ...tempObj };
+        console.log(clonedObj); // {a: 1, b: 2, c: 3}
+
+        // スプレッド演算子+プロパティの追加
+        let clonedObj2 = { ...tempObj, d: 4, eは: "五" };
+        console.log(clonedObj2); // {a: 1, b: 2, c: 3, d: 4, eは: "五"}
+
+        // オブジェクトのマージ
+        let mergedObj = { ...tempObj, ...{ dは: "四" } };
+        console.log(mergedObj); // {a: 1, b: 2, c: 3, dは: "四"}
+
+        // 元のオブジェクトに同名プロパティを上書きした場合は後が優先される
+        let mergedObj2 = { ...clonedObj2, ...{ d: "四" } };
+        console.log(mergedObj2); // {a: 1, b: 2, c: 3, d: "四", eは: "五"}
+
+        // シャローコピーになるので、ネストしたオブジェクとはコピー元を変えるとそれを参照しているコピー先も変更される
+        let cat = {
+          mike: {
+            age: 10,
+            sex: "femail"
+          }
+        };
+
+        let cat2 = { ...cat };
+        cat2["mike"].age = 2;
+        console.log(cat["mike"].age); // 2
+
+        // ネストしている↑にようなオブジェクトをコピーしたい場合、個別に分割して展開させる
+        let cat3 = {
+          ...cat,
+          mike: {
+            ...cat["mike"],
+            age: 5,
+            sex: "mail"
+          }
+        };
+        console.log(cat); // mike: {age: 2, sex: "femail"} ※cat2のコピー後に10→2になっているので
+        console.log(cat3); // mike: {age: 5, sex: "mail"}
+
+        // 分割代入（Destructuring assignment）
+        // 通常の分割代入
+        let dest_array = [1, 2, 3, 4];
+        let [x, y, z, a2, b2] = dest_array;
+        console.log(x); // 1
+        console.log(y); // 2
+        console.log(z); // 3
+        console.log(a2); // 4
+        console.log(b2); // undefined
+
+        let dest_obj = { mike: 10, kuro: 4, sabi: 6, shiro: 3 };
+        let { mike, kuro } = dest_obj;
+        console.log(mike); // 10
+        console.log(kuro); // 4
+
+        // スプレッド演算子を使った分割代入
+        let dest_array2 = [10, 20, 30, 40];
+        let [c, ...d2] = dest_array2;
+        console.log(c); // 10
+        console.log(d2); // [20,30,40]
+        console.log(typeof c); // number
+        console.log(typeof d2); // object
+
+        let { shiro, ...rest } = dest_obj;
+        console.log(shiro); // 3
+        console.log(rest); // {mike: 10, kuro: 4, sabi: 6}
+
+        // ネストしたオブジェクトの分割代入
+        let nestedObj = {
+          x: { a3: 0, b3: 1, c3: 2, d3: 3 },
+          y: [100, 200, 300, 400]
+        };
+        let {
+          x: { a3, ...restX },
+          y: [y0, ...restY]
+        } = nestedObj;
+        console.log("a3: ", a3); // a3: 0
+        console.log("restX: ", restX); // restX:  {b3: 1, c3: 2, d3: 3}
+        console.log("y0: ", y0); // y0:  100
+        console.log("restY: ", restY); // restY:  (3) [200, 300, 400]
+
+        // Reduxでのスプレッド演算子の使用
+        // 省略
+
+        console.log("");
+
       </script>
-
-      <p class="title">タイトル</p>
-
+      <p class="title">スプレッド演算子を使った配列。オブジェクトのコピー、分割代入</p>
       <pre>
       <code class="prettyprint">
 
+        // スプレッド演算子（Spread Operator）
+
+        // 配列
+        let tempNum = [0, 1, 2];
+
+        // スプレッド演算子を使った配列のクローン
+        let cloneNum = [...tempNum];
+        console.log("cloneNum: ", cloneNum); // cloneNum: [0, 1, 2]
+
+        // スプレッド演算子+要素の追加
+        let cloneNum2 = [...tempNum, 3, 4, 5];
+        console.log("cloneNum2: ", cloneNum2); // cloneNum2: [0, 1, 2, 3, 4, 5]
+
+        // ↑concat()と同じ
+        let cloneNum3 = cloneNum.concat([3, 4, 5]);
+        console.log("cloneNum3: ", cloneNum3); // cloneNum3: [0, 1, 2, 3, 4, 5]
+
+        // 配列のマージ
+        let mergeNum = [cloneNum, cloneNum2];
+        console.log(mergeNum); // [[0, 1, 2], [0, 1, 2, 3, 4, 5]]
+
+        let mergeNumCorrect = [...cloneNum, ...cloneNum2];
+        console.log(mergeNumCorrect); // [0, 1, 2, 0, 1, 2, 3, 4, 5]
+
+        // オブジェクト
+        let tempObj = { a: 1, b: 2, c: 3 };
+
+        // スプレッド演算子を使ったオブジェクトのクローン
+        let clonedObj = { ...tempObj };
+        console.log(clonedObj); // {a: 1, b: 2, c: 3}
+
+        // スプレッド演算子+プロパティの追加
+        let clonedObj2 = { ...tempObj, d: 4, eは: "五" };
+        console.log(clonedObj2); // {a: 1, b: 2, c: 3, d: 4, eは: "五"}
+
+        // オブジェクトのマージ
+        let mergedObj = { ...tempObj, ...{ dは: "四" } };
+        console.log(mergedObj); // {a: 1, b: 2, c: 3, dは: "四"}
+
+        // 元のオブジェクトに同名プロパティを上書きした場合は後が優先される
+        let mergedObj2 = { ...clonedObj2, ...{ d: "四" } };
+        console.log(mergedObj2); // {a: 1, b: 2, c: 3, d: "四", eは: "五"}
+
+        // シャローコピーになるので、ネストしたオブジェクとはコピー元を変えるとそれを参照しているコピー先も変更される
+        let cat = {
+          mike: {
+            age: 10,
+            sex: "femail"
+          }
+        };
+
+        let cat2 = { ...cat };
+        cat2["mike"].age = 2;
+        console.log(cat["mike"].age); // 2
+
+        // ネストしている↑にようなオブジェクトをコピーしたい場合、個別に分割して展開させる
+        let cat3 = {
+          ...cat,
+          mike: {
+            ...cat["mike"],
+            age: 5,
+            sex: "mail"
+          }
+        };
+        console.log(cat); // mike: {age: 2, sex: "femail"} ※cat2のコピー後に10→2になっているので
+        console.log(cat3); // mike: {age: 5, sex: "mail"}
+
+        // 分割代入（Destructuring assignment）
+        // 通常の分割代入
+        let dest_array = [1, 2, 3, 4];
+        let [x, y, z, a2, b2] = dest_array;
+        console.log(x); // 1
+        console.log(y); // 2
+        console.log(z); // 3
+        console.log(a2); // 4
+        console.log(b2); // undefined
+
+        let dest_obj = { mike: 10, kuro: 4, sabi: 6, shiro: 3 };
+        let { mike, kuro } = dest_obj;
+        console.log(mike); // 10
+        console.log(kuro); // 4
+
+        // スプレッド演算子を使った分割代入
+        let dest_array2 = [10, 20, 30, 40];
+        let [c, ...d2] = dest_array2;
+        console.log(c); // 10
+        console.log(d2); // [20,30,40]
+        console.log(typeof c); // number
+        console.log(typeof d2); // object
+
+        let { shiro, ...rest } = dest_obj;
+        console.log(shiro); // 3
+        console.log(rest); // {mike: 10, kuro: 4, sabi: 6}
+
+        // ネストしたオブジェクトの分割代入
+        let nestedObj = {
+          x: { a3: 0, b3: 1, c3: 2, d3: 3 },
+          y: [100, 200, 300, 400]
+        };
+        let {
+          x: { a3, ...restX },
+          y: [y0, ...restY]
+        } = nestedObj;
+        console.log("a3: ", a3); // a3: 0
+        console.log("restX: ", restX); // restX:  {b3: 1, c3: 2, d3: 3}
+        console.log("y0: ", y0); // y0:  100
+        console.log("restY: ", restY); // restY:  (3) [200, 300, 400]
+
+        // Reduxでのスプレッド演算子の使用
+        // 省略
       </code>
       </pre>
+
+      <script>
+        // スプレッド演算子の便利な使い方
+        // ...（スプレッド演算子）を使う事で、for～ofで展開出来るオブジェクトを、個々の値に展開出来る
+
+        // 個々の値に展開する
+        let data = [15, -3, 78, 1];
+        console.log(Math.max(...data)); // 78
+
+        // （↑スプレッド演算子を使わない場合の書き方）
+        console.log(Math.max.apply(null, data)); // 78
+
+        // 配列の複製
+        let ary1 = ["mike", "tama", "tabi"];
+        let ary2 = [...ary1];
+        console.log(ary1 === ary2); // false
+        console.log(ary2); // ["mike", "tama", "tabi"]
+
+        // シャローコピーなので、参照は残る
+        let fruits1 = [{ apple: 95 }, { banana: 98 }, { orage: 128 }];
+        let fruits2 = [...fruits1];
+        console.log(fruits2); // [0: {apple: 95}, 1: {banana: 98}, 2: {orage: 128}]
+
+        console.log(fruits1[0]); // {apple: 95}
+
+        fruits1[0].apple = 50;
+        console.log(fruits2[0].apple); // 50、※参照元の値が変わったのでコピー先の値も変わる
+
+        // スプレッド演算子を使った配列の操作
+        let data1 = [1, 2, 3, 4];
+        let data2 = ["e", "f", "g", "h"];
+
+        data1.push(...data2);
+        console.log(data1); // [1, 2, 3, 4, "e", "f", "g", "h"]
+
+        // （↑のスプレッド演算子を使わない書き方）
+        // Array.prototype.push.apply(data1, data2);
+        // [].push.apply(data1, data2); //
+
+        // unshift()との組み合わせ
+        let data3 = [1, 2, 3, 4];
+        let data4 = ["i", "j", "k", "l"];
+        data3.unshift(...data4);
+        console.log(data3); // ["i", "j", "k", "l", 1, 2, 3, 4]
+
+        // 配列をマージする
+        let mergeArray = ["三毛", ...data2, "黒", ...data4, "玉"];
+        console.log(mergeArray); // ["三毛", "e", "f", "g", "h", "黒", "i", "j", "k", "l", "玉"]
+
+        // 配列の分割
+        let [a4, b4, ...other4] = [1, 2, 3, 4, 5];
+        console.log(a4); // 1
+        console.log(b4); // 2
+        console.log(other4); // [3, 4, 5] ※スプレッド演算子で指定したプロパティは配列が返る、other4→ 3: number
+
+        // 文字列を配列にする
+        let word = "三毛猫が歩いている";
+        let conberted_ary = [...word];
+        console.log(conberted_ary); // ["三", "毛", "猫", が", "歩", "い", "て", "い", "る"]
+
+        // 一文字ずつ列挙する
+        [...word].forEach(c => console.log(c));
+        // 三
+        // 毛
+        // 猫
+        // が
+        // 歩
+        // い
+        // て
+        // い
+        // る
+
+        // 文字列を反転する
+        let reversed = [...word].reduceRight(
+          (accumulator, current_value) => accumulator + current_value
+        );
+        console.log(reversed); // るいてい歩が猫毛三
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight
+        // Array.prototype.reduceRight()
+        // reduceRight()は、隣り合う2つの配列要素に対して（右から左へ）同時に関数を適用し、単一の値にします
+
+        // 配列から重複を取り除く
+        let data5 = ["a", "b", "a", "c", "b", "d"];
+        let dist5 = [...new Set(data5)];
+        console.log(dist5); // ["a", "b", "c", "d"]
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Set
+        // Set
+        // Set オブジェクトは、プリミティブ値・オブジェクト参照を問わず、あらゆる型で一意の値を格納できます。Set に重複する値は格納出来ません。
+
+        // 可変長引数を定義する
+        let sum = (...args) =>
+          args.reduce((accumulator, current_value) => accumulator + current_value);
+        // ★スプレッド演算子で宣言された引数はArray型になるので、そのままmap()、filter()、reduce()で操作出来る
+        console.log(sum(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)); // 55
+
+        // NodeListやHtmlCollectionを配列のように操作する
+        // 省略
+
+        console.log("");
+
+      </script>
+      <p class="title">スプレッド演算子の便利な使い方</p>
+      <pre>
+      <code class="prettyprint">
+
+        // ...（スプレッド演算子）を使う事で、for～ofで展開出来るオブジェクトを、個々の値に展開出来る
+
+        // 個々の値に展開する
+        let data = [15, -3, 78, 1];
+        console.log(Math.max(...data)); // 78
+
+        // （↑スプレッド演算子を使わない場合の書き方）
+        console.log(Math.max.apply(null, data)); // 78
+
+        // 配列の複製
+        let ary1 = ["mike", "tama", "tabi"];
+        let ary2 = [...ary1];
+        console.log(ary1 === ary2); // false
+        console.log(ary2); // ["mike", "tama", "tabi"]
+
+        // シャローコピーなので、参照は残る
+        let fruits1 = [{ apple: 95 }, { banana: 98 }, { orage: 128 }];
+        let fruits2 = [...fruits1];
+        console.log(fruits2); // [0: {apple: 95}, 1: {banana: 98}, 2: {orage: 128}]
+
+        console.log(fruits1[0]); // {apple: 95}
+
+        fruits1[0].apple = 50;
+        console.log(fruits2[0].apple); // 50、※参照元の値が変わったのでコピー先の値も変わる
+
+        // スプレッド演算子を使った配列の操作
+        let data1 = [1, 2, 3, 4];
+        let data2 = ["e", "f", "g", "h"];
+
+        data1.push(...data2);
+        console.log(data1); // [1, 2, 3, 4, "e", "f", "g", "h"]
+
+        // （↑のスプレッド演算子を使わない書き方）
+        // Array.prototype.push.apply(data1, data2);
+        // [].push.apply(data1, data2); //
+
+        // unshift()との組み合わせ
+        let data3 = [1, 2, 3, 4];
+        let data4 = ["i", "j", "k", "l"];
+        data3.unshift(...data4);
+        console.log(data3); // ["i", "j", "k", "l", 1, 2, 3, 4]
+
+        // 配列をマージする
+        let mergeArray = ["三毛", ...data2, "黒", ...data4, "玉"];
+        console.log(mergeArray); // ["三毛", "e", "f", "g", "h", "黒", "i", "j", "k", "l", "玉"]
+
+        // 配列の分割
+        let [a4, b4, ...other4] = [1, 2, 3, 4, 5];
+        console.log(a4); // 1
+        console.log(b4); // 2
+        console.log(other4); // [3, 4, 5] ※スプレッド演算子で指定したプロパティは配列が返る、other4→ 3: number
+
+        // 文字列を配列にする
+        let word = "三毛猫が歩いている";
+        let conberted_ary = [...word];
+        console.log(conberted_ary); // ["三", "毛", "猫", が", "歩", "い", "て", "い", "る"]
+
+        // 一文字ずつ列挙する
+        [...word].forEach(c => console.log(c));
+        // 三
+        // 毛
+        // 猫
+        // が
+        // 歩
+        // い
+        // て
+        // い
+        // る
+
+        // 文字列を反転する
+        let reversed = [...word].reduceRight(
+          (accumulator, current_value) => accumulator + current_value
+        );
+        console.log(reversed); // るいてい歩が猫毛三
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight
+        // Array.prototype.reduceRight()
+        // reduceRight()は、隣り合う2つの配列要素に対して（右から左へ）同時に関数を適用し、単一の値にします
+
+        // 配列から重複を取り除く
+        let data5 = ["a", "b", "a", "c", "b", "d"];
+        let dist5 = [...new Set(data5)];
+        console.log(dist5); // ["a", "b", "c", "d"]
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Set
+        // Set
+        // Set オブジェクトは、プリミティブ値・オブジェクト参照を問わず、あらゆる型で一意の値を格納できます。Set に重複する値は格納出来ません。
+
+        // 可変長引数を定義する
+        let sum = (...args) =>
+          args.reduce((accumulator, current_value) => accumulator + current_value);
+        // ★スプレッド演算子で宣言された引数はArray型になるので、そのままmap()、filter()、reduce()で操作出来る
+        console.log(sum(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)); // 55
+
+        // NodeListやHtmlCollectionを配列のように操作する
+        // 省略
+      </code>
+      </pre>
+
+      <script>
+        // 配列初期化子、[]
+        let ary3 = [11, 22];
+        let ary4 = [33, 44];
+        let ary5 = [00, ...ary3, ...ary4, 55];
+        console.log("ary5: ", ary5); // [0, 11, 22, 33, 44, 55]
+
+        // 反復可能なオブジェクトであれば配列でなくても可
+        let gen = function*() {
+          yield 11;
+          yield 22;
+          yield 33;
+        };
+        let ite = gen();
+        let arr = [...ite];
+        console.log(arr); // 11, 22, 33
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/function*
+        // function* 宣言 (末尾にアスタリスクが付いたfunctionキーワード)は、 Generator オブジェクトを返すジェネレーター関数を定義します。
+
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/yield
+        // yield キーワードはジェネレーター関数の一時停止と再開で利用します。（function* または legacy generator function）。
+
+        // オブジェクト初期化子、{}
+        // オブジェクトの複製
+        let obj1 = { b: 2, c: 3 };
+        let obj2 = { e: 5, f: 6 };
+        let obj3 = { a: 11, ...obj1, d: 4, ...obj2, g: 7 };
+        console.log(obj3); // {a: 11, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7}
+
+        // 配列→オブジェクト、※インデックスがオブジェクトのkeyになる
+        let ary6 = [100, 200];
+        let obj6 = { ...ary6 };
+        console.log(obj6); // {0: 100, 1: 200}
+
+        // symbolｗｐプロパティ名に持つオブジェクトの複製
+        let obj7 = {
+          [Symbol("mike")]: 10
+        };
+        let obj8 = { ...obj7 };
+        console.log(obj8); // {Symbol(mike): 10}
+
+        // 継承したプロパティには適用されない
+        let obj9 = Object.create({ inherited_num: 1 });
+        obj9.ownp = 2;
+        console.log(obj9); // {ownp: 2}
+        console.log(obj9.inherited_num); // 1
+        console.log(obj9.ownp); // 2
+
+        let obj10 = { ...obj9 };
+        console.log(obj10); // {ownp: 2}
+        console.log(obj10.inherited_num); // undefined
+
+        // 非オブジェクトは無視される
+        let temp = null;
+        let obj11 = { ...temp };
+        console.log(obj11); // {}
+
+        // 文字列等の場合は対応するコンストラクタの新規オブジェクトが作成される
+        let tempStr = "あいうえお";
+        let obj12 = { ...tempStr };
+        console.log(obj12); // {0: "あ", 1: "い", 2: "う", 3: "え", 4: "お"}
+        let tempNumber = 12345;
+        let obj13 = { ...tempNumber };
+        console.log(obj13); // {}
+
+        // 関数呼び出し時にスプレッド構文を使った引数で渡す
+        let ary7 = [24, 38, 75, 51, 19];
+        console.log(Math.min(...ary7)); // 19
+
+        // 分割代入にスプレッド構文を使用
+        let cols = ["mike", "kuro", 10, 4];
+        let [name7, name8, ...rest7] = cols;
+        console.log(name7); // mike
+        console.log(name8); // kuro
+        console.log(...rest7); // 10 4
+        console.log(typeof rest7); // object
+
+        // スプレッド演算子ではない？＝ Spread Syntax
+
+        console.log("");
+
+      </script>
+      <p class="title">スプレッド構文の使える場所・使い方</p>
+      <pre>
+      <code class="prettyprint">
+
+        // 配列初期化子、[]
+        let ary3 = [11, 22];
+        let ary4 = [33, 44];
+        let ary5 = [00, ...ary3, ...ary4, 55];
+        console.log("ary5: ", ary5); // [0, 11, 22, 33, 44, 55]
+
+        // 反復可能なオブジェクトであれば配列でなくても可
+        let gen = function*() {
+          yield 11;
+          yield 22;
+          yield 33;
+        };
+        let ite = gen();
+        let arr = [...ite];
+        console.log(arr); // 11, 22, 33
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/function*
+        // function* 宣言 (末尾にアスタリスクが付いたfunctionキーワード)は、 Generator オブジェクトを返すジェネレーター関数を定義します。
+
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/yield
+        // yield キーワードはジェネレーター関数の一時停止と再開で利用します。（function* または legacy generator function）。
+
+        // オブジェクト初期化子、{}
+        // オブジェクトの複製
+        let obj1 = { b: 2, c: 3 };
+        let obj2 = { e: 5, f: 6 };
+        let obj3 = { a: 11, ...obj1, d: 4, ...obj2, g: 7 };
+        console.log(obj3); // {a: 11, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7}
+
+        // 配列→オブジェクト、※インデックスがオブジェクトのkeyになる
+        let ary6 = [100, 200];
+        let obj6 = { ...ary6 };
+        console.log(obj6); // {0: 100, 1: 200}
+
+        // symbolｗｐプロパティ名に持つオブジェクトの複製
+        let obj7 = {
+          [Symbol("mike")]: 10
+        };
+        let obj8 = { ...obj7 };
+        console.log(obj8); // {Symbol(mike): 10}
+
+        // 継承したプロパティには適用されない
+        let obj9 = Object.create({ inherited_num: 1 });
+        obj9.ownp = 2;
+        console.log(obj9); // {ownp: 2}
+        console.log(obj9.inherited_num); // 1
+        console.log(obj9.ownp); // 2
+
+        let obj10 = { ...obj9 };
+        console.log(obj10); // {ownp: 2}
+        console.log(obj10.inherited_num); // undefined
+
+        // 非オブジェクトは無視される
+        let temp = null;
+        let obj11 = { ...temp };
+        console.log(obj11); // {}
+
+        // 文字列等の場合は対応するコンストラクタの新規オブジェクトが作成される
+        let tempStr = "あいうえお";
+        let obj12 = { ...tempStr };
+        console.log(obj12); // {0: "あ", 1: "い", 2: "う", 3: "え", 4: "お"}
+        let tempNumber = 12345;
+        let obj13 = { ...tempNumber };
+        console.log(obj13); // {}
+
+        // 関数呼び出し時にスプレッド構文を使った引数で渡す
+        let ary7 = [24, 38, 75, 51, 19];
+        console.log(Math.min(...ary7)); // 19
+
+        // 分割代入にスプレッド構文を使用
+        let cols = ["mike", "kuro", 10, 4];
+        let [name7, name8, ...rest7] = cols;
+        console.log(name7); // mike
+        console.log(name8); // kuro
+        console.log(...rest7); // 10 4
+        console.log(typeof rest7); // object
+
+        // スプレッド演算子ではない？＝ Spread Syntax
+      </code>
+      </pre>
+
+      <script>
+        // ...ドットを3つ付ける事で、イテレーブルなオブジェクト（for～ofで展開出来るオブジェクト）をその場で展開する
+
+        // 関数呼び出し
+        // myFunc(...params) ※0個以上の引数として使用
+
+        // 配列リテラル
+        // [1,2,3, ...ary] ※0個以上の要素として使用
+
+        // オブジェクトリテラル
+        // let obj = { ...obj } ※0個以上の{key :value}として使用
+
+        // 関数呼び出しでのサンプル
+        let testFunc = function(param1, param2, param3) {
+          console.log(param1, param2, param3);
+        };
+
+        let ary8 = [1, 2, 3];
+        testFunc(ary8); // (3) [1, 2, 3] undefined undefined
+        testFunc(...ary8); // 1 2 3
+
+        // ↑スプレッド演算子を使わない場合
+        testFunc.apply(null, ary8); // 1 2 3
+
+        // 配列リテラルでの例
+        let ary9 = [3, 4, 5];
+        let ary10 = [];
+        console.log([1, 2, ...ary9, 6, ...ary10]); // [1, 2, 3, 4, 5, 6] ※空の配列の場合は何も展開されない
+
+        // 配列のコピー
+        // 通常配列のコピーは、参照渡しを防ぐためにalice()を使うが、スプレッド演算子を使っても作成出来る
+        let ary11 = [1, 2, 3];
+        let copyed_ary = [...ary11];
+        ary11.push(4);
+
+        console.log("ary11: ", ary11); // ary11: [1, 2, 3, 4] ※後から追加した4が存在する
+        console.log("copyed_ary: ", copyed_ary); // copyed_ary: [1, 2, 3] ※参照渡しでは無いコピーの為、4は存在しない
+
+        // ↑但しこれは1段階目の深さのみであり、2段階目以降では参照渡し（シャローコピー）になる
+        let ary12 = [1, 2, [3]];
+        let copyed_ary2 = [...ary12];
+        ary12[2][0] = 4;
+        console.log("ary12: ", ary12); // ary12: [1, 2, [4]]
+        console.log("copyed_ary2: ", copyed_ary2); // [1, 2, [4]] ※二段階目の以降の階層では、コピー元の変更の影響を受ける
+
+        // Objectリテラルでの例、※ES2018の機能
+        let obj14 = { a: 1 };
+        console.log({ ...obj14 }); // {a: 1}
+
+        let obj15 = { a: 1, b: 2 };
+        let obj16 = { b: 3, c: 4 };
+        let mergedObj3 = { ...obj15, ...obj16 };
+        console.log(mergedObj3); // {a: 1, b: 3, c: 4} ※同一プロパティの場合は後の値が前の物に上書きされる
+
+        // オブジェクトでは、列挙可能なプロパティのみ展開される
+        let obj17 = {
+          a: 1
+        };
+        Object.defineProperties(obj17, {
+          b: {
+            value: 2,
+            enumerable: true
+          },
+          c: {
+            value: 3
+            // enumerableは指定が無ければdefaultのfalse
+          }
+        });
+        console.log({ ...obj17 }); // {a: 1, b: 2} ※c:3は列挙可能で無いので展開されない
+
+        // オブジェクトの場合も、配列と同じく二段階目以降の階層では参照渡しとなるので、コピー元の影響を受ける
+        let obj18 = {
+          a: 1,
+          aa: {
+            aaa: 10
+          }
+        };
+        let obj19 = { ...obj18 };
+        obj18.aa.aaa = 20;
+        console.log(obj19.aa.aaa); // 20 ※コピー元の変更の影響を受けている
+
+        // レスト構文
+        // ★↑で出てきたのは、...で「値を展開出来る」スプレッド構文（Spread Syntax）と言われるもの
+        // ★↓それと逆に、「複数の要素を集約して1つのオブジェクトにまとめる」のがレスト構文（Rest Parameters）
+
+        // 分割代入でプロパティをまとめる
+        let obj20 = { a: 1, b: 2, c: 3, d: 4 };
+        let { ...obj_props } = obj20;
+        console.log(obj_props); // {a: 1, b: 2, c: 3, d: 4}
+
+        // 分割代入で配列を分割する
+        let [a_prop, b_prop, ...c_props] = [1, 2, 3, 4, 5];
+        console.log(c_props); // [3, 4, 5]
+
+        // 可変長引数の関数を作る
+        let testFunc2 = function(a, ...args2) {
+          console.log(args2);
+        };
+        testFunc2(1, 2, 3); // [2, 3]
+
+        // 分割代入＋★デフォルト引数の指定
+        let testFunc3 = function(...[a = 1, b = 2, ...c]) {
+          // 最初の...は引数が3個以上可変長指定、最後の...は引数の中の3番目以降の引数（配列）を指定
+          console.log(a, b, c);
+        };
+
+        testFunc3(); // 1 2 []
+        testFunc3(10); // 10 2 []
+        testFunc3(10, 11); // 10 11 []
+        testFunc3(10, 11, 12); // 10 11 [12]
+        testFunc3(10, 11, 12, 13); //10 11 [12, 13]
+
+        // その他の使い方
+
+        // 文字列を配列に分割
+        let text_str = "ABCDEFS";
+        let text_ary = [...text_str];
+        console.log(text_ary); // ["A", "B", "C", "D", "E", "F", "S"]
+
+        // ↑スプレッド演算子（レスト構文）を使わない場合
+        let text_ary2 = text_str.split("");
+        console.log(text_ary2); // ["A", "B", "C", "D", "E", "F", "S"]
+
+        console.log("");
+
+      </script>
+      <p class="title">スプレッド演算子（スプレッド構文とレストパラメーターの例）</p>
+      <pre>
+      <code class="prettyprint">
+
+        // ...ドットを3つ付ける事で、イテレーブルなオブジェクト（for～ofで展開出来るオブジェクト）をその場で展開する
+
+        // 関数呼び出し
+        // myFunc(...params) ※0個以上の引数として使用
+
+        // 配列リテラル
+        // [1,2,3, ...ary] ※0個以上の要素として使用
+
+        // オブジェクトリテラル
+        // let obj = { ...obj } ※0個以上の{key :value}として使用
+
+        // 関数呼び出しでのサンプル
+        let testFunc = function(param1, param2, param3) {
+          console.log(param1, param2, param3);
+        };
+
+        let ary8 = [1, 2, 3];
+        testFunc(ary8); // (3) [1, 2, 3] undefined undefined
+        testFunc(...ary8); // 1 2 3
+
+        // ↑スプレッド演算子を使わない場合
+        testFunc.apply(null, ary8); // 1 2 3
+
+        // 配列リテラルでの例
+        let ary9 = [3, 4, 5];
+        let ary10 = [];
+        console.log([1, 2, ...ary9, 6, ...ary10]); // [1, 2, 3, 4, 5, 6] ※空の配列の場合は何も展開されない
+
+        // 配列のコピー
+        // 通常配列のコピーは、参照渡しを防ぐためにalice()を使うが、スプレッド演算子を使っても作成出来る
+        let ary11 = [1, 2, 3];
+        let copyed_ary = [...ary11];
+        ary11.push(4);
+
+        console.log("ary11: ", ary11); // ary11: [1, 2, 3, 4] ※後から追加した4が存在する
+        console.log("copyed_ary: ", copyed_ary); // copyed_ary: [1, 2, 3] ※参照渡しでは無いコピーの為、4は存在しない
+
+        // ↑但しこれは1段階目の深さのみであり、2段階目以降では参照渡し（シャローコピー）になる
+        let ary12 = [1, 2, [3]];
+        let copyed_ary2 = [...ary12];
+        ary12[2][0] = 4;
+        console.log("ary12: ", ary12); // ary12: [1, 2, [4]]
+        console.log("copyed_ary2: ", copyed_ary2); // [1, 2, [4]] ※二段階目の以降の階層では、コピー元の変更の影響を受ける
+
+        // Objectリテラルでの例、※ES2018の機能
+        let obj14 = { a: 1 };
+        console.log({ ...obj14 }); // {a: 1}
+
+        let obj15 = { a: 1, b: 2 };
+        let obj16 = { b: 3, c: 4 };
+        let mergedObj3 = { ...obj15, ...obj16 };
+        console.log(mergedObj3); // {a: 1, b: 3, c: 4} ※同一プロパティの場合は後の値が前の物に上書きされる
+
+        // オブジェクトでは、列挙可能なプロパティのみ展開される
+        let obj17 = {
+          a: 1
+        };
+        Object.defineProperties(obj17, {
+          b: {
+            value: 2,
+            enumerable: true
+          },
+          c: {
+            value: 3
+            // enumerableは指定が無ければdefaultのfalse
+          }
+        });
+        console.log({ ...obj17 }); // {a: 1, b: 2} ※c:3は列挙可能で無いので展開されない
+
+        // オブジェクトの場合も、配列と同じく二段階目以降の階層では参照渡しとなるので、コピー元の影響を受ける
+        let obj18 = {
+          a: 1,
+          aa: {
+            aaa: 10
+          }
+        };
+        let obj19 = { ...obj18 };
+        obj18.aa.aaa = 20;
+        console.log(obj19.aa.aaa); // 20 ※コピー元の変更の影響を受けている
+
+        // レスト構文
+        // ★↑で出てきたのは、...で「値を展開出来る」スプレッド構文（Spread Syntax）と言われるもの
+        // ★↓それと逆に、「複数の要素を集約して1つのオブジェクトにまとめる」のがレスト構文（Rest Parameters）
+
+        // 分割代入でプロパティをまとめる
+        let obj20 = { a: 1, b: 2, c: 3, d: 4 };
+        let { ...obj_props } = obj20;
+        console.log(obj_props); // {a: 1, b: 2, c: 3, d: 4}
+
+        // 分割代入で配列を分割する
+        let [a_prop, b_prop, ...c_props] = [1, 2, 3, 4, 5];
+        console.log(c_props); // [3, 4, 5]
+
+        // 可変長引数の関数を作る
+        let testFunc2 = function(a, ...args2) {
+          console.log(args2);
+        };
+        testFunc2(1, 2, 3); // [2, 3]
+
+        // 分割代入＋★デフォルト引数の指定
+        let testFunc3 = function(...[a = 1, b = 2, ...c]) {
+          // 最初の...は引数が3個以上可変長指定、最後の...は引数の中の3番目以降の引数（配列）を指定
+          console.log(a, b, c);
+        };
+
+        testFunc3(); // 1 2 []
+        testFunc3(10); // 10 2 []
+        testFunc3(10, 11); // 10 11 []
+        testFunc3(10, 11, 12); // 10 11 [12]
+        testFunc3(10, 11, 12, 13); //10 11 [12, 13]
+
+        // その他の使い方
+
+        // 文字列を配列に分割
+        let text_str = "ABCDEFS";
+        let text_ary = [...text_str];
+        console.log(text_ary); // ["A", "B", "C", "D", "E", "F", "S"]
+
+        // ↑スプレッド演算子（レスト構文）を使わない場合
+        let text_ary2 = text_str.split("");
+        console.log(text_ary2); // ["A", "B", "C", "D", "E", "F", "S"]
+      </code>
+      </pre>
+
+      <script>
+        // スプレッド演算子の目的は、配列またはオブジェクトの要素を展開する事
+
+        // 引数の適用（apply）
+        // 一般的なユースケースは、配列を使って関数に引数うを渡す事
+
+        // 以前の方法
+        function Foo(x, y, z) {
+          console.log(x, y, z);
+        }
+        let args3 = [0, 1, 2];
+        Foo.apply(null, args3); // 0 1 2
+        // ※applyを使わないと
+        Foo(args3); //  [0, 1, 2] undefined undefined
+
+        // スプレッド演算子を使う方法
+        function Foo2(x, y, z) {
+          console.log(x, y, z);
+        }
+        let args4 = [0, 1, 2];
+        Foo2(...args4); // 0 1 2
+
+        // 分解（destructuring）
+        let [x4, y4, ...remaining] = [1, 2, 3, 4, 5];
+        console.log(x4, y4, remaining); // 1 2 [3, 4, 5] ※単純に配列の残り要素を簡単に取得出来る
+
+        // 配列の代入（Array Assignment）
+        // スプレッド演算子を使用すると、配列の拡張バージョンを、別の配列に簡単に代入出来る
+        let list4 = [1, 2];
+        list4 = [...list4, 3, 4];
+        console.log(list4); // (4) [1, 2, 3, 4]
+
+        // 展開された配列を任意の位置に配置出来る
+        let list5 = [1, 2];
+        list5 = [0, ...list5, 4];
+        console.log(list5);
+        (4)[(0, 1, 2, 4)];
+
+        // オブジェクトの展開（Objet Spread）
+        // オブジェクトを別のオブジェクトに転回する事も出来る
+        // 一般的なユースケースは、「オリジナルに変更を加える事無く、オブジェクトにプロパティを追加出来る」事
+        let point2D = { x: 1, y: 2 };
+        // すべてのpoint2Dプロップとzを使用して、新しいオブジェクトを作成します
+        let point3D = { ...point2D, z: 3 };
+        console.log(point3D); // {x: 1, y: 2, z: 3}
+
+        // オブジェクトの場合、オブジェクトを展開する順番は重要になる。
+        // （最初の物は後で来るものによって上書きされる）
+        let anotherPoint3D = { x: 5, z: 4, ...point2D };
+        console.log(anotherPoint3D); // {x: 1, z: 4, y: 2} ※xが後から来たpoint2Dの値に上書きされている
+
+        let yetAnotherPoint3D = { ...point2D, x: 5, z: 4 };
+        console.log(yetAnotherPoint3D); // {x: 5, y: 2, z: 4} ※xが後から来たyetAnotherPoint3Dのxの値に上書きされている
+
+        // 別の一般的なユースケースはシンプルな拡張
+        let foo3 = { a: 1, b: 2, c: 3 };
+        let bar3 = { c: 1, d: 2 };
+        // fooとbarをマージ
+        let foo3bar3 = { ...foo3, ...bar3 };
+        console.log(foo3bar3); // {a: 1, b: 2, c: 1, d: 2} // ※cの値は後から来たbar3の物（1）に上書きされる
+
+        // ★スプレッド演算子は、
+        //（１）JavaScriptでよく使われるapplyのthisに引数にnullを渡すのが必要なくなる
+        //（２）配列を分解したり、他の配列に代入する専用の構文を使う事で完結に部分配列に関する処理を行える
+
+        console.log("");
+
+      </script>
+      <p class="title">Spread Operator</p>
+      <pre>
+      <code class="prettyprint">
+
+        // スプレッド演算子の目的は、配列またはオブジェクトの要素を展開する事
+
+        // 引数の適用（apply）
+        // 一般的なユースケースは、配列を使って関数に引数うを渡す事
+
+        // 以前の方法
+        function Foo(x, y, z) {
+          console.log(x, y, z);
+        }
+        let args3 = [0, 1, 2];
+        Foo.apply(null, args3); // 0 1 2
+        // ※applyを使わないと
+        Foo(args3); //  [0, 1, 2] undefined undefined
+
+        // スプレッド演算子を使う方法
+        function Foo2(x, y, z) {
+          console.log(x, y, z);
+        }
+        let args4 = [0, 1, 2];
+        Foo2(...args4); // 0 1 2
+
+        // 分解（destructuring）
+        let [x4, y4, ...remaining] = [1, 2, 3, 4, 5];
+        console.log(x4, y4, remaining); // 1 2 [3, 4, 5] ※単純に配列の残り要素を簡単に取得出来る
+
+        // 配列の代入（Array Assignment）
+        // スプレッド演算子を使用すると、配列の拡張バージョンを、別の配列に簡単に代入出来る
+        let list4 = [1, 2];
+        list4 = [...list4, 3, 4];
+        console.log(list4); // (4) [1, 2, 3, 4]
+
+        // 展開された配列を任意の位置に配置出来る
+        let list5 = [1, 2];
+        list5 = [0, ...list5, 4];
+        console.log(list5);
+        (4)[(0, 1, 2, 4)];
+
+        // オブジェクトの展開（Objet Spread）
+        // オブジェクトを別のオブジェクトに転回する事も出来る
+        // 一般的なユースケースは、「オリジナルに変更を加える事無く、オブジェクトにプロパティを追加出来る」事
+        let point2D = { x: 1, y: 2 };
+        // すべてのpoint2Dプロップとzを使用して、新しいオブジェクトを作成します
+        let point3D = { ...point2D, z: 3 };
+        console.log(point3D); // {x: 1, y: 2, z: 3}
+
+        // オブジェクトの場合、オブジェクトを展開する順番は重要になる。
+        // （最初の物は後で来るものによって上書きされる）
+        let anotherPoint3D = { x: 5, z: 4, ...point2D };
+        console.log(anotherPoint3D); // {x: 1, z: 4, y: 2} ※xが後から来たpoint2Dの値に上書きされている
+
+        let yetAnotherPoint3D = { ...point2D, x: 5, z: 4 };
+        console.log(yetAnotherPoint3D); // {x: 5, y: 2, z: 4} ※xが後から来たyetAnotherPoint3Dのxの値に上書きされている
+
+        // 別の一般的なユースケースはシンプルな拡張
+        let foo3 = { a: 1, b: 2, c: 3 };
+        let bar3 = { c: 1, d: 2 };
+        // fooとbarをマージ
+        let foo3bar3 = { ...foo3, ...bar3 };
+        console.log(foo3bar3); // {a: 1, b: 2, c: 1, d: 2} // ※cの値は後から来たbar3の物（1）に上書きされる
+
+        // ★スプレッド演算子は、
+        //（１）JavaScriptでよく使われるapplyのthisに引数にnullを渡すのが必要なくなる
+        //（２）配列を分解したり、他の配列に代入する専用の構文を使う事で完結に部分配列に関する処理を行える
+      </code>
+      </pre>
+
+      <script>
+      console.log("");
+      </script>
 
       <p class="title">参考サイト：</p>
       
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Spread_syntax" target="_blank">スプレッド構文 - JavaScript | MDN</a></p>
+
+      <p><a href="https://qiita.com/akisx/items/682a4283c13fe336c547" target="_blank">JSのスプレッド演算子を理解する</a></p>
+
+      <p><a href="https://qiita.com/Nossa/items/e6f503cbb95c8e6967f8" target="_blank">【JavaScript】スプレッド構文の便利な使い方まとめ</a></p>
+
+      <p><a href="https://ginpen.com/2018/12/20/spread-syntax/" target="_blank">スプレッド演算子……じゃなくて、スプレッド構文の使える場所とか使い方とかそういう。（配列とかおれおれAdvent Calendar2018 – 20日目）</a></p>
+
+      <p><a href="https://kde.hateblo.jp/entry/2018/10/15/042305" target="_blank">【ES2015】スプレッド演算子の基礎まとめ</a></p>
+
+      <p><a href="https://typescript-jp.gitbook.io/deep-dive/future-javascript/spread-operator" target="_blank">Spread Operator</a></p>
 
       <!--<p><a href="" target="_blank"></a></p>-->
     

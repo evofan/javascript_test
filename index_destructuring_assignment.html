@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Destructuring assignment（分割代入）</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <!--s/-->
+      <script>
+
+        // 基本
+        
+        // [配列]から値を取り出す
+        // （従来の書き方）
+        // 一個ずつ取り出す
+        let cats = ["mike", "kuro", "shiro", "sabi"];
+        let oldest = cats[0];
+        let black = cats[1];
+        let white = cats[2];
+        
+        // 一部だけ取り出す
+        let fat = cats[3];
+
+        // 取得時に未定義の可能性がある場合の処理
+        let nora = cats[4] || "無し";
+
+        // 既存の配列を元に、新しい配列を作る
+        let cats_other = cats.slice(1);
+        console.log("cats_other: ", cats_other); // cats_other:  (3) ["kuro", "shiro", "sabi"]
+
+        // （分割代入での書き方）
+        // 一個ずつ取り出す
+        let cats2 = ["mike", "kuro", "shiro", "sabi"];
+        let [oldest2, black2, white2] = cats2;
+        console.log(oldest2); // mike
+        console.log(black2); // kuro
+        console.log(white2); // shiro
+
+        // 一部だけ取り出す
+        let [,,,fat2] = cats2;
+        console.log(fat2); // sabi
+
+        // 取得時に未定義の可能性有り
+        let [,,,,nora2 = "0匹"] = cats2;
+        console.log(nora2); // 0匹
+
+        // 既存から新規配列作成
+        let [mike, ...cats_other2] = cats2;
+        console.log(mike); // mike
+        console.log(cats_other2); // [kuro", "shiro", "sabi"]
+
+        // [オブジェクト]
+        // （分割代入での書き方）
+        let cats_obj = {oldest3:"mike", black3:"kuro", white3:"shiro", fats3:"sabi",};
+        let {white3, oldest3, black3} = cats_obj;
+        // let { white3: white3, oldest3: oldest3, black3: black3 } = cats_obj;の省略、順番は変わってもok
+        console.log(oldest3); // mike
+        console.log(black3); // kuro
+        console.log(white3); // shiro
+
+        // 一部だけ抜き出す
+        let {fats3} = cats_obj;
+        console.log(fats3); // sabi
+
+        // 取得時に未定義の可能性有り
+        let {nora3 = "存在しない"} = cats_obj;
+        console.log("nora3: ", nora3); // nora3:  存在しない
+
+        // プロパティ名と変数名を変えたい場合
+        let {fats3: not_thin} = cats_obj;
+        console.log(not_thin); // sabi
+
+        // 複数階層
+        
+        // オブジェクト
+
+        // 深い階層
+
+        // 応用
+
+
+
+      </script>
+      <p class="title">タイトル</p>
+      <pre>
+      <code class="prettyprint">
+      </code>
+      </pre>
+      <!--/s-->
+
+      <!--s/-->
+      <script>
+      </script>
+      <p class="title">タイトル</p>
+      <pre>
+      <code class="prettyprint">
+      </code>
+      </pre>
+      <!--/s-->
+
+      <!--s/-->
+      <script>
+      </script>
+      <p class="title">タイトル</p>
+      <pre>
+      <code class="prettyprint">
+      </code>
+      </pre>
+      <!--/s-->
+
+      <script>
+        console.log("");
+      </script>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment" target="_blank">分割代入 - JavaScript | MDN</a></p>
+
+      <!--
+      ECMAScript 2015 の分割代入は奥が深かった
+      https://qiita.com/amamamaou/items/1ec21316b8bf05ba9c34
+
+      分割代入 - 現代の JavaScript チュートリアル
+      https://ja.javascript.info/destructuring-assignment
+
+      分割代入、画期的な機能。（現代的JavaScriptおれおれアドベントカレンダー2017 – 14日目）
+      https://ginpen.com/2017/12/14/destructuring-object/
+      -->
+
+      <!--<p><a href="" target="_blank"></a></p>-->
+    
+    </div>
+
+    <script src="src/destructuring_assignment.js"></script>
+  </body>
+</html>
+        
