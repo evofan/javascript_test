@@ -20,9 +20,8 @@
 
       <!--s/-->
       <script>
+        // ■ 基本
 
-        // 基本
-        
         // [配列]から値を取り出す
         // （従来の書き方）
         // 一個ずつ取り出す
@@ -30,7 +29,7 @@
         let oldest = cats[0];
         let black = cats[1];
         let white = cats[2];
-        
+
         // 一部だけ取り出す
         let fat = cats[3];
 
@@ -50,11 +49,11 @@
         console.log(white2); // shiro
 
         // 一部だけ取り出す
-        let [,,,fat2] = cats2;
+        let [, , , fat2] = cats2;
         console.log(fat2); // sabi
 
         // 取得時に未定義の可能性有り
-        let [,,,,nora2 = "0匹"] = cats2;
+        let [, , , , nora2 = "0匹"] = cats2;
         console.log(nora2); // 0匹
 
         // 既存から新規配列作成
@@ -64,59 +63,1171 @@
 
         // [オブジェクト]
         // （分割代入での書き方）
-        let cats_obj = {oldest3:"mike", black3:"kuro", white3:"shiro", fats3:"sabi",};
-        let {white3, oldest3, black3} = cats_obj;
+        let cats_obj = {
+          oldest3: "mike",
+          black3: "kuro",
+          white3: "shiro",
+          fats3: "sabi"
+        };
+        let { white3, oldest3, black3 } = cats_obj;
         // let { white3: white3, oldest3: oldest3, black3: black3 } = cats_obj;の省略、順番は変わってもok
         console.log(oldest3); // mike
         console.log(black3); // kuro
         console.log(white3); // shiro
 
         // 一部だけ抜き出す
-        let {fats3} = cats_obj;
+        let { fats3 } = cats_obj;
         console.log(fats3); // sabi
 
         // 取得時に未定義の可能性有り
-        let {nora3 = "存在しない"} = cats_obj;
+        let { nora3 = "存在しない" } = cats_obj;
         console.log("nora3: ", nora3); // nora3:  存在しない
 
         // プロパティ名と変数名を変えたい場合
-        let {fats3: not_thin} = cats_obj;
+        let { fats3: not_thin } = cats_obj;
         console.log(not_thin); // sabi
 
-        // 複数階層
+        // ■ 複数階層対象への分割代入
+
+        // □ 配列内配列
+        let cat_hcy_ary = [["mike", "kuro"], ["que", "shiro"], ["tama", "dai"]];
+        // 2つめの値の配列を取りたい
+        let [, [name1, name2]] = cat_hcy_ary;
+        console.log(name1); // que
+        console.log(name2); // shiro
+
+        // □ 配列内オブジェクト
+        let cat_hcy_ary2 = [
+          { name1: "mike", name2: "kuro" },
+          { name1: "que", name2: "sihro" },
+          { name1: "tama", name2: "dai" }
+        ];
+        // 3つめの値を値を取得
+        let [, , { name1: a_cat, name2: b_cat }] = cat_hcy_ary2;
+        console.log(a_cat); // tama
+        console.log(b_cat); // dai
+
+        // □ オブジェクト内配列
+        let cat_hcy_obj = {
+          cat_name: ["mike", "kuro", "shiro", "tora"],
+          cat_color: ["brown, yellow, white", "black", "white", "brown,yellow"],
+          cat_age: [10, 6, 5, 2]
+        };
+        // 一部を取り出す
+        let {
+          cat_name: [cat1]
+        } = cat_hcy_obj;
+        console.log(cat1); // mike
+        let {
+          cat_color: [, , , cat4]
+        } = cat_hcy_obj;
+        console.log(cat4); // brown,yellow
+
+        // □ オブジェクト内オブジェクト
+        let cat_hcy_obj2 = {
+          cat_name: { cute: "mike", cool: "kuro", passion: "shiro", nora: "tora" },
+          cat_color: {
+            three_color: "brown, yellow, white",
+            single_color: "black",
+            single_color: "white",
+            two_color: "brown,yellow"
+          },
+          cat_age: { oldest: 10, middle1: 6, middle2: 5, youngest: 2 }
+        };
+        // 一部を取り出す
+        let {
+          cat_name: { cute, cool, passion }
+        } = cat_hcy_obj2;
+        console.log(cute); // mike
+        console.log(cool); // kuro
+        console.log(passion); // shiro
+        // 変数名前を使って一部を取り出す
+        let {
+          cat_age: {
+            oldest: cat_age1,
+            middle1: cat_age2,
+            middle2: cat_age3,
+            youngest: cat_age4
+          }
+        } = cat_hcy_obj2;
+        console.log(cat_age1); // 10
+        console.log(cat_age2); // 6
+        console.log(cat_age3); // 5
+        console.log(cat_age4); // 2
+        console.log("");
+
+        // □ 深い階層にある値を分割代入で取得
+        let data_obj = {
+          id_o: 1234567890,
+          name_o: "三毛",
+          screen_name: "mike",
+          location: "2丁目",
+          description: "山田さん家の猫",
+          url: "https://",
+          entities: {
+            url: {
+              urls: [
+                {
+                  url: "https://",
+                  expanded_url: "http://cat",
+                  display_url: "cat.jp"
+                }
+              ]
+            }
+          },
+          followers_count: 100,
+          friends_count: 100,
+          created_at: "Mon Oct 10 00:00:00 +0000 2019",
+          time_zone: "Japan",
+          statuses_count: 10,
+          lang: "ja",
+          status: {
+            created_at: "Wed Oct 09 12:00:00 +0000 2019",
+            id: 12345678912,
+            text: "@cat nyao",
+            entities: {
+              user_mentions: [
+                {
+                  screen_name: "cat2",
+                  name: "kuro",
+                  id: 7777777,
+                  id_str: "7777777"
+                }
+              ]
+            },
+            in_reply_to_status_id: 12345678903,
+            in_reply_to_user_id: 12345678903,
+            in_reply_to_screen_name: "kuro",
+            lang: "ja"
+          }
+        };
+        let { id_o: obj_id, name_o, entities } = data_obj;
+        console.log(data_obj);
+        console.log(obj_id, name_o, data_obj.id_o); // 1234567890 "三毛" 1234567890
+        console.log(entities); // { url: urls: {url: "https://", expanded_url: "http://cat", display_url: "cat.jp"} }
+
+        // ■ 応用編
+
+        // □ 分割代入の省略記述
+        // 従来
+        // let length = cat_hcy_ary.length;
+        let first = cat_hcy_ary[0];
+        // console.log("length: ", length); // length:  3
+        console.log("first: ", first); // first: ["mike", "kuro"]
+        // 分割代入使用
+        // let {length2} = cat_hcy_ary;
+        let [first2] = cat_hcy_ary;
+        // console.log("length2: ", length2); // length2:  undefined
+        console.log("first2: ", first2); // first2: ["mike", "kuro"]
+
+        // □ forEachやfor～ofでの使用
+        // forEach
+        cat_hcy_ary.forEach(([a, b]) => {
+          console.log(`${a}が要素1、${b}が要素2です`);
+        });
+        // mikeが要素1、kuroが要素2です
+        // queが要素1、shiroが要素2です
+        // tamaが要素1、daiが要素2です
+
+        // for of
+        for (let [a, b] of cat_hcy_ary) {
+          console.log(`${a}が要素1、${b}が要素2です`);
+        }
+        // mikeが要素1、kuroが要素2です
+        // queが要素1、shiroが要です
+        // tamaが要素1、daiが要素2です
+
+        // □ 変数の入れ替え
+        let aaa = "AA";
+        let bbb = "BB";
+        let ccc = "CC";
+        [aaa, bbb, ccc] = [ccc, bbb, aaa];
+        console.log(aaa); // CC
+        console.log(bbb); // BB
+        console.log(ccc); // AA
+
+        // □ 可変プロパティ名への対応
+        let nora_cats_obj = { onroad: "que", onvacant: "saba", onshop: "mie" };
+        let nora_type = "onshop";
+        let { [nora_type]: nora_name } = nora_cats_obj;
+        console.log(nora_name); // mie
+
+        // □ オブジェクトの分割代入の再代入時のエラー回避
+        let { nora_1, nora_2, nora_3 } = {
+          nora_1: "que",
+          nora_2: "saba",
+          nora_3: "mie"
+        };
+        console.log(nora_1); // que
+        // {nora_1,nora_2,nora_3} = {nora_1:"momo", nora_2:"rin", nora_3:"nana"}; // Uncaught SyntaxError: Unexpected token '='
+        ({ nora_1, nora_2, nora_3 } = {
+          nora_1: "momo",
+          nora_2: "rin",
+          nora_3: "nana"
+        }); // 式全体を()で囲う
+        console.log(nora_1); // momo
+
+        console.log("");
+
+      </script>
+      <p class="title">分割代入の色々な例</p>
+      <pre>
+      <code class="prettyprint">
+        // ■ 基本
+
+        // [配列]から値を取り出す
+        // （従来の書き方）
+        // 一個ずつ取り出す
+        let cats = ["mike", "kuro", "shiro", "sabi"];
+        let oldest = cats[0];
+        let black = cats[1];
+        let white = cats[2];
+
+        // 一部だけ取り出す
+        let fat = cats[3];
+
+        // 取得時に未定義の可能性がある場合の処理
+        let nora = cats[4] || "無し";
+
+        // 既存の配列を元に、新しい配列を作る
+        let cats_other = cats.slice(1);
+        console.log("cats_other: ", cats_other); // cats_other:  (3) ["kuro", "shiro", "sabi"]
+
+        // （分割代入での書き方）
+        // 一個ずつ取り出す
+        let cats2 = ["mike", "kuro", "shiro", "sabi"];
+        let [oldest2, black2, white2] = cats2;
+        console.log(oldest2); // mike
+        console.log(black2); // kuro
+        console.log(white2); // shiro
+
+        // 一部だけ取り出す
+        let [, , , fat2] = cats2;
+        console.log(fat2); // sabi
+
+        // 取得時に未定義の可能性有り
+        let [, , , , nora2 = "0匹"] = cats2;
+        console.log(nora2); // 0匹
+
+        // 既存から新規配列作成
+        let [mike, ...cats_other2] = cats2;
+        console.log(mike); // mike
+        console.log(cats_other2); // [kuro", "shiro", "sabi"]
+
+        // [オブジェクト]
+        // （分割代入での書き方）
+        let cats_obj = {
+          oldest3: "mike",
+          black3: "kuro",
+          white3: "shiro",
+          fats3: "sabi"
+        };
+        let { white3, oldest3, black3 } = cats_obj;
+        // let { white3: white3, oldest3: oldest3, black3: black3 } = cats_obj;の省略、順番は変わってもok
+        console.log(oldest3); // mike
+        console.log(black3); // kuro
+        console.log(white3); // shiro
+
+        // 一部だけ抜き出す
+        let { fats3 } = cats_obj;
+        console.log(fats3); // sabi
+
+        // 取得時に未定義の可能性有り
+        let { nora3 = "存在しない" } = cats_obj;
+        console.log("nora3: ", nora3); // nora3:  存在しない
+
+        // プロパティ名と変数名を変えたい場合
+        let { fats3: not_thin } = cats_obj;
+        console.log(not_thin); // sabi
+
+        // ■ 複数階層対象への分割代入
+
+        // □ 配列内配列
+        let cat_hcy_ary = [["mike", "kuro"], ["que", "shiro"], ["tama", "dai"]];
+        // 2つめの値の配列を取りたい
+        let [, [name1, name2]] = cat_hcy_ary;
+        console.log(name1); // que
+        console.log(name2); // shiro
+
+        // □ 配列内オブジェクト
+        let cat_hcy_ary2 = [
+          { name1: "mike", name2: "kuro" },
+          { name1: "que", name2: "sihro" },
+          { name1: "tama", name2: "dai" }
+        ];
+        // 3つめの値を値を取得
+        let [, , { name1: a_cat, name2: b_cat }] = cat_hcy_ary2;
+        console.log(a_cat); // tama
+        console.log(b_cat); // dai
+
+        // □ オブジェクト内配列
+        let cat_hcy_obj = {
+          cat_name: ["mike", "kuro", "shiro", "tora"],
+          cat_color: ["brown, yellow, white", "black", "white", "brown,yellow"],
+          cat_age: [10, 6, 5, 2]
+        };
+        // 一部を取り出す
+        let {
+          cat_name: [cat1]
+        } = cat_hcy_obj;
+        console.log(cat1); // mike
+        let {
+          cat_color: [, , , cat4]
+        } = cat_hcy_obj;
+        console.log(cat4); // brown,yellow
+
+        // □ オブジェクト内オブジェクト
+        let cat_hcy_obj2 = {
+          cat_name: { cute: "mike", cool: "kuro", passion: "shiro", nora: "tora" },
+          cat_color: {
+            three_color: "brown, yellow, white",
+            single_color: "black",
+            single_color: "white",
+            two_color: "brown,yellow"
+          },
+          cat_age: { oldest: 10, middle1: 6, middle2: 5, youngest: 2 }
+        };
+        // 一部を取り出す
+        let {
+          cat_name: { cute, cool, passion }
+        } = cat_hcy_obj2;
+        console.log(cute); // mike
+        console.log(cool); // kuro
+        console.log(passion); // shiro
+        // 変数名前を使って一部を取り出す
+        let {
+          cat_age: {
+            oldest: cat_age1,
+            middle1: cat_age2,
+            middle2: cat_age3,
+            youngest: cat_age4
+          }
+        } = cat_hcy_obj2;
+        console.log(cat_age1); // 10
+        console.log(cat_age2); // 6
+        console.log(cat_age3); // 5
+        console.log(cat_age4); // 2
+        console.log("");
+
+        // □ 深い階層にある値を分割代入で取得
+        let data_obj = {
+          id_o: 1234567890,
+          name_o: "三毛",
+          screen_name: "mike",
+          location: "2丁目",
+          description: "山田さん家の猫",
+          url: "https://",
+          entities: {
+            url: {
+              urls: [
+                {
+                  url: "https://",
+                  expanded_url: "http://cat",
+                  display_url: "cat.jp"
+                }
+              ]
+            }
+          },
+          followers_count: 100,
+          friends_count: 100,
+          created_at: "Mon Oct 10 00:00:00 +0000 2019",
+          time_zone: "Japan",
+          statuses_count: 10,
+          lang: "ja",
+          status: {
+            created_at: "Wed Oct 09 12:00:00 +0000 2019",
+            id: 12345678912,
+            text: "@cat nyao",
+            entities: {
+              user_mentions: [
+                {
+                  screen_name: "cat2",
+                  name: "kuro",
+                  id: 7777777,
+                  id_str: "7777777"
+                }
+              ]
+            },
+            in_reply_to_status_id: 12345678903,
+            in_reply_to_user_id: 12345678903,
+            in_reply_to_screen_name: "kuro",
+            lang: "ja"
+          }
+        };
+        let { id_o: obj_id, name_o, entities } = data_obj;
+        console.log(data_obj);
+        console.log(obj_id, name_o, data_obj.id_o); // 1234567890 "三毛" 1234567890
+        console.log(entities); // { url: urls: {url: "https://", expanded_url: "http://cat", display_url: "cat.jp"} }
+
+        // ■ 応用編
+
+        // □ 分割代入の省略記述
+        // 従来
+        // let length = cat_hcy_ary.length;
+        let first = cat_hcy_ary[0];
+        // console.log("length: ", length); // length:  3
+        console.log("first: ", first); // first: ["mike", "kuro"]
+        // 分割代入使用
+        // let {length2} = cat_hcy_ary;
+        let [first2] = cat_hcy_ary;
+        // console.log("length2: ", length2); // length2:  undefined
+        console.log("first2: ", first2); // first2: ["mike", "kuro"]
+
+        // □ forEachやfor～ofでの使用
+        // forEach
+        cat_hcy_ary.forEach(([a, b]) => {
+          console.log(`${a}が要素1、${b}が要素2です`);
+        });
+        // mikeが要素1、kuroが要素2です
+        // queが要素1、shiroが要素2です
+        // tamaが要素1、daiが要素2です
+
+        // for of
+        for (let [a, b] of cat_hcy_ary) {
+          console.log(`${a}が要素1、${b}が要素2です`);
+        }
+        // mikeが要素1、kuroが要素2です
+        // queが要素1、shiroが要です
+        // tamaが要素1、daiが要素2です
+
+        // □ 変数の入れ替え
+        let aaa = "AA";
+        let bbb = "BB";
+        let ccc = "CC";
+        [aaa, bbb, ccc] = [ccc, bbb, aaa];
+        console.log(aaa); // CC
+        console.log(bbb); // BB
+        console.log(ccc); // AA
+
+        // □ 可変プロパティ名への対応
+        let nora_cats_obj = { onroad: "que", onvacant: "saba", onshop: "mie" };
+        let nora_type = "onshop";
+        let { [nora_type]: nora_name } = nora_cats_obj;
+        console.log(nora_name); // mie
+
+        // □ オブジェクトの分割代入の再代入時のエラー回避
+        let { nora_1, nora_2, nora_3 } = {
+          nora_1: "que",
+          nora_2: "saba",
+          nora_3: "mie"
+        };
+        console.log(nora_1); // que
+        // {nora_1,nora_2,nora_3} = {nora_1:"momo", nora_2:"rin", nora_3:"nana"}; // Uncaught SyntaxError: Unexpected token '='
+        ({ nora_1, nora_2, nora_3 } = {
+          nora_1: "momo",
+          nora_2: "rin",
+          nora_3: "nana"
+        }); // 式全体を()で囲う
+        console.log(nora_1); // momo
+      </code>
+      </pre>
+      <!--/s-->
+
+      <!--s/-->
+      <script>
+        // デストラクタリング＝非構造化/構造の分解
+
+        // ■ Arrayの非構造化
+        let arr = ["Tarou", "Yamada"];
+
+        // 分割代入
+        let [firstName, surName] = arr; // surName = 苗字
+
+        console.log(firstName); // Tarou
+        console.log(surName); // Yamada
+
+        // 配列でない対象に分割代入
+        let [firstName2, surName2] = "Suzuki Jirou".split(" ");
+        console.log(firstName2); // Suzuki
+        console.log(surName2); // Jirou
+
+        // ”分割”は”破壊的”を意味しない ＝ 元の配列を破壊しない
+        // let [firstName, surName] = arr;
+        // ↑と同じ意味
+        // let firstName = arr[0];
+        // let surName = arr[1];
+
+        // 配列の不要な要素を無視する
+        let [, , , title] = ["title0", "title1", "title2", "title3"];
+        console.log(title); // title3
+
+        // 右辺はイテレーブルな対象に対して動作
+        let [a_1, b_1, c_1] = "abc"; // 文字列もOK
+        console.log(a_1); // a
+        console.log(b_1); // b
+        console.log(c_1); // c
+        let [one_, two_, three_] = new Set([1, 2, 3]);
+        console.log(one_); // 1
+        console.log(two_); // 2
+        console.log(three_); // 3
+
+        // 左辺は任意の（割り当て可能な）ものに代入可能
+        let user_ = {};
+        [user_.name, user_.surname] = "Yamada.Tarou".split(".");
+        console.log(user_.name); // Yamada
+        console.log(user_.surname); // Tarou
+
+        // .entries()を使ったループで分割代入
+        let user_2 = {
+          name: "Suzuki Jirou",
+          age: 30
+        };
+        for (let [key, value] of Object.entries(user_2)) {
+          console.log(`${key}: ${value}`);
+        }
+        // name: Suzuki Jirou
+        // age: 30
+
+        // Mapを使った分割代入、※Array.prototype.map()で無い方のMap
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Map
+        // Map
+        // Map オブジェクトは単純なキー/値写像（マップ）です。キーあるいは値として任意の値（オブジェクト、プリミティブ値とも）を使う事が出来ます
+        let user_3 = new Map();
+        user_3.set("name", "John");
+        user_3.set("age", 30);
+        for (let [key, value] of user_3.entries()) {
+          // ※Object.entries(obj)では無いので注意
+          console.log(`${key}: ${value}`);
+        }
+        // name: John
+        // age: 30
+
+        // rest parameters(...)を使った分割代入
+        let [name_1, name_2, ...rest_] = ["Sato", "Kato", "Yamada", "Suzuki", "Arai"];
+        console.log(name_1); // Sato
+        console.log(name_2); // Kato
+        console.log(rest_); // ["Yamada", "Suzuki", "Arai"]
+        console.log(rest_.length); // 3
+        console.log(rest_[0]); // Yamada
+        console.log(rest_[1]); // Suzuki
+        console.log(rest_[2]); // Arai
+
+        // default値
+        // 代入する変数の数よりも、配列の要素数の方が少ない場合、エラーにはならず、不足している値はundefinedになる
+        let [firstName3, surName3] = [];
+        console.log(firstName3); // undefined
+
+        // 値が無かった場合に未定義になるのではなく、何らかのdefault値を使いたい場合、予め=を使って指定しておく
+        let [firstName4 = "Guest", surName4 = "Anonymous"] = ["Tarou"];
+        console.log(firstName4); // Tarou
+        console.log(surName4); // Anonymous
+
+        // default値を使う場合、式や関数式で定義しておく事も出来る
+        // let [firstName5 = prompt("name?"), surName5 = prompt("surName?")] = ["Suzuki"];
+        // console.log(firstName5); // Suzuki
+        // console.log(surName5); // AAA ※実際にwindowダイアログで入力した値
+
+        // ■ オブジェクトの非構造化
+
+        // オブジェクトへの分割代入
+        // let { var1, var2 } = {var1: ..., var2:...};
+
+        // 単純な例
+        let options = {
+          title_: "Menu",
+          width_: 100,
+          height_: 200
+        };
+        let { title_, width_, height_ } = options;
+        console.log(title_); // Menu
+        console.log(width_); // 100
+        console.log(height_); // 200
+
+        // プロパティを別の名前の変数に代入したい場合
+        // { 元のプロパティ：ターゲットとなる変数 }
+        // で指定
+        let { width_: w, height_: h } = options;
+        console.log(title_); // Menu
+        console.log(w); // 100
+        console.log(h); // 200
+
+        // 値が無いプロパティには=を使用してdefault値を設定出来る（値以外に配列と同じ様に式も設定出来る、コロンを使って別変数名も指定可）
+        let options2 = {
+          title_2: "Menu"
+        };
+        let { width_2 = 50, height_2: h_2 = 90, title_2 } = options2;
+        console.log(width_2); // 50
+        console.log(h_2); // 90
+        console.log(title_2); // Menu
+
+        // Rest Operator(Parameter？)を使用した分割代入 ※Obejcetへの...はサポートしているブラウザに注意
+        let { title_: title_3, ...rest3 } = options;
+        console.log(title_3); // Menu
+        console.log(rest3); // {width_: 100, height_: 200}
+        console.log(rest3.width_); // 100
+
+        // 既存の変数を使う場合の注意（コードブロックを回避）
+        // {title_, width_, height_} = {title_: "New_Menu", width_: 800, heigth_: 600}; // err, Uncaught SyntaxError: Unexpected token '='
+        ({ title_, width_, height_ } = {
+          title_: "New_Menu",
+          width_: 800,
+          heigth_: 600
+        }); // ok
+
+        // ■ 入れ子構造の非構造化
+        // オブジェクト又は配列に他の配列やオブジェクトが含まれている構造の場合、より複雑な左辺のパターンを使用して、より深い部分を抽出出来る
+
+        let options4 = {
+          size4: {
+            width_4: 1920,
+            height_4: 1080
+          },
+          items_4: ["Cake", "Donuts"],
+          extra_4: true
+        };
+
+        // 分かり易くする為に複数行で分割代入
+        let {
+          size4: { width_4, height_4 },
+          items_4: [items_4_1, items_4_2],
+          title_4 = "Menu4"
+        } = options4;
+
+        // console.log(size4); // Uncaught ReferenceError: size4 is not defined
+        console.log(width_4); // 1920
+        console.log(height_4); // 1080
+        // console.log(items_4); // Uncaught ReferenceError: items_4 is not defined
+        console.log(items_4_1); // Cake
+        console.log(title_4); // Menu4
+
+        // 一部分だけを抽出したい場合
+        let { size4: s4 } = options4;
+        console.log(s4); // {width_4: 1920, height_4: 1080}
+
+        // ■ スマートな関数パラメーター
+        // 複数の引数をパラメーターで取る関数での分割代入
+
+        // 良くない書き方
+        // function setMenu(title="Undefined", width=200, height=100,items=[]){
+        //  //
+        // }
+
+        // 非構造化を使用した場合
+        // 引数のパラメーターをオブジェクトとして関数に渡す
+        let options5 = {
+          title: "My Title",
+          items: ["Item1", "Item2"]
+        };
+        // 関数側ではすぐに展開する
+        function setMenu({
+          title = "Undefined",
+          width = 200,
+          height = 100,
+          items = []
+        }) {
+          // 引数を{}で囲う
+          // title, items -> options5から取得
+          // width, height -> デフォルト値を適用
+          console.log(`${title} ${width} ${height}`); // My Title 200 100
+          console.log(items); // ["Item1", "Item2"]
+        }
+        setMenu(options5);
+
+        // 入れ子のオブジェクトやコロンのマッピングも使用可
+        function setMenu2({
+          title = "Undefined",
+          width: w = 200,
+          height: h = 100,
+          items: [item1, item2]
+        }) {
+          // title, items -> options5から取得
+          // width, height -> デフォルト値を適用
+          console.log(`${title} ${w} ${h}`); // My Title 200 100
+          console.log(item1); // Item1
+          console.log(item2); // Item2
+        }
+        setMenu2(options5);
+
+        // 構文は分割代入と同じ
+        // function({
+        //  // 渡されるプロパティ：内部で使用されるパラメーター名 = デフォルト値
+        //})
+
+        // 引数が無いとエラーになるので注意
+        // showMenu();
+
+        // 引数が0でデフォルト値を全部に適用する可能性がある場合は空オブジェクトを指定しておく
+        // showMenu({});
+
+        // 又は非構造化対象の全体のデフォルト値に{}を指定
+        // function setMenu2({title="Undefined", width:w =200, height:h =100,items:[item1, item2]} = {}) {
+
+        // ■ タスク
+        // □ 分割代入
+        let user_5 = {
+          name_5: "John",
+          years_5: 30
+        };
+        let { name_5, years_5: age, isAdmin = false } = user_5;
+        console.log(name_5); // John
+        console.log(age); // 30
+        console.log(isAdmin); // false
+
+        // □ 最大給与
+        let salaries = {
+          john: 100,
+          Pete: 300,
+          Mary: 250
+        };
+        let salaries2 = [];
+        for (let [k, v] of Object.entries(salaries)) {
+          console.log(`${k} : ${v}`);
+          // salaries2.push(`name: ${k} , price: ${v}`);
+          let temp = {};
+          temp.name = `${k}`;
+          temp.price = `${v}`;
+          salaries2.push(temp);
+        }
+        console.log(salaries2);
+        // ["name: john , price: 100", "name: Pete , price: 300", "name: Mary , price: 250"]
+        // [ {name: "Pete", price: "300"}, {name: "Mary", price: "250"}, {name: "john", price: "100"} ]
+
+        salaries2.sort(function(a, b) {
+          if (a.price < b.price) {
+            return 1;
+          }
+          if (a.price > b.price) {
+            return -1;
+          }
+          return 0;
+        });
+        console.log(salaries2);
+
+        console.log(salaries2[0].price); // 300
+        console.log("最大給与取得者は、", salaries2[0].name); // 最大給与取得者は、 Pete
+
+        // サイトの回答
+        function topSalary(salaries) {
+          let max = 0;
+          let maxName = null;
+          for (let [name, salary] of Object.entities(salaries)) {
+            if (max < salary) {
+              max = salary;
+              maxName = name;
+            }
+          }
+          return maxName;
+        }
         
-        // オブジェクト
-
-        // 深い階層
-
-        // 応用
-
-
-
+        console.log("");
       </script>
-      <p class="title">タイトル</p>
+      <p class="title">分割代入の説明・使用例</p>
       <pre>
       <code class="prettyprint">
+        // デストラクタリング＝非構造化/構造の分解
+
+        // ■ Arrayの非構造化
+        let arr = ["Tarou", "Yamada"];
+
+        // 分割代入
+        let [firstName, surName] = arr; // surName = 苗字
+
+        console.log(firstName); // Tarou
+        console.log(surName); // Yamada
+
+        // 配列でない対象に分割代入
+        let [firstName2, surName2] = "Suzuki Jirou".split(" ");
+        console.log(firstName2); // Suzuki
+        console.log(surName2); // Jirou
+
+        // ”分割”は”破壊的”を意味しない ＝ 元の配列を破壊しない
+        // let [firstName, surName] = arr;
+        // ↑と同じ意味
+        // let firstName = arr[0];
+        // let surName = arr[1];
+
+        // 配列の不要な要素を無視する
+        let [, , , title] = ["title0", "title1", "title2", "title3"];
+        console.log(title); // title3
+
+        // 右辺はイテレーブルな対象に対して動作
+        let [a_1, b_1, c_1] = "abc"; // 文字列もOK
+        console.log(a_1); // a
+        console.log(b_1); // b
+        console.log(c_1); // c
+        let [one_, two_, three_] = new Set([1, 2, 3]);
+        console.log(one_); // 1
+        console.log(two_); // 2
+        console.log(three_); // 3
+
+        // 左辺は任意の（割り当て可能な）ものに代入可能
+        let user_ = {};
+        [user_.name, user_.surname] = "Yamada.Tarou".split(".");
+        console.log(user_.name); // Yamada
+        console.log(user_.surname); // Tarou
+
+        // .entries()を使ったループで分割代入
+        let user_2 = {
+          name: "Suzuki Jirou",
+          age: 30
+        };
+        for (let [key, value] of Object.entries(user_2)) {
+          console.log(`${key}: ${value}`);
+        }
+        // name: Suzuki Jirou
+        // age: 30
+
+        // Mapを使った分割代入、※Array.prototype.map()で無い方のMap
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Map
+        // Map
+        // Map オブジェクトは単純なキー/値写像（マップ）です。キーあるいは値として任意の値（オブジェクト、プリミティブ値とも）を使う事が出来ます
+        let user_3 = new Map();
+        user_3.set("name", "John");
+        user_3.set("age", 30);
+        for (let [key, value] of user_3.entries()) {
+          // ※Object.entries(obj)では無いので注意
+          console.log(`${key}: ${value}`);
+        }
+        // name: John
+        // age: 30
+
+        // rest parameters(...)を使った分割代入
+        let [name_1, name_2, ...rest_] = ["Sato", "Kato", "Yamada", "Suzuki", "Arai"];
+        console.log(name_1); // Sato
+        console.log(name_2); // Kato
+        console.log(rest_); // ["Yamada", "Suzuki", "Arai"]
+        console.log(rest_.length); // 3
+        console.log(rest_[0]); // Yamada
+        console.log(rest_[1]); // Suzuki
+        console.log(rest_[2]); // Arai
+
+        // default値
+        // 代入する変数の数よりも、配列の要素数の方が少ない場合、エラーにはならず、不足している値はundefinedになる
+        let [firstName3, surName3] = [];
+        console.log(firstName3); // undefined
+
+        // 値が無かった場合に未定義になるのではなく、何らかのdefault値を使いたい場合、予め=を使って指定しておく
+        let [firstName4 = "Guest", surName4 = "Anonymous"] = ["Tarou"];
+        console.log(firstName4); // Tarou
+        console.log(surName4); // Anonymous
+
+        // default値を使う場合、式や関数式で定義しておく事も出来る
+        // let [firstName5 = prompt("name?"), surName5 = prompt("surName?")] = ["Suzuki"];
+        // console.log(firstName5); // Suzuki
+        // console.log(surName5); // AAA ※実際にwindowダイアログで入力した値
+
+        // ■ オブジェクトの非構造化
+
+        // オブジェクトへの分割代入
+        // let { var1, var2 } = {var1: ..., var2:...};
+
+        // 単純な例
+        let options = {
+          title_: "Menu",
+          width_: 100,
+          height_: 200
+        };
+        let { title_, width_, height_ } = options;
+        console.log(title_); // Menu
+        console.log(width_); // 100
+        console.log(height_); // 200
+
+        // プロパティを別の名前の変数に代入したい場合
+        // { 元のプロパティ：ターゲットとなる変数 }
+        // で指定
+        let { width_: w, height_: h } = options;
+        console.log(title_); // Menu
+        console.log(w); // 100
+        console.log(h); // 200
+
+        // 値が無いプロパティには=を使用してdefault値を設定出来る（値以外に配列と同じ様に式も設定出来る、コロンを使って別変数名も指定可）
+        let options2 = {
+          title_2: "Menu"
+        };
+        let { width_2 = 50, height_2: h_2 = 90, title_2 } = options2;
+        console.log(width_2); // 50
+        console.log(h_2); // 90
+        console.log(title_2); // Menu
+
+        // Rest Operator(Parameter？)を使用した分割代入 ※Obejcetへの...はサポートしているブラウザに注意
+        let { title_: title_3, ...rest3 } = options;
+        console.log(title_3); // Menu
+        console.log(rest3); // {width_: 100, height_: 200}
+        console.log(rest3.width_); // 100
+
+        // 既存の変数を使う場合の注意（コードブロックを回避）
+        // {title_, width_, height_} = {title_: "New_Menu", width_: 800, heigth_: 600}; // err, Uncaught SyntaxError: Unexpected token '='
+        ({ title_, width_, height_ } = {
+          title_: "New_Menu",
+          width_: 800,
+          heigth_: 600
+        }); // ok
+
+        // ■ 入れ子構造の非構造化
+        // オブジェクト又は配列に他の配列やオブジェクトが含まれている構造の場合、より複雑な左辺のパターンを使用して、より深い部分を抽出出来る
+
+        let options4 = {
+          size4: {
+            width_4: 1920,
+            height_4: 1080
+          },
+          items_4: ["Cake", "Donuts"],
+          extra_4: true
+        };
+
+        // 分かり易くする為に複数行で分割代入
+        let {
+          size4: { width_4, height_4 },
+          items_4: [items_4_1, items_4_2],
+          title_4 = "Menu4"
+        } = options4;
+
+        // console.log(size4); // Uncaught ReferenceError: size is not defined
+        console.log(width_4); // 1920
+        console.log(height_4); // 1080
+        // console.log(items_4); // Uncaught ReferenceError: items_4 is not defined
+        console.log(items_4_1); // Cake
+        console.log(title_4); // Menu4
+
+        // 一部分だけを抽出したい場合
+        let { size4: s4 } = options4;
+        console.log(s4); // {width_4: 1920, height_4: 1080}
+
+        // ■ スマートな関数パラメーター
+        // 複数の引数をパラメーターで取る関数での分割代入
+
+        // 良くない書き方
+        // function setMenu(title="Undefined", width=200, height=100,items=[]){
+        //  //
+        // }
+
+        // 非構造化を使用した場合
+        // 引数のパラメーターをオブジェクトとして関数に渡す
+        let options5 = {
+          title: "My Title",
+          items: ["Item1", "Item2"]
+        };
+        // 関数側ではすぐに展開する
+        function setMenu({
+          title = "Undefined",
+          width = 200,
+          height = 100,
+          items = []
+        }) {
+          // 引数を{}で囲う
+          // title, items -> options5から取得
+          // width, height -> デフォルト値を適用
+          console.log(`${title} ${width} ${height}`); // My Title 200 100
+          console.log(items); // ["Item1", "Item2"]
+        }
+        setMenu(options5);
+
+        // 入れ子のオブジェクトやコロンのマッピングも使用可
+        function setMenu2({
+          title = "Undefined",
+          width: w = 200,
+          height: h = 100,
+          items: [item1, item2]
+        }) {
+          // title, items -> options5から取得
+          // width, height -> デフォルト値を適用
+          console.log(`${title} ${w} ${h}`); // My Title 200 100
+          console.log(item1); // Item1
+          console.log(item2); // Item2
+        }
+        setMenu2(options5);
+
+        // 構文は分割代入と同じ
+        // function({
+        //  // 渡されるプロパティ：内部で使用されるパラメーター名 = デフォルト値
+        //})
+
+        // 引数が無いとエラーになるので注意
+        // showMenu();
+
+        // 引数が0でデフォルト値を全部に適用する可能性がある場合は空オブジェクトを指定しておく
+        // showMenu({});
+
+        // 又は非構造化対象の全体のデフォルト値に{}を指定
+        // function setMenu2({title="Undefined", width:w =200, height:h =100,items:[item1, item2]} = {}) {
+
+        // ■ タスク
+        // □ 分割代入
+        let user_5 = {
+          name_5: "John",
+          years_5: 30
+        };
+        let { name_5, years_5: age, isAdmin = false } = user_5;
+        console.log(name_5); // John
+        console.log(age); // 30
+        console.log(isAdmin); // false
+
+        // □ 最大給与
+        let salaries = {
+          john: 100,
+          Pete: 300,
+          Mary: 250
+        };
+        let salaries2 = [];
+        for (let [k, v] of Object.entries(salaries)) {
+          console.log(`${k} : ${v}`);
+          // salaries2.push(`name: ${k} , price: ${v}`);
+          let temp = {};
+          temp.name = `${k}`;
+          temp.price = `${v}`;
+          salaries2.push(temp);
+        }
+        console.log(salaries2);
+        // ["name: john , price: 100", "name: Pete , price: 300", "name: Mary , price: 250"]
+        // [ {name: "Pete", price: "300"}, {name: "Mary", price: "250"}, {name: "john", price: "100"} ]
+
+        salaries2.sort(function(a, b) {
+          if (a.price &lt; b.price) {
+            return 1;
+          }
+          if (a.price > b.price) {
+            return -1;
+          }
+          return 0;
+        });
+        console.log(salaries2);
+
+        console.log(salaries2[0].price); // 300
+        console.log("最大給与取得者は、", salaries2[0].name); // 最大給与取得者は、 Pete
+
+        // サイトの回答
+        function topSalary(salaries) {
+          let max = 0;
+          let maxName = null;
+          for (let [name, salary] of Object.entities(salaries)) {
+            if (max &lt; salary) {
+              max = salary;
+              maxName = name;
+            }
+          }
+          return maxName;
+        }
       </code>
       </pre>
       <!--/s-->
 
       <!--s/-->
       <script>
-      </script>
-      <p class="title">タイトル</p>
-      <pre>
-      <code class="prettyprint">
-      </code>
-      </pre>
-      <!--/s-->
+        // 分割代入の基本的な使い方
+        const data_o = { id_ore: 123, name_ore: "Mike" };
+        const { id_ore, age_ore } = data_o;
+        console.log(id_ore); // 123
+        console.log(age_ore); // undefined
 
-      <!--s/-->
-      <script>
+        // デフォルト値を指定
+        const data_ore2 = { id_ore2: 1234, name_ore2: undefined, fav_color: null };
+        const { name_ore2 = "John Do", age_ore2 = 0, fav_color } = data_ore2;
+        console.log(name_ore2, age_ore2, fav_color); // John Do 0 null ※nullは代入される
+
+        // 入れ子のオブジェクト
+        const data_ore3 = {
+          detail: {
+            phone: {
+              number: "0120-1234-5678",
+              type: "free dial"
+            }
+          }
+        };
+        const {
+          detail: {
+            phone: { number, type }
+          }
+        } = data_ore3;
+        // console.log(detail); // Uncaught ReferenceError: detail is not defined
+        console.log(number); // 0120-1234-5678
+        console.log(type); // free dial
+        // ★途中のプロパティの値は取得出来なくてOK（1つ前のサンプルのsize4等も取得出来なくてOK）
+
+        // APIで取得した名前を変えたい場合等に、プロパティ名を変えるのを使う（考え方）
+        const data_ore4 = { updated_at: "2019-10-10 20:55" };
+        const { updated_at: updatedAt } = data_ore4;
+        console.log(updatedAt); // 2019-10-10 20:55
+
+        // デフォルト値、入れ子、プロパティ名変更を全部同時に設定可
+        const data_ore5 = { detail2: { updated_at: "2019-10-10 21:02" } };
+        const {
+          detail2: { user_name_: userName = "Anonymous", updated_at: updateAt = null }
+        } = data_ore5;
+        console.log(userName); // Anonymous
+        console.log(updateAt); // 2019-10-10 21:02
+
+        // 関数の仮引数で使う
+        function sayHello({ message, delay = 1000 } = {}) {
+          setTimeout(() => {
+            console.log(message);
+          }, delay);
+        }
+        sayHello({ message: "Hello!!" });
+
+        // option的なオブジェクトでまとめて渡すのが一般的？
+        function doGreatStuff(options_ore = {}) {
+          doSomething(options_ore);
+          doAnything(options_ore);
+          doWhatever(options_ore);
+        }
+        function doSomething({ foo }) {}
+        function doAnything({ bar }) {}
+        function doWhatever({ aaa, bbb }) {}
+        console.log("");
       </script>
-      <p class="title">タイトル</p>
+      <p class="title">分割代入の使用例その3</p>
       <pre>
       <code class="prettyprint">
+        // 分割代入の基本的な使い方
+        const data_o = { id_ore: 123, name_ore: "Mike" };
+        const { id_ore, age_ore } = data_o;
+        console.log(id_ore); // 123
+        console.log(age_ore); // undefined
+
+        // デフォルト値を指定
+        const data_ore2 = { id_ore2: 1234, name_ore2: undefined, fav_color: null };
+        const { name_ore2 = "John Do", age_ore2 = 0, fav_color } = data_ore2;
+        console.log(name_ore2, age_ore2, fav_color); // John Do 0 null ※nullは代入される
+
+        // 入れ子のオブジェクト
+        const data_ore3 = {
+          detail: {
+            phone: {
+              number: "0120-1234-5678",
+              type: "free dial"
+            }
+          }
+        };
+        const {
+          detail: {
+            phone: { number, type }
+          }
+        } = data_ore3;
+        // console.log(detail); // Uncaught ReferenceError: detail is not defined
+        console.log(number); // 0120-1234-5678
+        console.log(type); // free dial
+        // ★途中のプロパティの値は取得出来なくてOK（1つ前のサンプルのsize4等も取得出来なくてOK）
+
+        // APIで取得した名前を変えたい場合等に、プロパティ名を変えるのを使う（考え方）
+        const data_ore4 = { updated_at: "2019-10-10 20:55" };
+        const { updated_at: updatedAt } = data_ore4;
+        console.log(updatedAt); // 2019-10-10 20:55
+
+        // デフォルト値、入れ子、プロパティ名変更を全部同時に設定可
+        const data_ore5 = { detail2: { updated_at: "2019-10-10 21:02" } };
+        const {
+          detail2: { user_name_: userName = "Anonymous", updated_at: updateAt = null }
+        } = data_ore5;
+        console.log(userName); // Anonymous
+        console.log(updateAt); // 2019-10-10 21:02
+
+        // 関数の仮引数で使う
+        function sayHello({ message, delay = 1000 } = {}) {
+          setTimeout(() => {
+            console.log(message);
+          }, delay);
+        }
+        sayHello({ message: "Hello!!" });
+
+        // option的なオブジェクトでまとめて渡すのが一般的？
+        function doGreatStuff(options_ore = {}) {
+          doSomething(options_ore);
+          doAnything(options_ore);
+          doWhatever(options_ore);
+        }
+        function doSomething({ foo }) {}
+        function doAnything({ bar }) {}
+        function doWhatever({ aaa, bbb }) {}
       </code>
       </pre>
       <!--/s-->
@@ -129,16 +1240,11 @@
 
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment" target="_blank">分割代入 - JavaScript | MDN</a></p>
 
-      <!--
-      ECMAScript 2015 の分割代入は奥が深かった
-      https://qiita.com/amamamaou/items/1ec21316b8bf05ba9c34
+      <p><a href="https://qiita.com/amamamaou/items/1ec21316b8bf05ba9c34" target="_blank">ECMAScript 2015 の分割代入は奥が深かった</a></p>
 
-      分割代入 - 現代の JavaScript チュートリアル
-      https://ja.javascript.info/destructuring-assignment
+      <p><a href="https://ja.javascript.info/destructuring-assignment" target="_blank">分割代入 - 現代の JavaScript チュートリアル</a></p>
 
-      分割代入、画期的な機能。（現代的JavaScriptおれおれアドベントカレンダー2017 – 14日目）
-      https://ginpen.com/2017/12/14/destructuring-object/
-      -->
+      <p><a href="https://ginpen.com/2017/12/14/destructuring-object/" target="_blank">分割代入、画期的な機能。（現代的JavaScriptおれおれアドベントカレンダー2017 – 14日目）</a></p>
 
       <!--<p><a href="" target="_blank"></a></p>-->
     
