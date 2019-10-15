@@ -7,307 +7,1190 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" type="text/css" href="css/main.css">
-    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
 
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 
   </head>
 
   <body>
+  
     <div id="conatiner">
       <h1>JavaScript Test Memo</h1>
       <h2>Promise</h2>
       
       <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
 
-      <!--s/-->
       <script>
-       // ■ PromiseとEventListenerの違い
-       // ・Promiseは1回しか成功/失敗出来ない（イベントリスナーは「ボタン押した」等、何回も取得出来る）
-       // ・Promiseが成功/失敗し、後から成功/失敗のコールバックを追加すると、その前にイベントが実行されていても（終わっていても？）、
-       //   正しいコールバックが呼び出される
+      // document.addEventListener('DOMContentLoaded', function() { // after DOM tree Build
+      window.addEventListener(
+        "load",
+        function() {
+          // after DOM tree Build + Img and JS loaded
 
-       // ■ Promiseの用語
-       // ・履行済み ... fulfilled、Promiseに関する操作が成功した、フールフィルド：満たされた
-       // ・棄却済み ... rejected、Promiseに関連する操作が失敗した、リジェクテッド：拒否された
-       // ・保留中 ... pending、まだ履行も棄却もされていない、ペンディング：保留中
-       // ・完了 ... 履行又は棄却された
+          // ■ PromiseとEventListenerの違い
+          // ・Promiseは1回しか成功/失敗出来ない（イベントリスナーは「ボタン押した」等、何回も取得出来る）
+          // ・Promiseが成功/失敗し、後から成功/失敗のコールバックを追加すると、その前にイベントが実行されていても（終わっていても？）、
+          //   正しいコールバックが呼び出される
 
-        let a = 2; // ↓のテスト確認用
+          // ■ Promiseの用語
+          // ・履行済み ... fulfilled、Promiseに関する操作が成功した、フールフィルド：満たされた
+          // ・棄却済み ... rejected、Promiseに関連する操作が失敗した、リジェクテッド：拒否された
+          // ・保留中 ... pending、まだ履行も棄却もされていない、ペンディング：保留中
+          // ・完了 ... 履行又は棄却された
 
-       // ■ Promiseの作成方法
-       let promise_1 = new Promise((resolve, reject) => {
-         // 何かをする、おそらく非同期、…
-         if (a === 2/*全てがうまくいった*/) {
-           resolve("ものが動いた！");
-         } else {
-           reject(Error("壊れた"));
-         }
-       });
-       //（１）Promiseコンストラクターはコールバックを1つの引数として取り、コールバックはresolveとrejectの2つのパラメーターを取る
-       //（２）コールバック内で何らかの処理（非同期処理等）を行い、全てが成功すると呼び出しが解決（resolve）され、そうでない場合は呼び出しは棄却（reject）される
-       // ※rejectはエラーをスローする事が慣例だが、必須ではない。
+          // let a = 2; // ↓のテスト確認用
 
-       // ■ Promiseの使用方法
-       promise_1.then((result) => {
-         console.log(result); // "ものが動いた！"
-       }, (err) => {
-         console.log(err); // Error: 壊れた
-       });
-       //（１）then()は2つの引数、成功時のコールバックと失敗時のコールバックを取る。両方とも省略可能。片方だけの記述も可。
+          // ■ Promiseの作成方法
+          /*
+            let promise_1 = new Promise((resolve, reject) => {
+              // 何かをする、おそらく非同期、…
+              if (a === 2) {
+                resolve("動いた！");
+              } else {
+                reject(Error("壊れた"));
+              }
+            });
+            */
+          //（１）Promiseコンストラクターはコールバックを1つの引数として取り、コールバックはresolveとrejectの2つのパラメーターを取る
+          //（２）コールバック内で何らかの処理（非同期処理等）を行い、全てが成功すると呼び出しが解決（resolve）され、そうでない場合は呼び出しは棄却（reject）される
+          // ※rejectはエラーをスローする事が慣例だが、必須ではない。
 
-       // ■ 複雑な非同期コードを簡単にする事例
-       
-       // promiseを適用する処理
-       // 1.読み込み中である事を示すスピナーを開始する
-       // 2.各章毎のタイトルとURLを示す記事のJSONを取得する
-       // 3.ページにタイトルを追加する
-       // 4.各章を取得する
-       // 5.ページに記事を追加する
-       // 6.スピナーを停止する
+          // ■ Promiseの使用方法
+          /*
+            promise_1.then((result) => {
+              console.log(result); // "動いた！"
+            }, (err) => {
+              console.log(err); // Error: 壊れた
+            });
+            */
+          //（１）then()は2つの引数、成功時のコールバックと失敗時のコールバックを取る。両方とも省略可能。片方だけの記述も可。
 
-       // ※途中で処理が失敗した時は、それをユーザーに通知する（スピナーは停止させる）
+          // ■ 複雑な非同期コードを簡単にする事例
 
-       // ■ XMLHttpRequestのPromise化
-       // ※古いAPIは、後方互換性を残したまま更新出来るなら、Promiseを使用して更新する（考え方）
-       function get(url) {
-         
-         // 新しいPromiseを返す
-         return new Promise((resolve, reject) => {
+          // promiseを適用する処理
+          // 1.読み込み中である事を示すスピナーを開始する
+          // 2.各章毎のタイトルとURLを示す記事のJSONを取得する
+          // 3.ページにタイトルを追加する
+          // 4.各章を取得する
+          // 5.ページに記事を追加する
+          // 6.スピナーを停止する
 
-           // 普通にXHRを使う
-           let req = new XMLHttpRequest();
-           req.open("GET", url);
+          // ※途中で処理が失敗した時は、それをユーザーに通知する（スピナーは停止させる）
 
-           req.onload = function() {
-             
-             // これは404等でも呼び出されるので、ステータスをチェックする必要がある
-             if (req.status === 200) {
-               // レスポンステキストでpromiseを解決する
-               resolve(req.response);
-             }
-             else {
-               // それ以外の場合は、ステータステキストで拒否する
-               // これは、意味のあるエラーになることを願っている
-               reject(Error(req.statusText));
-             }
-           };
+          // ■ XMLHttpRequestのPromise化
+          // ※古いAPIは、後方互換性を残したまま更新出来るなら、Promiseを使用して更新する（考え方）
+          /*
+            function get(url) {
+              
+              // 新しいPromiseを返す
+              return new Promise((resolve, reject) => {
 
-           // ネットワークエラーをハンドルする
-           req.onerror = function() {
-             reject(Error("Network Error"));
-           };
+                // 普通にXHRを使う
+                let req = new XMLHttpRequest();
+                req.open("GET", url);
 
-           // リクエストを送信
-           req.send();
+                req.onload = function() {
+                  
+                  // これは404等でも呼び出されるので、ステータスをチェックする必要がある
+                  if (req.status === 200) {
+                    // レスポンステキストでpromiseを解決する
+                    resolve(req.response);
+                  }
+                  else {
+                    // それ以外の場合は、ステータステキストで拒否する
+                    // これは、意味のあるエラーになることを願っている
+                    reject(Error(req.statusText));
+                  }
+                };
 
-         });
+                // ネットワークエラーをハンドルする
+                req.onerror = function() {
+                  reject(Error("Network Error"));
+                };
 
-       }
-      
-       // 実際に↑を呼び出す
-       /*
-       get("json/story.json").then((response) => { // 第一引数
-         console.log("Success!", response) // Success!
-         // {
-         //   "heading": "<h1>A story about something</h1>",
-         //   "chapterUrls": ["chapter-1.json", "chapter-2.json", "chapter-3.json", "chapter-4.json",  "chapter-5.json"]
-         // }
-       }, (error) => { // 第二引数
-         console.error("Filed!", error);
-       });
-       */
+                // リクエストを送信
+                req.send();
 
-       // ■  then()の連鎖
-       // 複数のthen()を連鎖させて、値を変換したり、追加の非同期処理を順番に実行出来る
+              });
 
-       // 連鎖の例
-       // 値の変換、単純に新しい値を返す事で、値を変換する事が出来る
-       /*
-       let promise_2 = new Promise((resolve, reject) => {
-         resolve(1);
-       });
+            }*/
 
-       promise_2.then((val) => {
-         console.log(val); // 1
-         return val + 2; // ★連鎖させる場合はreturnで値（結果）を返す（＝次のthen()の引数として渡す）
-       })
-       .then((val) => {
-         console.log(val); // 3
-       });
-       */
+          // 実際に↑を呼び出す
+          /*
+            get("json/story.json").then((response) => { // 第一引数
+              console.log("Success!", response) // Success!
+              // {
+              //   "heading": "<h1>A story about something</h1>",
+              //   "chapterUrls": ["chapter-1.json", "chapter-2.json", "chapter-3.json", "chapter-4.json",  "chapter-5.json"]
+              // }
+            }, (error) => { // 第二引数
+              console.error("Filed!", error);
+            });
+            */
 
-       // 実用的な例としてstory.jsonを取得するサンプルを修正、※JSONのresponseTypeを使用する
-       // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType
-       /*
-         get("json/story.json").then((response) => { // 第一引数
-          return JSON.parse(response);
-       }).then((response) => {
-          console.log("Yey! JSON! ", response); // Yey! JSON!  Object: {heading: "<h1>A story about something</h1>", chapterUrls: Array(5)}
-       }), 
-       (error) => { // 第二引数
-         console.error("Filed!", error);
-       };
-       */
+          // ■  then()の連鎖
+          // 複数のthen()を連鎖させて、値を変換したり、追加の非同期処理を順番に実行出来る
 
-       // ↑さらにJSON.parseを短くショートカット（JSON.parse()は単一の引数を取り、変換された値を返す為）
-       /*
-       get("json/story.json")
-       .then(JSON.parse)
-       .then((response) => {
-          console.log("Yey! JSON! ", response); // Yey! JSON!  Object: {heading: "<h1>A story about something</h1>", chapterUrls: Array(5)}
-       }), 
-       (error) => { // 第二引数
-         console.error("Filed!", error);
-       };
-       */
+          // 連鎖の例
+          // 値の変換、単純に新しい値を返す事で、値を変換する事が出来る
+          /*
+            let promise_2 = new Promise((resolve, reject) => {
+              resolve(1);
+            });
 
-       // JSONの取得自体を短く書ける
-       function getJSON(url) {
-         return get(url).then(JSON.parse);
-       }
-       /*
-       let aa = getJSON("json/story.json");
-       console.log("aa: ", aa); // aa:  Promise {<pending>}
-       */
+            promise_2.then((val) => {
+              console.log(val); // 1
+              return val + 2; // ★連鎖させる場合はreturnで値（結果）を返す（＝次のthen()の引数として渡す）
+            })
+            .then((val) => {
+              console.log(val); // 3
+            });
+            */
 
-      // ■ 非同期処理のキューへの格納
-      // then()を連鎖させて、非同期処理を連続して実行する事も出来る
+          // 実用的な例としてstory.jsonを取得するサンプルを修正、※JSONのresponseTypeを使用する
+          // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType
+          /*
+              get("json/story.json").then((response) => { // 第一引数
+                return JSON.parse(response);
+            }).then((response) => {
+                console.log("Yey! JSON! ", response); // Yey! JSON!  Object: {heading: "<h1>A story about something</h1>", chapterUrls: Array(5)}
+            }), 
+            (error) => { // 第二引数
+              console.error("Filed!", error);
+            };
+            */
 
-      // then()コールバックから何らかの値が返れされると、その値を指定して次のthen()が呼び出される
-      // 但し、promiseに似たものが返された時は、次のthen()はその時点で待機し、そのPromiseが完了（成功/失敗）した場合のみ呼び出される
-      // ↓例
-      /*
-      getJSON("json/story.json").then((story) => {
-        return getJSON("json/" + story.chapterUrls[0]);
-      }).then((chapter1) => {
-        console.log("Got chapter 1!", chapter1);
-      });
-      */
+          // ↑さらにJSON.parseを短くショートカット（JSON.parse()は単一の引数を取り、変換された値を返す為）
+          /*
+            get("json/story.json")
+            .then(JSON.parse)
+            .then((response) => {
+                console.log("Yey! JSON! ", response); // Yey! JSON!  Object: {heading: "<h1>A story about something</h1>", chapterUrls: Array(5)}
+            }), 
+            (error) => { // 第二引数
+              console.error("Filed!", error);
+            };
+            */
 
-      // ↑story.json内の一連のjson（chapter-1.json～chpter-5.json）の1つ目をリクエストしている。
-      // XHR finished loading: GET "http://localhost:8000/json/story.json".
-      // Got chapter 1! {chapter: 1, html: "<p>Chapter 1 text: Cras sollicitudin orci ac velit…bibendum, cursus lectus sed, ultricies risus.</p>"}
-      // XHR finished loading: GET "http://localhost:8000/json/chapter-1.json".
+          // JSONの取得自体を短く書ける
+          /*
+            function getJSON(url) {
+              return get(url).then(JSON.parse);
+            }
+            */
 
-      // ↓章を取得するためのメソッドのショートカット
-      let storyPromise;
-      function getChapter(i) {
-        storyPromise = storyPromise || getJSON("json/story.json"); // storyPromiseがあればそれを使用、無ければstory.jsonを取得
-        return storyPromise.then((story) => {
-          return getJSON("json/" + story.chapterUrls[i]);
-        });
-      };
+          /*
+            let aa = getJSON("json/story.json");
+            console.log("aa: ", aa); // aa:  Promise {<pending>}
+            */
 
-      // それを使用するのは簡単です：
-      getChapter(0).then((chapter) => {
-        console.log(chapter); // {chapter: 1, html: "<p>Chapter 1 text: Cras sollicitudin orci ac velit…bibendum, cursus lectus sed, ultricies risus.</p>"}
-        return getChapter(1);
-      }).then((chapter) => {
-        console.log(chapter); // {chapter: 2, html: "<p>Chapter 2 text: Curabitur laoreet cursus lectus… fringilla, sodales risus in, euismod libero.</p>"}
-      })
+          // ■ 非同期処理のキューへの格納
+          // then()を連鎖させて、非同期処理を連続して実行する事も出来る
 
-      // ■ エラー処理
-      // これまで見てきた通り、then()は成功と失敗（履行と棄却）の2つの引数を取る
-       get("json/story.json").then((response) => { // 第一引数
-         console.log("Success!", response)
-       }, (error) => { // 第二引数
-         console.error("Filed!", error);
-       });
+          // then()コールバックから何らかの値が返れされると、その値を指定して次のthen()が呼び出される
+          // 但し、promiseに似たものが返された時は、次のthen()はその時点で待機し、そのPromiseが完了（成功/失敗）した場合のみ呼び出される
+          // ↓例
+          /*
+            getJSON("json/story.json").then((story) => {
+              return getJSON("json/" + story.chapterUrls[0]);
+            }).then((chapter1) => {
+              console.log("Got chapter 1!", chapter1);
+            });
+            */
 
-       // これ以外の方法で、catch()を使用する事も出来る
-       get("json/story.json").then((response) => {
-         console.log("Success!", response)
-       }).catch((error) => {
-         console.error("Filed!", error);
-       });
+          // ↑story.json内の一連のjson（chapter-1.json～chpter-5.json）の1つ目をリクエストしている。
+          // XHR finished loading: GET "http://localhost:8000/json/story.json".
+          // Got chapter 1! {chapter: 1, html: "<p>Chapter 1 text: Cras sollicitudin orci ac velit…bibendum, cursus lectus sed, ultricies risus.</p>"}
+          // XHR finished loading: GET "http://localhost:8000/json/chapter-1.json".
 
-       // 但し、↑のcatch()を使ったコードは、↑↑と同じではなく、↓に等しい
-       get("json/story.json").then((response) => {
-         console.log("Success!", response)
-       }).then(undefined, (error) => {
-         console.error("Filed!", error);
-       });
+          // ↓章を取得するためのメソッドのショートカット
+          /*
+            let storyPromise;
+            function getChapter(i) {
+              storyPromise = storyPromise || getJSON("json/story.json"); // storyPromiseがあればそれを使用、無ければstory.jsonを取得
+              return storyPromise.then((story) => {
+                return getJSON("json/" + story.chapterUrls[i]);
+              });
+            };
 
-       // 違いとして、処理はPromiseで棄却されると、棄却のコールバックを持つ次のthen()又は同等であるcatch()までスキップされる。
-       // .then(func1, func2)と指定すると、fun1又はfunc2のどちらかが呼び出される
-       // .then(func1).catch(func2)と書くと、func1が棄却された場合には両方（func2も）呼び出される
-       // ※これは、これらが連鎖はしているが個別のstepである為
+            // それを使用するのは簡単です：
+            getChapter(0).then((chapter) => {
+              console.log(chapter); // {chapter: 1, html: "<p>Chapter 1 text: Cras sollicitudin orci ac velit…bibendum, cursus lectus sed, ultricies risus.</p>"}
+              return getChapter(1);
+            }).then((chapter) => {
+              console.log(chapter); // {chapter: 2, html: "<p>Chapter 2 text: Curabitur laoreet cursus lectus… fringilla, sodales risus in, euismod libero.</p>"}
+            })
 
-      // try～catch構文に似て、try内で発生したエラーは即catch()ブロックに入る
-      /*
-      asyncThing1().then(() => {
-        return asyncThing2();
-      }).then(() => {
-        return asyncThing3();
-      }).catch((err) => {
-        return asyncRecovery1();
-      }).then(() => {
-        return asyncThing4();
-      }, (err) => {
-        return asyncRecovery2()
-      }).catch((err) => {
-        console.log("心配しないで");
-      }).then(() => {
-        console.log("全部終わった！");
-      });
-      */
+            // ■ エラー処理
+            // これまで見てきた通り、then()は成功と失敗（履行と棄却）の2つの引数を取る
+            get("json/story.json").then((response) => { // 第一引数
+              console.log("Success!", response)
+            }, (error) => { // 第二引数
+              console.error("Filed!", error);
+            });
 
-      // ■ JavaScriptの例外とPromise
+            // これ以外の方法で、catch()を使用する事も出来る
+            get("json/story.json").then((response) => {
+              console.log("Success!", response)
+            }).catch((error) => {
+              console.error("Filed!", error);
+            });
 
-      // 棄却は、Promiseが明示的に棄却された場合に発生するが、コンストラクタのコールバックでエラーがスルーされた場合にも暗黙的に発生する
-      /*
-      let jsonPromise = new Promise((resolve, reject) => {
-        // JSON.parseをフィードするとエラーがスローされます
-        // 無効なJSONなので、これは暗黙的に拒否します：
-        resolve(JSON.parse("This isn't JSON"))
-      });
-      jsonPromise.then((data) => {
-        // これは決して起こりません：
-        console.log("It worked!", data)
-      }).catch((err) => {
-        // 代わりに、これが起こります：
-        console.log("It failed!", err); // It failed! SyntaxError: Unexpected token T in JSON at position 0
-      });
-      */
+            // 但し、↑のcatch()を使ったコードは、↑↑と同じではなく、↓に等しい
+            get("json/story.json").then((response) => {
+              console.log("Success!", response)
+            }).then(undefined, (error) => {
+              console.error("Filed!", error);
+            });
+            */
 
-      // これはPromiseコンストラクタコールバック内で全てのPromise関連処理を行うと、エラーが自動的に取得され、棄却される為、便利である事を意味する
-      // then()コールバックでスローされるエラーについても同じ事が言える
+          // 違いとして、処理はPromiseで棄却されると、棄却のコールバックを持つ次のthen()又は同等であるcatch()までスキップされる。
+          // .then(func1, func2)と指定すると、fun1又はfunc2のどちらかが呼び出される
+          // .then(func1).catch(func2)と書くと、func1が棄却された場合には両方（func2も）呼び出される
+          // ※これは、これらが連鎖はしているが個別のstepである為
 
-      get("/").then(JSON.parse).then(() => {
-          // これは決して起こりません。「/」はJSONではなくHTMLページです
-          // なので、JSON.parse()がエラーをスローします
-          console.log("It worked!", data);
-      }).catch((err) => {
-          // 代わりに、これが起こります：
-          console.log("It failed!", err); // It failed! SyntaxError: Unexpected token < in JSON at position 0 at parse (<anonymous>)
-      });
+          // try～catch構文に似て、try内で発生したエラーは即catch()ブロックに入る
+          /*
+            asyncThing1().then(() => {
+              return asyncThing2();
+            }).then(() => {
+              return asyncThing3();
+            }).catch((err) => {
+              return asyncRecovery1();
+            }).then(() => {
+              return asyncThing4();
+            }, (err) => {
+              return asyncRecovery2()
+            }).catch((err) => {
+              console.log("心配しないで");
+            }).then(() => {
+              console.log("全部終わった！");
+            });
+            */
 
-      // ■ エラー処理の実例
-      // 記事と賞のサンプルの例では、catch()を使用してユーザーにエラーを表示出来る
-      getJSON("json/story.json").then((story) => {
-        return getJSON("json", story.chapterUrls[0]);
-      }).then((chapter1) => {
-        addHtmlPage(chapter1.html);
-      }).catch(() =>  {
-        addTextToPage("Failed to show chapter"); // Uncaught (in promise) ReferenceError: addTextToPage is not defined
-      }).then(() => {
-        document.querySelector(".spinner").style.display = "none";
-      });
+          // ■ JavaScriptの例外とPromise
 
-      // story.chapterUrls[0]の取得に失敗した場合（http500やユーザーがオフラインだった場合等）、それ以降の全て（の成功のコールバックが）がスキップされる
-      // 結果として、"Failed to show chapter"がページに表示される
-      // try～catchの後と同様に、エラーが取得され、それ以降のコードが実行されるため、スピナーは常に非表示になる（これは期待される挙動なのでOK）
-      
-      // ↑コードのtry～cacth仕様版
-      try {
+          // 棄却は、Promiseが明示的に棄却された場合に発生するが、コンストラクタのコールバックでエラーがスルーされた場合にも暗黙的に発生する
+          /*
+            let jsonPromise = new Promise((resolve, reject) => {
+              // JSON.parseをフィードするとエラーがスローされます
+              // 無効なJSONなので、これは暗黙的に拒否します：
+              resolve(JSON.parse("This isn't JSON"))
+            });
+            jsonPromise.then((data) => {
+              // これは決して起こりません：
+              console.log("It worked!", data)
+            }).catch((err) => {
+              // 代わりに、これが起こります：
+              console.log("It failed!", err); // It failed! SyntaxError: Unexpected token T in JSON at position 0
+            });
+            */
 
-      }
-      catch (e) {
-        addTextToPage("Failed to show chapter")
-      }
-      document.querySelector(".spinner").style.display = "none";
+          // これはPromiseコンストラクタコールバック内で全てのPromise関連処理を行うと、エラーが自動的に取得され、棄却される為、便利である事を意味する
+          // then()コールバックでスローされるエラーについても同じ事が言える
 
+          /*
+            get("/").then(JSON.parse).then(() => {
+                // これは決して起こりません。「/」はJSONではなくHTMLページです
+                // なので、JSON.parse()がエラーをスローします
+                console.log("It worked!", data);
+            }).catch((err) => {
+                // 代わりに、これが起こります：
+                console.log("It failed!", err); // It failed! SyntaxError: Unexpected token < in JSON at position 0 at parse (<anonymous>)
+            });
+            */
+
+          // ■ エラー処理の実例
+          // 記事と賞のサンプルの例では、catch()を使用してユーザーにエラーを表示出来る
+          /*
+            getJSON("json/story.json").then((story) => {
+              return getJSON("json", story.chapterUrls[0]);
+            }).then((chapter1) => {
+              addHtmlPage(chapter1.html);
+            }).catch(() =>  {
+              addTextToPage("Failed to show chapter"); // Uncaught (in promise) ReferenceError: addTextToPage is not defined
+            }).then(() => {
+              document.querySelector(".spinner").style.display = "none";
+            });
+            */
+
+          // story.chapterUrls[0]の取得に失敗した場合（http500やユーザーがオフラインだった場合等）、それ以降の全て（の成功のコールバックが）がスキップされる
+          // 結果として、"Failed to show chapter"がページに表示される
+          // try～catchの後と同様に、エラーが取得され、それ以降のコードが実行されるため、スピナーは常に非表示になる（これは期待される挙動なのでOK）
+
+          // ↑コードのtry～cacth仕様版
+          /*
+            try {
+              let story = getJSONSync("json/story.json");
+              let chapter1 = getJSONSync(`story/${chapterUrls[0]}`);
+              addHtmlPage(chapter1.html);
+            }
+            catch (e) {
+              addTextToPage("Failed to show chapter")
+            }
+            document.querySelector(".spinner").style.display = "none";
+            */
+
+          // ↑のエラーを回復せずに、単にログに記録する為だけにcatch()を使用したver.
+          /*
+            function getJSON(url) {
+              return get(url).then(JSON.parse).catch((err) => {
+                console.log("getJSON failed for ", url, err);
+                throw err;
+              })
+            };
+            */
+
+          // ↑1つの章、↓全ての章を取得する例
+          // ■ 並行処理とシーケンス処理：両方を活用する
+
+          // 非同期処理を記述するのが大変な場合、まずは同期でコードを記述してみる
+          /*
+            try {
+              let story = getJsonSync("json/story.json");
+              addHtmlToPage(story.heading);
+              console.log(story.heading);
+              story.chapterUrls.forEach((chapterUrl) => {
+                let chapter = getJsonSync(`json/${chapterUrl}`);
+                addHtmlToPage(chapter.html);
+              });
+              addTextToPage("All done");
+            }
+            catch(err) {
+              addTextToPage("Argh, broken: " + err.message);
+            }
+            document.querySelector(".spinner").style.display = "none";
+            */
+
+          // ↑のコードは動作するが時間が掛かる（非同期でない為）、スピナーも回転せずに止まったまま
+
+          // ↓ので、then()を使って1つずつ処理されるようにする
+          /*
+            getJSON("json/story.json")
+            .then((story) => {
+              
+              addHtmlToPage(story.heading);
+
+              // TODO: for each url in story.chapterUrls, fetch &amp; display
+              story.chapterUrls.forEach((chapterUrl) => {
+                // Fetch chapter
+                getJSON(`json/${chapterUrl}`).then((chapter) => {
+                  // and add it to the page
+                  addHtmlToPage(chapter.html);
+                });
+              })
+            })
+            .then(() => {
+              // And we're all done!
+              addTextToPage("All Done")
+            })
+            .catch((err) => {
+              // Catch any error that happened along the way
+              addTextToPage("Argh, broken: " + err.message);
+            })
+            .then(() => {
+              document.querySelector(".spinner").style.display = "none";
+            })
+            */
+
+          // ↑で1つずつ実行されるが、forEachは非同期処理に対応してない為、任意の順番で読み込まれて表示される、※実実行例：４→５→３→２→１
+
+          // ■ シーケンスの作成
+          // ↑で任意の順番でなく、昇順にするために、chapterUrls配列を.then()を使用してPromiseのシーケンスに変換する
+
+          // 常にresolveのPromiseから始めます
+          /*
+            let sequence = Promise.resolve(); // 渡された任意の値に解決されるPromiseを作成する
+
+            // チャプターURLをループします
+            let story = getJsonSync('json/story.json');
+            story.chapterUrls.forEach((chapterUrl) => {
+              // これらのアクションをシーケンスの最後に追加します
+              sequence = sequence.then(() => {
+                return getJSON(`json/${chapterUrl}`)
+              })
+              .then((chapter) => {
+                addHtmlToPage(chapter.html);
+              })
+              .then(() => {
+                // And we're all done!
+                addTextToPage("All Done")
+              })
+              .catch((err) => {
+                // Catch any error that happened along the way
+                addTextToPage("Argh, broken: " + err.message);
+              })
+              .then(() => {
+                document.querySelector(".spinner").style.display = "none";
+              })
+            });
+            */
+
+          // ↑の処理をreduce()を使って整理した場合
+          // 章のURLをループします
+          /*
+            getJson('json/story.json').then((story) => {
+              addHtmlToPage(story.heading);
+
+            return story.chapterUrls.reduce((sequence, chapterUrl) => {
+              // これらのアクションをシーケンスの最後に追加します
+              return sequence.then(() => {
+                return getJSON(`json/${chapterUrl}`)
+              })
+              .then((chapter) => {
+                addHtmlToPage(chapter.html);
+              });
+            }, Promise.resolve()); // reduce end.
+            }).then(() => {
+                // And we're all done!
+                addTextToPage("All Done")
+              })
+              .catch((err) => {
+                // Catch any error that happened along the way
+                addTextToPage("Argh, broken: " + err.message);
+              })
+              .then(() => {
+                document.querySelector(".spinner").style.display = "none";
+              })
+            */
+          // ↑まとめてではなく、1個ずつ読み込まれているの分かる（非同期で読み込まれている）
+
+          // ↑1つずつダウンロードしているので、少し遅い所がある（改善する）
+          // Prosise.all()を使って、全ての読み込みが完了したら履行されるPromiseを作成する
+          /*
+            getJson('json/story2.json').then((story) => {
+              addHtmlToPage(story.heading);
+              
+              // Promiseの配列を取り、それらすべてを待ちます
+              return Promise.all(
+
+                // チャプターURLの配列をマッピングします
+                // 章のJSON Promiseの配列
+                story.chapterUrls.map(getJson) // getJSONに引数を渡さないのでパスを後から変えられない
+              );
+            })
+            .then((chapters) => {
+              chapters.forEach(function(chapter) {
+                addHtmlToPage(chapter.html);
+              });
+                addTextToPage("All Done")
+              })
+              .catch((err) => {
+                // Catch any error that happened along the way
+                addTextToPage("Argh, broken: " + err.message);
+              })
+              .then(() => {
+                document.querySelector(".spinner").style.display = "none";
+              })
+              */
+
+          // ↑でも速くなったが、より速くするために、全部を待って表示でなく、1章が表示されたら2章を表示→2章が表示されたら3章を表示するように変更
+
+          getJson("json/story2.json")
+            .then(story => {
+              addHtmlToPage(story.heading); // これにより、すべてが確実に並行してダウンロードされます。
+
+              // チャプターURLの配列をマッピングします
+              // json promiseの章の配列。
+              return story.chapterUrls
+                .map(getJson) // getJSONに引数を渡さないのでパスを後から変えられない
+                .reduce((sequence, chapterPromise) => {
+                  // reduceを使用してプロミスを連結し、
+                  // 各章のページにコンテンツを追加します
+
+                  return sequence
+                    .then(() => {
+                      // これまでのシーケンスのすべてを待機し、
+                      //その後、この章が届くまで待ちます。
+
+                      return chapterPromise;
+                    })
+                    .then(chapter => {
+                      addHtmlToPage(chapter.html);
+                    });
+                }, Promise.resolve());
+            })
+            .then(() => {
+              addTextToPage("All Done");
+            })
+            .catch(err => {
+              // Catch any error that happened along the way
+              addTextToPage("Argh, broken: " + err.message);
+            })
+            .then(() => {
+              document.querySelector(".spinner").style.display = "none";
+            });
+
+          // ■ おまけ：PromiseとGenerator
+          // ES6ではGeneratorも導入され、これを利用すると、「値を返す」等の特定の時点で関数を終了し、
+          // 後で同じ状態から再開出来る
+
+          // 例
+          /*
+          function *addGenerator() {
+            let i = 0;
+            while(true) {
+              i += yield i;
+            }
+          }
+
+          // ↑関数の前にスターがある事により、関数がGeneratorになる
+          // ここではyieldキーワードが値を返し、再開する時点になる
+          // 実際は↓のように使う
+          let addr = addGenerator();
+          console.log(addr.next().value); // 0
+          console.log(addr.next(5).value); // 5
+          console.log(addr.next(5).value); // 10
+          console.log(addr.next(5).value); // 15
+          console.log(addr.next(50).value); // 65
+
+          // ↑を使って非同期なコードが書ける
+          // yieldを使用して、Promiseが完了するまで待機するヘルパー関数↓
+          function spawn(generatorFunc) {
+            function continuer(verb, arg) {
+              let result;
+              try {
+                result = generator[verb](arg);
+              } catch (err) {
+                return Promise.reject(err);
+              }
+              if (result.done) {
+                return Promise.resolve(result, value).then(onFulfilled, onRejected);
+              }
+            }
+            let generator = generatorFunc();
+            let onFulfilled = continuer.bind(continuer, "next");
+            let onRejected = continuer.bind(continuer, "throw");
+            return onFulfilled();
+          }
+          */
+
+          // ↑はQを参考（https://github.com/kriskowal/q/blob/db9220d714b16b96a05e9a037fa44ce581715e41/q.js#L500）
+
+          // ↑のヘルパー関数を利用して、章の読み込みスクリプトを最適化する
+          /*
+          spawn(function *() {
+            "use strict";
+            try {
+
+              // 'yield'は効果的に非同期待機を行います。
+              // Promiseの結果を返す
+              let story = yield getJson("json/story2.json");
+              addHtmlToPage(story.heading);
+
+              // チャプターURLの配列をマッピングします
+              // json promiseの章の配列。
+              // これにより、すべてが確実に並行してダウンロードされます。 
+              let chapterPromises = story.chapterUrls.map(getJson);
+
+              for (let chapterPromise of chapterPromises) {
+                  // 各章の準備が整うまで待ってから、ページに追加します
+                  let chapter = yield chapterPromise;
+                  addHtmlToPage(chapter.html);
+              }
+
+              addTextToPage("All done");
+
+            }
+            catch (err) {
+              // try / catchは機能し、拒否されたプロミスはここにスローされます
+                addTextToPage("Argh, broken: " + err.message);
+            }
+              document.querySelector(".spinner").style.display = "none";
+          });
+          */
+        },
+        false
+      ); // onLoaded
       </script>
+
+      <p class="title">JavaScriptのPromise: 概要</p>
+      <pre>
+      <code class="prettyprint">
+      // document.addEventListener('DOMContentLoaded', function() { // after DOM tree Build
+      window.addEventListener(
+        "load",
+        function() {
+          // after DOM tree Build + Img and JS loaded
+
+          // ■ PromiseとEventListenerの違い
+          // ・Promiseは1回しか成功/失敗出来ない（イベントリスナーは「ボタン押した」等、何回も取得出来る）
+          // ・Promiseが成功/失敗し、後から成功/失敗のコールバックを追加すると、その前にイベントが実行されていても（終わっていても？）、
+          //   正しいコールバックが呼び出される
+
+          // ■ Promiseの用語
+          // ・履行済み ... fulfilled、Promiseに関する操作が成功した、フールフィルド：満たされた
+          // ・棄却済み ... rejected、Promiseに関連する操作が失敗した、リジェクテッド：拒否された
+          // ・保留中 ... pending、まだ履行も棄却もされていない、ペンディング：保留中
+          // ・完了 ... 履行又は棄却された
+
+          // let a = 2; // ↓のテスト確認用
+
+          // ■ Promiseの作成方法
+          /*
+            let promise_1 = new Promise((resolve, reject) => {
+              // 何かをする、おそらく非同期、…
+              if (a === 2) {
+                resolve("動いた！");
+              } else {
+                reject(Error("壊れた"));
+              }
+            });
+            */
+          //（１）Promiseコンストラクターはコールバックを1つの引数として取り、コールバックはresolveとrejectの2つのパラメーターを取る
+          //（２）コールバック内で何らかの処理（非同期処理等）を行い、全てが成功すると呼び出しが解決（resolve）され、そうでない場合は呼び出しは棄却（reject）される
+          // ※rejectはエラーをスローする事が慣例だが、必須ではない。
+
+          // ■ Promiseの使用方法
+          /*
+            promise_1.then((result) => {
+              console.log(result); // "動いた！"
+            }, (err) => {
+              console.log(err); // Error: 壊れた
+            });
+            */
+          //（１）then()は2つの引数、成功時のコールバックと失敗時のコールバックを取る。両方とも省略可能。片方だけの記述も可。
+
+          // ■ 複雑な非同期コードを簡単にする事例
+
+          // promiseを適用する処理
+          // 1.読み込み中である事を示すスピナーを開始する
+          // 2.各章毎のタイトルとURLを示す記事のJSONを取得する
+          // 3.ページにタイトルを追加する
+          // 4.各章を取得する
+          // 5.ページに記事を追加する
+          // 6.スピナーを停止する
+
+          // ※途中で処理が失敗した時は、それをユーザーに通知する（スピナーは停止させる）
+
+          // ■ XMLHttpRequestのPromise化
+          // ※古いAPIは、後方互換性を残したまま更新出来るなら、Promiseを使用して更新する（考え方）
+          /*
+            function get(url) {
+              
+              // 新しいPromiseを返す
+              return new Promise((resolve, reject) => {
+
+                // 普通にXHRを使う
+                let req = new XMLHttpRequest();
+                req.open("GET", url);
+
+                req.onload = function() {
+                  
+                  // これは404等でも呼び出されるので、ステータスをチェックする必要がある
+                  if (req.status === 200) {
+                    // レスポンステキストでpromiseを解決する
+                    resolve(req.response);
+                  }
+                  else {
+                    // それ以外の場合は、ステータステキストで拒否する
+                    // これは、意味のあるエラーになることを願っている
+                    reject(Error(req.statusText));
+                  }
+                };
+
+                // ネットワークエラーをハンドルする
+                req.onerror = function() {
+                  reject(Error("Network Error"));
+                };
+
+                // リクエストを送信
+                req.send();
+
+              });
+
+            }*/
+
+          // 実際に↑を呼び出す
+          /*
+            get("json/story.json").then((response) => { // 第一引数
+              console.log("Success!", response) // Success!
+              // {
+              //   "heading": "&lt;h1&gt;A story about something&lt;/h1&gt;",
+              //   "chapterUrls": ["chapter-1.json", "chapter-2.json", "chapter-3.json", "chapter-4.json",  "chapter-5.json"]
+              // }
+            }, (error) => { // 第二引数
+              console.error("Filed!", error);
+            });
+            */
+
+          // ■  then()の連鎖
+          // 複数のthen()を連鎖させて、値を変換したり、追加の非同期処理を順番に実行出来る
+
+          // 連鎖の例
+          // 値の変換、単純に新しい値を返す事で、値を変換する事が出来る
+          /*
+            let promise_2 = new Promise((resolve, reject) => {
+              resolve(1);
+            });
+
+            promise_2.then((val) => {
+              console.log(val); // 1
+              return val + 2; // ★連鎖させる場合はreturnで値（結果）を返す（＝次のthen()の引数として渡す）
+            })
+            .then((val) => {
+              console.log(val); // 3
+            });
+            */
+
+          // 実用的な例としてstory.jsonを取得するサンプルを修正、※JSONのresponseTypeを使用する
+          // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType
+          /*
+              get("json/story.json").then((response) => { // 第一引数
+                return JSON.parse(response);
+            }).then((response) => {
+                console.log("Yey! JSON! ", response); // Yey! JSON!  Object: {heading: "&lt;h1&gt;A story about something&lt;/h1&gt;", chapterUrls: Array(5)}
+            }), 
+            (error) => { // 第二引数
+              console.error("Filed!", error);
+            };
+            */
+
+          // ↑さらにJSON.parseを短くショートカット（JSON.parse()は単一の引数を取り、変換された値を返す為）
+          /*
+            get("json/story.json")
+            .then(JSON.parse)
+            .then((response) => {
+                console.log("Yey! JSON! ", response); // Yey! JSON!  Object: {heading: "&lt;h1&gt;A story about something&lt;/h1&gt;", chapterUrls: Array(5)}
+            }), 
+            (error) => { // 第二引数
+              console.error("Filed!", error);
+            };
+            */
+
+          // JSONの取得自体を短く書ける
+          /*
+            function getJSON(url) {
+              return get(url).then(JSON.parse);
+            }
+            */
+
+          /*
+            let aa = getJSON("json/story.json");
+            console.log("aa: ", aa); // aa:  Promise {&lt;pending&gt;}
+            */
+
+          // ■ 非同期処理のキューへの格納
+          // then()を連鎖させて、非同期処理を連続して実行する事も出来る
+
+          // then()コールバックから何らかの値が返れされると、その値を指定して次のthen()が呼び出される
+          // 但し、promiseに似たものが返された時は、次のthen()はその時点で待機し、そのPromiseが完了（成功/失敗）した場合のみ呼び出される
+          // ↓例
+          /*
+            getJSON("json/story.json").then((story) => {
+              return getJSON("json/" + story.chapterUrls[0]);
+            }).then((chapter1) => {
+              console.log("Got chapter 1!", chapter1);
+            });
+            */
+
+          // ↑story.json内の一連のjson（chapter-1.json～chpter-5.json）の1つ目をリクエストしている。
+          // XHR finished loading: GET "http://localhost:8000/json/story.json".
+          // Got chapter 1! {chapter: 1, html: "&lt;p&gt;Chapter 1 text: Cras sollicitudin orci ac velit…&lt;/p&gt;"}
+          // XHR finished loading: GET "http://localhost:8000/json/chapter-1.json".
+
+          // ↓章を取得するためのメソッドのショートカット
+          /*
+            let storyPromise;
+            function getChapter(i) {
+              storyPromise = storyPromise || getJSON("json/story.json"); // storyPromiseがあればそれを使用、無ければstory.jsonを取得
+              return storyPromise.then((story) => {
+                return getJSON("json/" + story.chapterUrls[i]);
+              });
+            };
+
+            // それを使用するのは簡単です：
+            getChapter(0).then((chapter) => {
+              console.log(chapter); // {chapter: 1, html: "&lt;p&gt;Chapter 1 text: Cras sollicitudin orci ac velit…bibendum, ...&lt;/p&gt;"}
+              return getChapter(1);
+            }).then((chapter) => {
+              console.log(chapter); // {chapter: 2, html: "&lt;p&gt;Chapter 2 text: Curabitur laoreet cursus lectus… fringilla, ...&lt;/p&gt;"}
+            })
+
+            // ■ エラー処理
+            // これまで見てきた通り、then()は成功と失敗（履行と棄却）の2つの引数を取る
+            get("json/story.json").then((response) => { // 第一引数
+              console.log("Success!", response)
+            }, (error) => { // 第二引数
+              console.error("Filed!", error);
+            });
+
+            // これ以外の方法で、catch()を使用する事も出来る
+            get("json/story.json").then((response) => {
+              console.log("Success!", response)
+            }).catch((error) => {
+              console.error("Filed!", error);
+            });
+
+            // 但し、↑のcatch()を使ったコードは、↑↑と同じではなく、↓に等しい
+            get("json/story.json").then((response) => {
+              console.log("Success!", response)
+            }).then(undefined, (error) => {
+              console.error("Filed!", error);
+            });
+            */
+
+          // 違いとして、処理はPromiseで棄却されると、棄却のコールバックを持つ次のthen()又は同等であるcatch()までスキップされる。
+          // .then(func1, func2)と指定すると、fun1又はfunc2のどちらかが呼び出される
+          // .then(func1).catch(func2)と書くと、func1が棄却された場合には両方（func2も）呼び出される
+          // ※これは、これらが連鎖はしているが個別のstepである為
+
+          // try～catch構文に似て、try内で発生したエラーは即catch()ブロックに入る
+          /*
+            asyncThing1().then(() => {
+              return asyncThing2();
+            }).then(() => {
+              return asyncThing3();
+            }).catch((err) => {
+              return asyncRecovery1();
+            }).then(() => {
+              return asyncThing4();
+            }, (err) => {
+              return asyncRecovery2()
+            }).catch((err) => {
+              console.log("心配しないで");
+            }).then(() => {
+              console.log("全部終わった！");
+            });
+            */
+
+          // ■ JavaScriptの例外とPromise
+
+          // 棄却は、Promiseが明示的に棄却された場合に発生するが、コンストラクタのコールバックでエラーがスルーされた場合にも暗黙的に発生する
+          /*
+            let jsonPromise = new Promise((resolve, reject) => {
+              // JSON.parseをフィードするとエラーがスローされます
+              // 無効なJSONなので、これは暗黙的に拒否します：
+              resolve(JSON.parse("This isn't JSON"))
+            });
+            jsonPromise.then((data) => {
+              // これは決して起こりません：
+              console.log("It worked!", data)
+            }).catch((err) => {
+              // 代わりに、これが起こります：
+              console.log("It failed!", err); // It failed! SyntaxError: Unexpected token T in JSON at position 0
+            });
+            */
+
+          // これはPromiseコンストラクタコールバック内で全てのPromise関連処理を行うと、エラーが自動的に取得され、棄却される為、便利である事を意味する
+          // then()コールバックでスローされるエラーについても同じ事が言える
+
+          /*
+            get("/").then(JSON.parse).then(() => {
+                // これは決して起こりません。「/」はJSONではなくHTMLページです
+                // なので、JSON.parse()がエラーをスローします
+                console.log("It worked!", data);
+            }).catch((err) => {
+                // 代わりに、これが起こります：
+                console.log("It failed!", err); // It failed! SyntaxError: Unexpected token &lt; in JSON at position 0 at parse (&lt;anonymous&gt;)
+            });
+            */
+
+          // ■ エラー処理の実例
+          // 記事と賞のサンプルの例では、catch()を使用してユーザーにエラーを表示出来る
+          /*
+            getJSON("json/story.json").then((story) => {
+              return getJSON("json", story.chapterUrls[0]);
+            }).then((chapter1) => {
+              addHtmlPage(chapter1.html);
+            }).catch(() =>  {
+              addTextToPage("Failed to show chapter"); // Uncaught (in promise) ReferenceError: addTextToPage is not defined
+            }).then(() => {
+              document.querySelector(".spinner").style.display = "none";
+            });
+            */
+
+          // story.chapterUrls[0]の取得に失敗した場合（http500やユーザーがオフラインだった場合等）、それ以降の全て（の成功のコールバックが）がスキップされる
+          // 結果として、"Failed to show chapter"がページに表示される
+          // try～catchの後と同様に、エラーが取得され、それ以降のコードが実行されるため、スピナーは常に非表示になる（これは期待される挙動なのでOK）
+
+          // ↑コードのtry～cacth仕様版
+          /*
+            try {
+              let story = getJSONSync("json/story.json");
+              let chapter1 = getJSONSync(`story/${chapterUrls[0]}`);
+              addHtmlPage(chapter1.html);
+            }
+            catch (e) {
+              addTextToPage("Failed to show chapter")
+            }
+            document.querySelector(".spinner").style.display = "none";
+            */
+
+          // ↑のエラーを回復せずに、単にログに記録する為だけにcatch()を使用したver.
+          /*
+            function getJSON(url) {
+              return get(url).then(JSON.parse).catch((err) => {
+                console.log("getJSON failed for ", url, err);
+                throw err;
+              })
+            };
+            */
+
+          // ↑1つの章、↓全ての章を取得する例
+          // ■ 並行処理とシーケンス処理：両方を活用する
+
+          // 非同期処理を記述するのが大変な場合、まずは同期でコードを記述してみる
+          /*
+            try {
+              let story = getJsonSync("json/story.json");
+              addHtmlToPage(story.heading);
+              console.log(story.heading);
+              story.chapterUrls.forEach((chapterUrl) => {
+                let chapter = getJsonSync(`json/${chapterUrl}`);
+                addHtmlToPage(chapter.html);
+              });
+              addTextToPage("All done");
+            }
+            catch(err) {
+              addTextToPage("Argh, broken: " + err.message);
+            }
+            document.querySelector(".spinner").style.display = "none";
+            */
+
+          // ↑のコードは動作するが時間が掛かる（非同期でない為）、スピナーも回転せずに止まったまま
+
+          // ↓ので、then()を使って1つずつ処理されるようにする
+          /*
+            getJSON("json/story.json")
+            .then((story) => {
+              
+              addHtmlToPage(story.heading);
+
+              // TODO: for each url in story.chapterUrls, fetch &amp; display
+              story.chapterUrls.forEach((chapterUrl) => {
+                // Fetch chapter
+                getJSON(`json/${chapterUrl}`).then((chapter) => {
+                  // and add it to the page
+                  addHtmlToPage(chapter.html);
+                });
+              })
+            })
+            .then(() => {
+              // And we're all done!
+              addTextToPage("All Done")
+            })
+            .catch((err) => {
+              // Catch any error that happened along the way
+              addTextToPage("Argh, broken: " + err.message);
+            })
+            .then(() => {
+              document.querySelector(".spinner").style.display = "none";
+            })
+            */
+
+          // ↑で1つずつ実行されるが、forEachは非同期処理に対応してない為、任意の順番で読み込まれて表示される、※実実行例：４→５→３→２→１
+
+          // ■ シーケンスの作成
+          // ↑で任意の順番でなく、昇順にするために、chapterUrls配列を.then()を使用してPromiseのシーケンスに変換する
+
+          // 常にresolveのPromiseから始めます
+          /*
+            let sequence = Promise.resolve(); // 渡された任意の値に解決されるPromiseを作成する
+
+            // チャプターURLをループします
+            let story = getJsonSync('json/story.json');
+            story.chapterUrls.forEach((chapterUrl) => {
+              // これらのアクションをシーケンスの最後に追加します
+              sequence = sequence.then(() => {
+                return getJSON(`json/${chapterUrl}`)
+              })
+              .then((chapter) => {
+                addHtmlToPage(chapter.html);
+              })
+              .then(() => {
+                // And we're all done!
+                addTextToPage("All Done")
+              })
+              .catch((err) => {
+                // Catch any error that happened along the way
+                addTextToPage("Argh, broken: " + err.message);
+              })
+              .then(() => {
+                document.querySelector(".spinner").style.display = "none";
+              })
+            });
+            */
+
+          // ↑の処理をreduce()を使って整理した場合
+          // 章のURLをループします
+          /*
+            getJson('json/story.json').then((story) => {
+              addHtmlToPage(story.heading);
+
+            return story.chapterUrls.reduce((sequence, chapterUrl) => {
+              // これらのアクションをシーケンスの最後に追加します
+              return sequence.then(() => {
+                return getJSON(`json/${chapterUrl}`)
+              })
+              .then((chapter) => {
+                addHtmlToPage(chapter.html);
+              });
+            }, Promise.resolve()); // reduce end.
+            }).then(() => {
+                // And we're all done!
+                addTextToPage("All Done")
+              })
+              .catch((err) => {
+                // Catch any error that happened along the way
+                addTextToPage("Argh, broken: " + err.message);
+              })
+              .then(() => {
+                document.querySelector(".spinner").style.display = "none";
+              })
+            */
+          // ↑まとめてではなく、1個ずつ読み込まれているの分かる（非同期で読み込まれている）
+
+          // ↑1つずつダウンロードしているので、少し遅い所がある（改善する）
+          // Prosise.all()を使って、全ての読み込みが完了したら履行されるPromiseを作成する
+          /*
+            getJson('json/story2.json').then((story) => {
+              addHtmlToPage(story.heading);
+              
+              // Promiseの配列を取り、それらすべてを待ちます
+              return Promise.all(
+
+                // チャプターURLの配列をマッピングします
+                // 章のJSON Promiseの配列
+                story.chapterUrls.map(getJson) // getJSONに引数を渡さないのでパスを後から変えられない
+              );
+            })
+            .then((chapters) => {
+              chapters.forEach(function(chapter) {
+                addHtmlToPage(chapter.html);
+              });
+                addTextToPage("All Done")
+              })
+              .catch((err) => {
+                // Catch any error that happened along the way
+                addTextToPage("Argh, broken: " + err.message);
+              })
+              .then(() => {
+                document.querySelector(".spinner").style.display = "none";
+              })
+              */
+
+          // ↑でも速くなったが、より速くするために、全部を待って表示でなく、1章が表示されたら2章を表示→2章が表示されたら3章を表示するように変更
+
+          getJson("json/story2.json")
+            .then(story => {
+              addHtmlToPage(story.heading); // これにより、すべてが確実に並行してダウンロードされます。
+
+              // チャプターURLの配列をマッピングします
+              // json promiseの章の配列。
+              return story.chapterUrls
+                .map(getJson) // getJSONに引数を渡さないのでパスを後から変えられない
+                .reduce((sequence, chapterPromise) => {
+                  // reduceを使用してプロミスを連結し、
+                  // 各章のページにコンテンツを追加します
+
+                  return sequence
+                    .then(() => {
+                      // これまでのシーケンスのすべてを待機し、
+                      //その後、この章が届くまで待ちます。
+
+                      return chapterPromise;
+                    })
+                    .then(chapter => {
+                      addHtmlToPage(chapter.html);
+                    });
+                }, Promise.resolve());
+            })
+            .then(() => {
+              addTextToPage("All Done");
+            })
+            .catch(err => {
+              // Catch any error that happened along the way
+              addTextToPage("Argh, broken: " + err.message);
+            })
+            .then(() => {
+              document.querySelector(".spinner").style.display = "none";
+            });
+
+          // ■ おまけ：PromiseとGenerator
+          // ES6ではGeneratorも導入され、これを利用すると、「値を返す」等の特定の時点で関数を終了し、
+          // 後で同じ状態から再開出来る
+
+          // 例
+          /*
+          function *addGenerator() {
+            let i = 0;
+            while(true) {
+              i += yield i;
+            }
+          }
+
+          // ↑関数の前にスターがある事により、関数がGeneratorになる
+          // ここではyieldキーワードが値を返し、再開する時点になる
+          // 実際は↓のように使う
+          let addr = addGenerator();
+          console.log(addr.next().value); // 0
+          console.log(addr.next(5).value); // 5
+          console.log(addr.next(5).value); // 10
+          console.log(addr.next(5).value); // 15
+          console.log(addr.next(50).value); // 65
+
+          // ↑を使って非同期なコードが書ける
+          // yieldを使用して、Promiseが完了するまで待機するヘルパー関数↓
+          function spawn(generatorFunc) {
+            function continuer(verb, arg) {
+              let result;
+              try {
+                result = generator[verb](arg);
+              } catch (err) {
+                return Promise.reject(err);
+              }
+              if (result.done) {
+                return Promise.resolve(result, value).then(onFulfilled, onRejected);
+              }
+            }
+            let generator = generatorFunc();
+            let onFulfilled = continuer.bind(continuer, "next");
+            let onRejected = continuer.bind(continuer, "throw");
+            return onFulfilled();
+          }
+          */
+
+          // ↑はQを参考（https://github.com/kriskowal/q/blob/db9220d714b16b96a05e9a037fa44ce581715e41/q.js#L500）
+
+          // ↑のヘルパー関数を利用して、章の読み込みスクリプトを最適化する
+          /*
+          spawn(function *() {
+            "use strict";
+            try {
+
+              // 'yield'は効果的に非同期待機を行います。
+              // Promiseの結果を返す
+              let story = yield getJson("json/story2.json");
+              addHtmlToPage(story.heading);
+
+              // チャプターURLの配列をマッピングします
+              // json promiseの章の配列。
+              // これにより、すべてが確実に並行してダウンロードされます。 
+              let chapterPromises = story.chapterUrls.map(getJson);
+
+              for (let chapterPromise of chapterPromises) {
+                  // 各章の準備が整うまで待ってから、ページに追加します
+                  let chapter = yield chapterPromise;
+                  addHtmlToPage(chapter.html);
+              }
+
+              addTextToPage("All done");
+
+            }
+            catch (err) {
+              // try / catchは機能し、拒否されたプロミスはここにスローされます
+                addTextToPage("Argh, broken: " + err.message);
+            }
+              document.querySelector(".spinner").style.display = "none";
+          });
+          */
+        },
+        false
+      ); // onLoaded
+      </code>
+      </pre>
 
     <div class="network-fake">
       <label><input type="checkbox"> Fake network delay</label>
@@ -317,13 +1200,6 @@
       <circle cx="50" cy="50" r="42" transform="rotate(-90,50,50)" />
     </svg>
 
-      <p class="title">JavaScriptのPromise: 概要</p>
-      <pre>
-      <code class="prettyprint">
-      </code>
-      </pre>
-      <!--/s-->
-
       <p class="title">参考サイト：</p>
 
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank">Promise - JavaScript - MDN - Mozilla</a></p>
@@ -332,7 +1208,7 @@
       
       <p><a href="https://developers.google.com/web/fundamentals/primers/promises?hl=ja" target="_blank">JavaScript の Promise: 概要</a></p>
 
-      <!--<p><a href="" target="_blank"></a></p>-->
+      <p><a href="https://noumenon-th.net/programming/2017/06/11/domcontentloaded/" target="_blank">DOMContentLoadedイベントとloadイベントの違い[タイミング]</a></p>  
     
     </div>
 

@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>in</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // in演算子の使用方法
+
+        // （１）オブジェクトにインデックスがあるか確認する
+        let cats = {
+          27: "mike",
+          104: "kuro",
+          256: "tora",
+          home: true,
+          food: "カリカリ"
+        };
+
+        if (256 in cats) {
+          console.log("toraは居る"); // toraは居る
+        } else {
+          console.log("toraは居ない");
+        }
+
+        if (50 in cats) {
+          console.log("No.50は居る");
+        } else {
+          console.log("No.50は居ない"); // No.50は居ない
+        }
+
+        // （２）オブジェクトにプロパティがあるか確認する
+        if ("home" in cats) {
+          console.log("homeはある");
+        } else {
+          console.log("homeはない");
+        }
+
+        // ※実践的には↓
+        if (cats.food) {
+          console.log(cats.food); // カリカリ
+        }
+
+        // （３）forと組み合わせて、オブジェクトのプロパティをループ処理する
+        for (let p in cats) {
+          console.log(p);
+        }
+        // 27
+        // 104
+        // 256
+        // home
+        // food
+
+        console.log("");
+      </script>
+
+      <p class="title">in演算子の使用方法</p>
+      <pre>
+      <code class="prettyprint">
+        // in演算子の使用方法
+
+        // （１）オブジェクトにインデックスがあるか確認する
+        let cats = {
+          27: "mike",
+          104: "kuro",
+          256: "tora",
+          home: true,
+          food: "カリカリ"
+        };
+
+        if (256 in cats) {
+          console.log("toraは居る"); // toraは居る
+        } else {
+          console.log("toraは居ない");
+        }
+
+        if (50 in cats) {
+          console.log("No.50は居る");
+        } else {
+          console.log("No.50は居ない"); // No.50は居ない
+        }
+
+        // （２）オブジェクトにプロパティがあるか確認する
+        if ("home" in cats) {
+          console.log("homeはある");
+        } else {
+          console.log("homeはない");
+        }
+
+        // ※実践的には↓
+        if (cats.food) {
+          console.log(cats.food); // カリカリ
+        }
+
+        // （３）forと組み合わせて、オブジェクトのプロパティをループ処理する
+        for (let p in cats) {
+          console.log(p);
+        }
+        // 27
+        // 104
+        // 256
+        // home
+        // food
+      </code>
+      </pre>
+
+      <script>
+        // in はプロトタイプチェーンを辿って走査
+        // hasOwnPropertyは辿らない（自分自身が持っているもののみ）
+
+        const myCats = {
+          white: "シロ",
+          black: "クロ",
+          mike: "ミケ"
+        };
+
+        // inの場合
+        console.log("'white' in myCats: ", "white" in myCats); // 'white' in myCats:  true
+        console.log("'toString' in myCats: ", "toString" in myCats); // 'toString' in myCats:  true
+
+        // hasOwnProperty
+        console.log("myCats.hasOwnProperty('white'): ", myCats.hasOwnProperty("white")); // myCats.hasOwnProperty('white'):  true
+        console.log("myCats.hasOwnProperty('toString'): ", myCats.hasOwnProperty("toString")); // myCats.hasOwnProperty('toString'):  false
+
+        console.log("");
+      </script>
+      <p class="title">in演算子とhasOwnPropertyの差</p>
+      <pre>
+      <code class="prettyprint">
+        // in はプロトタイプチェーンを辿って走査
+        // hasOwnPropertyは辿らない（自分自身が持っているもののみ）
+
+        const myCats = {
+          white: "シロ",
+          black: "クロ",
+          mike: "ミケ"
+        };
+
+        // inの場合
+        console.log("'white' in myCats: ", "white" in myCats); // 'white' in myCats:  true
+        console.log("'toString' in myCats: ", "toString" in myCats); // 'toString' in myCats:  true
+
+        // hasOwnProperty
+        console.log("myCats.hasOwnProperty('white'): ", myCats.hasOwnProperty("white")); // myCats.hasOwnProperty('white'):  true
+        console.log("myCats.hasOwnProperty('toString'): ", myCats.hasOwnProperty("toString")); // myCats.hasOwnProperty('toString'):  false
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/in" target="_blank">in 演算子 - MDN - Mozilla</a></p>
+
+      <p><a href="https://builder.japan.zdnet.com/script/sp_javascript-kickstart-2007/20365320/" target="_blank">in演算子の使用法：続JavaScriptのオブジェクトについて</a></p>  
+      
+      <p><a href="https://qiita.com/gyarasu/items/d8f4415b3d36d7783128" target="_blank">Javascriptのin演算子とhasOwnPropertyの違い</a></p>
+
+      <!--<p><a href="" target="_blank"></a></p>-->
+    
+    </div>
+
+    <script src="src/in.js"></script>
+  </body>
+</html>
