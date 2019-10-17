@@ -86,7 +86,7 @@
         let item;
         let count;
         let loops = animals.length;
-        for (count = 0; count < loops; count++) {
+        for (count = 0; count &lt; loops; count++) {
           item = animals[count];
           lengths.push(item.length);
         }
@@ -120,7 +120,7 @@
         // 例：animals配列の全ての文字数の単語を数える（for loop）
         let total_num = 0;
         let item_num;
-        for (let count = 0, loops = animals.length; count < loops; count++) {
+        for (let count = 0, loops = animals.length; count &lt; loops; count++) {
           item_num = animals[count];
           total_num += item_num.length;
         }
@@ -238,11 +238,9 @@
       <p><a href="https://www.webprofessional.jp/map-reduce-functional-javascript/" target="_blank">JavaScriptプログラマーならMap()とReduce()で関数型プログラミングを始めてみない？</a></p>
 
       <p><a href="https://hfuji.hatenablog.jp/entry/2016/06/28/232820" target="_blank">【JavaScript】Arrayのmapメソッドは習うより慣れろって感じ</a></p>
-      
-      <!--<p><a href="" target="_blank"></a></p>-->
     
     </div>
 
-    <script src="src/map.js"></script>
+    <script src="src/array_map.js"></script>
   </body>
 </html>

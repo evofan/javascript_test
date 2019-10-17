@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>for...of</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+
+        // for～ofは使わない方がいい？Babelを使ってると変換後のコードが増える？
+
+        // for～of
+        const cat_ary = ["mike", "tama", "kuro"];
+        for (let cat of cat_ary) {
+          console.log("cat: ", cat);
+        }
+        // cat:  mike
+        // cat:  tama
+        // cat:  kuro
+
+        // for～ofの代替
+        cat_ary.forEach(cat => {
+          console.log("cat: ", cat);
+        });
+        // cat:  mike
+        // cat:  tama
+        // cat:  kuro
+
+        // ↑挙動的には同じだが、breakが使えない（走査して対象が見つかった→停止）filter等も。←find()を使えばOK？
+
+        // ↑forEachはObjectに使えない←Object.entries(obj).forEach()で廻せる
+
+        console.log("");
+      </script>
+
+      <p class="title">for～ofは使わない方がいい？Babelを使ってると変換後のコードが増える？</p>
+      <pre>
+      <code class="prettyprint">
+
+        // for～of
+        const cat_ary = ["mike", "tama", "kuro"];
+        for (let cat of cat_ary) {
+          console.log("cat: ", cat);
+        }
+        // cat:  mike
+        // cat:  tama
+        // cat:  kuro
+
+        // for～ofの代替
+        cat_ary.forEach(cat => {
+          console.log("cat: ", cat);
+        });
+        // cat:  mike
+        // cat:  tama
+        // cat:  kuro
+
+        // ↑挙動的には同じだが、breakが使えない（走査して対象が見つかった→停止）filter等も。←find()を使えばOK？
+
+        // ↑forEachはObjectに使えない←Object.entries(obj).forEach()で廻せる
+      </code>
+      </pre>
+
+
+      <script>
+      // 配列に対してfor...ofを使う
+      const cat_ary2 = ["mike", "tama", "kuro"];
+      for (let i of cat_ary2) {
+        console.log(i);
+      }
+      // mike
+      // tama
+      // kuro
+
+      // Map（イテレーブルなオブジェクト）に対して使う
+      const cat_map = new Map([[1, "三毛"], [2, "タマ"], [3, "とら"]]);
+      console.log(cat_map); // Map(3) {1 => "三毛", 2 => "タマ", 3 => "とら"}
+      </script>
+
+      <p class="title"></p>
+      <pre>
+      <code class="prettyprint">
+      </code>
+      </pre>
+
+      <script>
+      </script>
+
+      <p class="title"></p>
+      <pre>
+      <code class="prettyprint">
+      </code>
+      </pre>
+
+      <script>
+      </script>
+
+      <p class="title"></p>
+      <pre>
+      <code class="prettyprint">
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/for...of" target="_blank">for...of - JavaScript - MDN - Mozillas</a></p>
+      
+      <p><a href="https://qiita.com/41semicolon/items/6ec0f6a9fdf7c97f1a41" target="_blank">for...of を使うなってAirbnbが言ってたから使わないようにしてたら慣れた</a></p>
+
+      <p><a href="" target="_blank"></a></p>
+      
+      
+<!--
+イテレータとfor-of文で配列以外もぐーるぐる。（現代的JavaScriptおれおれアドベントカレンダー2017 – 22日目）
+        https://ginpen.com/2017/12/22/for-of/
+
+https://alligator.io/js/for-of-for-in-loops/
+emoji?
+
+        -->
+
+              <!--<p><a href="" target="_blank"></a></p>
+    
+    </div>
+
+    <script src="src/for_of.js"></script>
+  </body>
+</html>
