@@ -1,0 +1,938 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Map（写像）</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // ES2015では、データの集まりを扱うコレクションとして、配列のほかにMap（マップ型のコレクション）とSet(セット型のコレクション)が追加された
+
+        // ■ Map ... マップは、「キー(key)：値(value)」の組み合わせからなる抽象データ型
+        //          他のプログラミング言語では、ディクショナリやハッシュマップ、連想配列等と呼ばれる
+
+        // □ Mapの作成と初期化
+        const map1 = new Map();
+        console.log(map1.size); // 0 ... 作成されたばかりのMapは何も持ってないため
+
+        // Mapの作成2
+        // Mapオブジェクトをnewで初期化する時に、コンストラクタに初期値（エントリー配列）を引数で渡せる
+        // ※エントリー ... [キー, 値]の配列形式で表現した配列
+        const map2 = new Map([["key1", "value1"], ["key2", "value2"]]);
+        console.log(map2.size); // 2 ... 二個のエントリー配列で初期化されたため
+
+        // □ Mapオブジェクトの要素の追加と、取り出し
+        // Mapには新しい要素をSet()メソッドで追加出来、Get()メソッドで取得出来る
+        // Set()メソッドは特定の「キー：値」を持つ要素をマップに追加する。但し、同じキーで複数回呼び出した場合は後の値で上書きされる
+        // Get()メソッドは特定のキーに紐づいた値を取得する。また、特定のキーに紐づいた値を持っているか確認するhas()メソッドがある（結果をbooleanで返す）。
+        const map3 = new Map();
+
+        // 新要素の追加
+        map3.set("key_1", "value_1");
+        console.log(map3); // Map(1) {"key_1" => "value_1"}
+        console.log(map3.size); // 1
+        console.log(map3.get("key_1")); // value_1
+
+        // 要素の上書き
+        map3.set("key_1", "value_1b");
+        console.log(map3.get("key_1")); // value_1b
+
+        // キーの存在確認
+        console.log(map3.has("key_1")); // true
+        console.log(map3.has("key_2")); // false
+
+        // delete()メソッドを使って、特定の要素を削除する
+        // 渡されたキーと、そのキーに紐づいた値がマップから削除される
+        map3.delete("key_1");
+        console.log(map3); // Map(0) {} ※key_1とその値が削除されたため
+
+        // clear()メソッドを使うと、マップ内の全ての要素が削除される
+        const map4 = new Map([["key-1", "value-1"], ["key-2", "value-2"]]);
+        map4.set("key-3", "value-3");
+        console.log(map4); // Map(3) {"key-1" => "value-1", "key-2" => "value-2", "key-3" => "value-3"}
+        map4.clear();
+        console.log(map4); // Map(0) {}
+
+        // □ マップの反復処理
+        // マップが持つ要素を列挙するメソッドとして、forEach()、keys()、values()、entreis()がある
+
+        // forEach()メソッドは、マップが持つ全ての要素を、マップへの追加順に反復（イテレート）する
+        // コールバック関数には引数（値、キー、マップ）が渡される
+        // Array.prototype.forEach()と似ているが、インデックスの代わりにキーが渡される（マップはindexでなくkeyで要素を特定するため）
+        const map5 = new Map([
+          ["key_1", "value_1"],
+          ["key_2", "value_2"],
+          ["key_3", "value_3"]
+        ]);
+        let result5 = [];
+        map5.forEach((value, key, map) => {
+          // mapは今回のような場合は省略可
+          result5.push(`${key} : ${value}`);
+        });
+        console.log(result5); // (3) ["key_1 : value_1", "key_2 : value_2", "key_3 : value_3"]
+
+        // keys()メソッドは、マップが持つ全ての要素の「キー」を挿入順に並べたイテレーターオブジェクトを返す
+        // values()メソッドは、同様に全ての要素の「値」を挿入順に並べたイテレーターオブジェクトを返す
+        // ★これらの戻り値は配列ではなく、イテレーターオブジェクトになる
+        // その為、for..ofやArray.from()メソッドに渡して、配列に変換して使う
+        const map6 = new Map([
+          ["key_1", "value_1"],
+          ["key_2", "value_2"],
+          ["key_3", "value_3"]
+        ]);
+        let result6 = [];
+        // keys()の戻り値を反復（イテレートする）
+        for (let key of map6.keys()) {
+          result6.push(key);
+        }
+        console.log(result6); // (3) ["key_1", "key_2", "key_3"]
+        // keys()の戻り値（iterator）から配列を作成する
+        let result6b = Array.from(map6.keys());
+        console.log(result6b); // (3) ["key_1", "key_2", "key_3"]
+
+        // entriesメソッドは、マップが持つ全ての要素をエントリーとして、挿入順に並べたイテレーターオブジェクトを返す
+        // （↑で出た通り、エントリー＝[キー, 値]の配列）
+        // その為、配列の分割代入（Destructuring assignment）を使うとエントリーからキーと値を簡単に取り出す事が出来る
+        const map7 = new Map([
+          ["key_1", "value_1"],
+          ["key_2", "value_2"],
+          ["key_3", "value_3"]
+        ]);
+        let result7 = [];
+        for (let [k, v] of map7.entries()) {
+          result7.push(`${k} : ${v}`);
+        }
+        console.log(result7); // (3) ["key_1 : value_1", "key_2 : value_2", "key_3 : value_3"]
+
+        // Map自身もイテレーブルなオブジェクトなので、for..ofで反復出来る
+        // Mapをfor...ofで反復した時、全ての要素をエントリーとして挿入順に反復する
+        // つまりentries()メソッドの戻り値を反復した時と同じ結果が得られる
+        const map8 = new Map([
+          ["key_1", "value_1"],
+          ["key_2", "value_2"],
+          ["key_3", "value_3"]
+        ]);
+        let result8 = [];
+        for (let [k, v] of map8) {
+          result8.push(`${k} : ${v}`);
+        }
+        console.log(result8); // (3) ["key_1 : value_1", "key_2 : value_2", "key_3 : value_3"]
+
+        // □ マップとしてのObejctと、マップ
+        // ES2015でMap()が登場するまで、JavaScriptではマップを実現するためにObject()が利用されてきた。
+        // 何かをキーにして値にアクセスする、という時点でMap()とObject()はよく似ている
+        // 但し、マップとしてのオブジェクトには幾つかの問題がある
+
+        // ・ObjectのPrototypeオブジェクトから継承されたプロパティによって、意図しないマッピングが生じる危険性がある
+        // ・プロパティとしてデータを持つため、キーとして使えるのは文字列かSymbolに限られる
+
+        // Objectにはprototypeオブジェクトがあるため、幾つかのプロパティが初期化した段階から存在する
+        // Objectをマップとして使うと、そのプロパティと同じ名前のキーを使おうとした時に問題が生じる
+        // （例えばconstructorという文字列は、Object.prototype.constructorと衝突する）
+
+        const map9 = {};
+        // マップがキーを持つ事を確認する
+        function has(key) {
+          return typeof map9[key] !== "undefined";
+        }
+        console.log(has("foo")); // false
+        // Objectのプロパティが存在する
+        console.log(has("constructor") + "\n\n"); // true
+
+        // 上記の問題は、Object.create(null)のようにオブジェクトを作成する事で回避されてきた
+        // https://jsprimer.net/basic/prototype-object/#not-inherit-object
+        // [コラム] Object.prototypeを継承しないオブジェクト
+
+        // ES2015でこれらの問題を根本的に解決する為にMap()が導入された
+        // Map()はプロパティとは異なる仕組みでデータを格納する（ので、Mapのプロトタイプが持つメソッドやプロパティとキーが衝突する事はない）
+        // またMap()のキーとしてあらゆるオブジェクトを使う事が出来る
+        // 他にもMap()には↓のような利点がある
+
+        // ・マップのサイズを簡単に知る事出来る
+        // ・マップが持つ要素を簡単に列挙出来る
+        // ・オブジェクトをキーに設定すると、参照毎に違うマッピングが出来る？↓でキー毎にカウント数として値を設定
+
+        // 例えば、ショッピングカートのようなシステムを作る時に、次の様に商品のオブジェクトと注文数をマッピング出来る
+
+        // ショッピングカートを表現するクラス
+        class ShoppingCart {
+          constructor() {
+            // 商品とその数を持つマップを作成
+            this.items = new Map();
+            console.log(this.items); // Map(0) {} 生成直後なので
+          }
+
+          // カートに商品を追加する（keyとvalueを設定）
+          addItem(item) {
+            console.log(item); // {name: "みかん", price: 100} 又は {name: "りんご", price: 200}
+            const count = this.items.get(item) || 0; // アイテム名がキーの値を取得する←× "item"では無いので。
+            // 渡されたキー（{name: "みかん", price: 100}）と同じプロパティがあれば、その値（value）を取得、なければ0を取得
+            this.items.set(item, count + 1); // キー（{name: "みかん", price: 100}）を設定、値（カウント数）を設定
+            // キーが文字列で無くオブジェクト全体を1つのキーとして使っている（考え方）
+          }
+
+          // カート内の合計金額を返す
+          getTotalPrice() {
+            console.log("getTotalPrice()");
+            return Array.from(this.items).reduce(
+              (total, [item, count], currentIndex, currentArray) => {
+                // reduce: コールバック関数無名、関数の引数＝accumulator（total: トータル金額）, currentValue（エントリー配列で[キー（今回オブジェクト）, 値（value）]）、
+                // Array.from： itemsマップから新しい配列を作る、reduce()の結果を
+                console.log(
+                  "total:",
+                  total,
+                  "| item: ",
+                  item,
+                  "| count: ",
+                  count,
+                  "| currentIndex: ",
+                  currentIndex,
+                  "| currentAry: ",
+                  currentArray
+                );
+                // total: 0 | item:  {name: "みかん", price: 100} | count:  2 | currentIndex:  0 | currentAry:  (2) [Array(2), Array(2)]
+                // total: 200 | item:  {name: "りんご", price: 200} | count:  1 | currentIndex:  1 | currentAry:  (2) [Array(2), Array(2)]
+                return total + item.price * count; // トータル金額は、マップ内のインデックスn番目のキー内の"price"キーの値（100 or 200）× キーに対応するvalue（個数）
+              },
+              0
+            ); // initialValue = 初期値（これが無い場合は配列の先頭が初期値として使われる）
+          }
+
+          // カートの中身を文字列として返す
+          toString() {
+            console.log("toString()");
+            return Array.from(this.items)
+              .map(([item, count], currentIndex, currentArray) => {
+                // currentValue, index, array
+                console.log(
+                  "item: ",
+                  item,
+                  "| count: ",
+                  count,
+                  "| currentIndex: ",
+                  currentIndex,
+                  "| currentAry: ",
+                  currentArray
+                );
+                // item:  {name: "みかん", price: 100} | count:  2 | currentIndex:  0 | currentAry:  (2) [Array(2), Array(2)]
+                // item:  {name: "りんご", price: 200} | count:  1 | currentIndex:  1 | currentAry:  (2) [Array(2), Array(2)]
+                return `${item.name}： ${count}`;
+              })
+              .join(", "); // ','で区切った新しい文字列を返す
+          }
+        }
+
+        // 新規ショッピングカート作成
+        let sCart = new ShoppingCart();
+        let shopItems = [
+          { name: "みかん", price: 100 },
+          { name: "りんご", price: 200 }
+        ];
+
+        // カートに商品を追加する
+        sCart.addItem(shopItems[0]);
+        sCart.addItem(shopItems[0]);
+        sCart.addItem(shopItems[1]);
+
+        // 合計金額を表示する
+        console.log(sCart.getTotalPrice()); // 400
+
+        // カートの中身を表示する
+        console.log(sCart.toString()); // みかん： 2, りんご： 1
+
+        // Mapオブジェクトの現在の内容
+        console.log(sCart);
+        /*
+              ShoppingCart {
+                items: Map(2)
+                [[Entries]]
+                  0: {Object => 2}
+                    key:
+                      name: "みかん"
+                      price: 100
+                    value: 2
+                  1: {Object => 1}
+                  key: {name: "りんご", price: 200}
+                  value: 1
+                size: 2
+              }
+              */
+        console.log("");
+
+        // Objectをマップとして使った時に起きる多くの問題は、Map()を使う事で解決するが、
+        // 常にMap()がObject()の代わりになる訳ではない
+
+        // マップとしてのオブジェクトには次の利点がある。
+        // ・リテラル表現があるため、作成しやすい
+        // ・既定のJSON表現があるため、JSON.stringigy()を使ってJSONにするのが簡単である
+        // ・ネイティブAPI・外部API問わず、多くの関数がマップとしてObjectを渡される設計になっている
+
+        // 次の例はログインフォームのsubmitイベントを受け取った後、サーバーにPOSTリクエストを送信している
+        // サーバーに文字列を送るためにJSON.stringify()を使用している
+        // そのため、Objectのマップを作ってフォームの入力内容を持たせている
+        // このような簡易なマップにおいては、Objectを使う方が適切である
+
+        // URLとObjectのマップを受け取ってPOSTリクエストを送る関数
+        function sendPostRequest(url, data) {
+          // XMLHttpRequestを使ってPOSTリクエストを送る
+          const xhr = new XMLHttpRequet();
+
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send(JSON.stringify(data));
+          xhr.open("POST", url);
+        }
+
+        // formのsubmitイベントを受け取る関数
+        function onLoginFormSubmit(event) {
+          const form = event.target;
+          const data = {
+            userName: form.elements.userName,
+            password: fomr.elements.password
+          };
+          sendPostRequest("/api/login", data);
+        }
+
+        // □ WeakMap
+        // WeakMapは、Mapと同じくマップを扱うためのビルトインオブジェクトである
+        // Mapと違う点は、★「キーを弱い参照（Weak Reference）で持つ」事である
+
+        // 弱い参照とは、ガベージコレクション（GC）による、オブジェクトの開放を妨げないための特殊な参照である
+        // GCによりメモリから解放されるオブジェクトは、どこからも参照されていないオブジェクトだけであるが、
+        // 弱参照は参照があっても解放される（そのためメモリリークを防げる）
+
+        // ↓のサンプルでは、最初にobjに{}を設定し、WeakMapではそのobjをキーにして値を設定している
+        // 次にobjに別の値（ここではnull）を代入すると、objが元々参照していた{}という値はどこからも参照されなくなる
+        // この時、WeakMapは{}への弱い参照を持っているが、弱い参照はGCを妨げないため、{}は不要になった値としてGCによりメモリから解放される
+
+        // 同時に、WeakMapは解放されたオブジェクト{}をキーにして紐づいていた値（"value"）を破棄出来る
+        // ★但し、どのタイミングで実際にメモリから解放するかは、JavaScriptエンジンの実装に依存する
+
+        const map10 = new WeakMap();
+
+        // キーとなるオブジェクト
+        let obj = {};
+
+        // キーに値をセットする
+        map10.set(obj, "value");
+
+        console.log(map10); // WeakMap { [[Entries]] 0: {Object => "value"} }
+
+        // {}への参照を破棄する
+        obj = null;
+
+        console.log(map10); // WeakMap { [[Entries]] No properties }
+
+        // →GCが発生するタイミングでWeakMapから値が破棄される
+
+        // WeakMapはMapと似ているがイテレーブルでは無い
+        // その為、キーを列挙するkeysや、データ数を返すsizeプロパティ等は存在しない
+        // また、キーを弱参照で持つ特性上、キーとして使えるのは参照型のオブジェクトだけになる
+
+        // WeakMapの主な使い方の一つは、クラスにプライベートの値を格納する事である
+        // this（クラスインスタンス）をWeakMapのキーにする事で、インスタンスの外からアクセス出来ない値を保持出来、
+        // インスタンスのが参照されなくなった時は自動で解放される
+
+        // 次のコードでは、まだオブジェクトが発火するイベントのリスナー関数（イベントリスナー）をWeakMapで管理している
+        // このマップをMapで実装してしまうと、明示的に削除されるまで、イベントリスナーはメモリ上に残り続ける
+        // ここでWeakMapを使うと、AddListener()に渡されたlistenerはEventEmitterインスタンスが参照されなくなった時に、自動的に解放される
+
+        // イベントリスナーを管理するマップ
+        const listenersMap = new WeakMap();
+
+        class EventEmitter {
+          addListener(listener) {
+            // thisに紐づいたリスナーの配列を取得する
+            const listeners = listenersMap.get(this) || [];
+            const newLlisteners = listeners.concat(listener);
+            // thisをキーに新しい配列をセットする
+            listenersMap.set(this, newLlisteners);
+          }
+        }
+
+        // 上記クラスの実行例
+        let eventEmitter = new EventEmitter();
+
+        // イベントリスナーを追加する
+        eventEmitter.addListener(() => {
+          console.log("イベントが発火しました");
+        });
+
+        // eventEmitterへ参照がなくなった事で自動的にイベントリスナーが解放される
+        eventEmitter = null;
+
+        // また、あるオブジェクトから計算した結果を一時的に保存する用途でもよく使われる
+        // 次の例では、HTML要素の高さを計算した結果を保存して、二回目以降に同じ計算をしないようにしている
+        const cache = new WeakMap();
+
+        function getHeight(element) {
+          if (cache.has(element)) {
+            return cache.get(element);
+          }
+          const height = element.getBoundingClientRect().height;
+          // element オブジェクトに対して高さを紐づけて保存している
+          cache.set(element, height);
+          return height;
+        }
+        console.log("");
+
+        // NaNをキーにした時の挙動
+        const map11 = new Map();
+        map11.set(NaN, "value");
+
+        // NaNは===で比較した時には常にfalse
+        console.log(NaN === NaN); // false
+
+        // NaN同士は比較出来る
+        console.log(map11.has(NaN)); // true
+        console.log(map11.get(NaN)); // value
+        console.log("");
+
+        // ■ Set
+        // Setはセット型のコレクションを扱うためのビルドインオブジェクトであり、
+        // ★重複する値が無い事を保証したコレクションの事を指す
+        // Setは追加した値を列挙出来るので、uniqueな要素を保証した配列としてよく使われる
+        // 但し配列と違って、要素は順序を持たないのでインデックスによるアクセスは出来ない
+
+        // □ セットの作成と初期化
+        // Setオブジェクトをnewする事で、新規Setインスタンスを作成出来る
+        // 作成したばかりのセットは何も持ってないので、sizeは0になる
+
+        const set1 = new Set();
+        console.log(set1.size); // 0
+
+        // newで初期化する時に、コンストラクタに初期値（渡せるのはイテレーブルなオブジェクト）を渡す事が出来る
+        // Setでは重複する値を持たない事を保証するために、同じ値は1つのみ格納される
+
+        const set2 = new Set(["value1", "value2", "value2", "value3"]);
+        console.log(set2.size); // 3
+        console.log(set2); // Set(3) {"value1", "value2", "value3"}
+
+        // □ 値の追加と取り消し
+        // 作成したセットに値を追加するには、add()を使う
+        // 既に持っている値ををセットにadd()した場合は無視される
+        // また、セットが特定の値を持っているかどうかを確認するhas()メソッドがある
+        const set3 = new Set();
+        set3.add("a");
+        set3.add("b");
+        console.log(set3.size); // 2
+        console.log(set3); // Set(2) {"a", "b"}
+        set3.add("a");
+        console.log(set3.size); // 2 ※"a"は既にあるので追加されない
+        console.log(set3.has("a")); // true
+        console.log(set3.has("b")); // true
+        console.log(set3.has("c")); // false
+
+        // セットから値を削除するには、delete()メソッドを使う
+        // 全ての値を削除する場合は、clear()メソッドを使う
+        set3.add("d");
+        set3.delete("a");
+        console.log(set3); // Set(2) {"b", "d"}
+        set3.clear();
+        console.log(set3); // Set(0) {}
+
+        // □ セットの反復処理
+        // セットが持つ要素をイテレートするには、for...ofを使う。セットへの追加順に値が取り出される
+        const set4 = new Set();
+        set4.add(2);
+        set4.add(4);
+        set4.add(1);
+        set4.add(3);
+        console.log(set4); // Set(4) {2, 4, 1, 3}
+        set4.add("a");
+        let result4 = [];
+        for (let val of set4) {
+          result4.push(val);
+        }
+        console.log(result4); // (5) [2, 4, 1, 3, "a"]
+
+        // セットが持つ要素列挙メソッドとして、forEach()、keys()、values()、entries()がある
+        // これらはMapとの類似性保持？の為に存在するが、セットにはキーが無いので、keys()はvalues()のエイリアスになっており、
+        // entries()は[値, 値]の挿入順のエントリーを返す
+
+        // □ WeakSet
+        // WeakSetは弱い参照を持つセット（WeakMap参照）。
+        // Setと違ってイテレーブルでないので反復処理は出来ない
+        // 追加・削除・存在確認しか出来ないので、データのユニークさの確認に特化したセットと言える
+        // 弱参照なので、値として保持出来るのは、参照型のオブジェクトのみ
+
+        console.log("");
+      </script>
+      <p class="title">MapとSet</p>
+      <pre>
+      <code class="prettyprint">
+        // ES2015では、データの集まりを扱うコレクションとして、配列のほかにMap（マップ型のコレクション）とSet(セット型のコレクション)が追加された
+
+        // ■ Map ... マップは、「キー(key)：値(value)」の組み合わせからなる抽象データ型
+        //          他のプログラミング言語では、ディクショナリやハッシュマップ、連想配列等と呼ばれる
+
+        // □ Mapの作成と初期化
+        const map1 = new Map();
+        console.log(map1.size); // 0 ... 作成されたばかりのMapは何も持ってないため
+
+        // Mapの作成2
+        // Mapオブジェクトをnewで初期化する時に、コンストラクタに初期値（エントリー配列）を引数で渡せる
+        // ※エントリー ... [キー, 値]の配列形式で表現した配列
+        const map2 = new Map([["key1", "value1"], ["key2", "value2"]]);
+        console.log(map2.size); // 2 ... 二個のエントリー配列で初期化されたため
+
+        // □ Mapオブジェクトの要素の追加と、取り出し
+        // Mapには新しい要素をSet()メソッドで追加出来、Get()メソッドで取得出来る
+        // Set()メソッドは特定の「キー：値」を持つ要素をマップに追加する。但し、同じキーで複数回呼び出した場合は後の値で上書きされる
+        // Get()メソッドは特定のキーに紐づいた値を取得する。また、特定のキーに紐づいた値を持っているか確認するhas()メソッドがある（結果をbooleanで返す）。
+        const map3 = new Map();
+
+        // 新要素の追加
+        map3.set("key_1", "value_1");
+        console.log(map3); // Map(1) {"key_1" => "value_1"}
+        console.log(map3.size); // 1
+        console.log(map3.get("key_1")); // value_1
+
+        // 要素の上書き
+        map3.set("key_1", "value_1b");
+        console.log(map3.get("key_1")); // value_1b
+
+        // キーの存在確認
+        console.log(map3.has("key_1")); // true
+        console.log(map3.has("key_2")); // false
+
+        // delete()メソッドを使って、特定の要素を削除する
+        // 渡されたキーと、そのキーに紐づいた値がマップから削除される
+        map3.delete("key_1");
+        console.log(map3); // Map(0) {} ※key_1とその値が削除されたため
+
+        // clear()メソッドを使うと、マップ内の全ての要素が削除される
+        const map4 = new Map([["key-1", "value-1"], ["key-2", "value-2"]]);
+        map4.set("key-3", "value-3");
+        console.log(map4); // Map(3) {"key-1" => "value-1", "key-2" => "value-2", "key-3" => "value-3"}
+        map4.clear();
+        console.log(map4); // Map(0) {}
+
+        // □ マップの反復処理
+        // マップが持つ要素を列挙するメソッドとして、forEach()、keys()、values()、entreis()がある
+
+        // forEach()メソッドは、マップが持つ全ての要素を、マップへの追加順に反復（イテレート）する
+        // コールバック関数には引数（値、キー、マップ）が渡される
+        // Array.prototype.forEach()と似ているが、インデックスの代わりにキーが渡される（マップはindexでなくkeyで要素を特定するため）
+        const map5 = new Map([
+          ["key_1", "value_1"],
+          ["key_2", "value_2"],
+          ["key_3", "value_3"]
+        ]);
+        let result5 = [];
+        map5.forEach((value, key, map) => {
+          // mapは今回のような場合は省略可
+          result5.push(`${key} : ${value}`);
+        });
+        console.log(result5); // (3) ["key_1 : value_1", "key_2 : value_2", "key_3 : value_3"]
+
+        // keys()メソッドは、マップが持つ全ての要素の「キー」を挿入順に並べたイテレーターオブジェクトを返す
+        // values()メソッドは、同様に全ての要素の「値」を挿入順に並べたイテレーターオブジェクトを返す
+        // ★これらの戻り値は配列ではなく、イテレーターオブジェクトになる
+        // その為、for..ofやArray.from()メソッドに渡して、配列に変換して使う
+        const map6 = new Map([
+          ["key_1", "value_1"],
+          ["key_2", "value_2"],
+          ["key_3", "value_3"]
+        ]);
+        let result6 = [];
+        // keys()の戻り値を反復（イテレートする）
+        for (let key of map6.keys()) {
+          result6.push(key);
+        }
+        console.log(result6); // (3) ["key_1", "key_2", "key_3"]
+        // keys()の戻り値（iterator）から配列を作成する
+        let result6b = Array.from(map6.keys());
+        console.log(result6b); // (3) ["key_1", "key_2", "key_3"]
+
+        // entriesメソッドは、マップが持つ全ての要素をエントリーとして、挿入順に並べたイテレーターオブジェクトを返す
+        // （↑で出た通り、エントリー＝[キー, 値]の配列）
+        // その為、配列の分割代入（Destructuring assignment）を使うとエントリーからキーと値を簡単に取り出す事が出来る
+        const map7 = new Map([
+          ["key_1", "value_1"],
+          ["key_2", "value_2"],
+          ["key_3", "value_3"]
+        ]);
+        let result7 = [];
+        for (let [k, v] of map7.entries()) {
+          result7.push(`${k} : ${v}`);
+        }
+        console.log(result7); // (3) ["key_1 : value_1", "key_2 : value_2", "key_3 : value_3"]
+
+        // Map自身もイテレーブルなオブジェクトなので、for..ofで反復出来る
+        // Mapをfor...ofで反復した時、全ての要素をエントリーとして挿入順に反復する
+        // つまりentries()メソッドの戻り値を反復した時と同じ結果が得られる
+        const map8 = new Map([
+          ["key_1", "value_1"],
+          ["key_2", "value_2"],
+          ["key_3", "value_3"]
+        ]);
+        let result8 = [];
+        for (let [k, v] of map8) {
+          result8.push(`${k} : ${v}`);
+        }
+        console.log(result8); // (3) ["key_1 : value_1", "key_2 : value_2", "key_3 : value_3"]
+
+        // □ マップとしてのObejctと、マップ
+        // ES2015でMap()が登場するまで、JavaScriptではマップを実現するためにObject()が利用されてきた。
+        // 何かをキーにして値にアクセスする、という時点でMap()とObject()はよく似ている
+        // 但し、マップとしてのオブジェクトには幾つかの問題がある
+
+        // ・ObjectのPrototypeオブジェクトから継承されたプロパティによって、意図しないマッピングが生じる危険性がある
+        // ・プロパティとしてデータを持つため、キーとして使えるのは文字列かSymbolに限られる
+
+        // Objectにはprototypeオブジェクトがあるため、幾つかのプロパティが初期化した段階から存在する
+        // Objectをマップとして使うと、そのプロパティと同じ名前のキーを使おうとした時に問題が生じる
+        // （例えばconstructorという文字列は、Object.prototype.constructorと衝突する）
+
+        const map9 = {};
+        // マップがキーを持つ事を確認する
+        function has(key) {
+          return typeof map9[key] !== "undefined";
+        }
+        console.log(has("foo")); // false
+        // Objectのプロパティが存在する
+        console.log(has("constructor") + "\n\n"); // true
+
+        // 上記の問題は、Object.create(null)のようにオブジェクトを作成する事で回避されてきた
+        // https://jsprimer.net/basic/prototype-object/#not-inherit-object
+        // [コラム] Object.prototypeを継承しないオブジェクト
+
+        // ES2015でこれらの問題を根本的に解決する為にMap()が導入された
+        // Map()はプロパティとは異なる仕組みでデータを格納する（ので、Mapのプロトタイプが持つメソッドやプロパティとキーが衝突する事はない）
+        // またMap()のキーとしてあらゆるオブジェクトを使う事が出来る
+        // 他にもMap()には↓のような利点がある
+
+        // ・マップのサイズを簡単に知る事出来る
+        // ・マップが持つ要素を簡単に列挙出来る
+        // ・オブジェクトをキーに設定すると、参照毎に違うマッピングが出来る？↓でキー毎にカウント数として値を設定
+
+        // 例えば、ショッピングカートのようなシステムを作る時に、次の様に商品のオブジェクトと注文数をマッピング出来る
+
+        // ショッピングカートを表現するクラス
+        class ShoppingCart {
+          constructor() {
+            // 商品とその数を持つマップを作成
+            this.items = new Map();
+            console.log(this.items); // Map(0) {} 生成直後なので
+          }
+
+          // カートに商品を追加する（keyとvalueを設定）
+          addItem(item) {
+            console.log(item); // {name: "みかん", price: 100} 又は {name: "りんご", price: 200}
+            const count = this.items.get(item) || 0; // アイテム名がキーの値を取得する←× "item"では無いので。
+            // 渡されたキー（{name: "みかん", price: 100}）と同じプロパティがあれば、その値（value）を取得、なければ0を取得
+            this.items.set(item, count + 1); // キー（{name: "みかん", price: 100}）を設定、値（カウント数）を設定
+            // キーが文字列で無くオブジェクト全体を1つのキーとして使っている（考え方）
+          }
+
+          // カート内の合計金額を返す
+          getTotalPrice() {
+            console.log("getTotalPrice()");
+            return Array.from(this.items).reduce(
+              (total, [item, count], currentIndex, currentArray) => {
+                // reduce: コールバック関数無名、関数の引数＝accumulator（total: トータル金額）, currentValue（エントリー配列で[キー（今回オブジェクト）, 値（value）]）、
+                // Array.from： itemsマップから新しい配列を作る、reduce()の結果を
+                console.log(
+                  "total:",
+                  total,
+                  "| item: ",
+                  item,
+                  "| count: ",
+                  count,
+                  "| currentIndex: ",
+                  currentIndex,
+                  "| currentAry: ",
+                  currentArray
+                );
+                // total: 0 | item:  {name: "みかん", price: 100} | count:  2 | currentIndex:  0 | currentAry:  (2) [Array(2), Array(2)]
+                // total: 200 | item:  {name: "りんご", price: 200} | count:  1 | currentIndex:  1 | currentAry:  (2) [Array(2), Array(2)]
+                return total + item.price * count; // トータル金額は、マップ内のインデックスn番目のキー内の"price"キーの値（100 or 200）× キーに対応するvalue（個数）
+              },
+              0
+            ); // initialValue = 初期値（これが無い場合は配列の先頭が初期値として使われる）
+          }
+
+          // カートの中身を文字列として返す
+          toString() {
+            console.log("toString()");
+            return Array.from(this.items)
+              .map(([item, count], currentIndex, currentArray) => {
+                // currentValue, index, array
+                console.log(
+                  "item: ",
+                  item,
+                  "| count: ",
+                  count,
+                  "| currentIndex: ",
+                  currentIndex,
+                  "| currentAry: ",
+                  currentArray
+                );
+                // item:  {name: "みかん", price: 100} | count:  2 | currentIndex:  0 | currentAry:  (2) [Array(2), Array(2)]
+                // item:  {name: "りんご", price: 200} | count:  1 | currentIndex:  1 | currentAry:  (2) [Array(2), Array(2)]
+                return `${item.name}： ${count}`;
+              })
+              .join(", "); // ','で区切った新しい文字列を返す
+          }
+        }
+
+        // 新規ショッピングカート作成
+        let sCart = new ShoppingCart();
+        let shopItems = [
+          { name: "みかん", price: 100 },
+          { name: "りんご", price: 200 }
+        ];
+
+        // カートに商品を追加する
+        sCart.addItem(shopItems[0]);
+        sCart.addItem(shopItems[0]);
+        sCart.addItem(shopItems[1]);
+
+        // 合計金額を表示する
+        console.log(sCart.getTotalPrice()); // 400
+
+        // カートの中身を表示する
+        console.log(sCart.toString()); // みかん： 2, りんご： 1
+
+        // Mapオブジェクトの現在の内容
+        console.log(sCart);
+        /*
+              ShoppingCart {
+                items: Map(2)
+                [[Entries]]
+                  0: {Object => 2}
+                    key:
+                      name: "みかん"
+                      price: 100
+                    value: 2
+                  1: {Object => 1}
+                  key: {name: "りんご", price: 200}
+                  value: 1
+                size: 2
+              }
+              */
+        console.log("");
+
+        // Objectをマップとして使った時に起きる多くの問題は、Map()を使う事で解決するが、
+        // 常にMap()がObject()の代わりになる訳ではない
+
+        // マップとしてのオブジェクトには次の利点がある。
+        // ・リテラル表現があるため、作成しやすい
+        // ・既定のJSON表現があるため、JSON.stringigy()を使ってJSONにするのが簡単である
+        // ・ネイティブAPI・外部API問わず、多くの関数がマップとしてObjectを渡される設計になっている
+
+        // 次の例はログインフォームのsubmitイベントを受け取った後、サーバーにPOSTリクエストを送信している
+        // サーバーに文字列を送るためにJSON.stringify()を使用している
+        // そのため、Objectのマップを作ってフォームの入力内容を持たせている
+        // このような簡易なマップにおいては、Objectを使う方が適切である
+
+        // URLとObjectのマップを受け取ってPOSTリクエストを送る関数
+        function sendPostRequest(url, data) {
+          // XMLHttpRequestを使ってPOSTリクエストを送る
+          const xhr = new XMLHttpRequet();
+
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send(JSON.stringify(data));
+          xhr.open("POST", url);
+        }
+
+        // formのsubmitイベントを受け取る関数
+        function onLoginFormSubmit(event) {
+          const form = event.target;
+          const data = {
+            userName: form.elements.userName,
+            password: fomr.elements.password
+          };
+          sendPostRequest("/api/login", data);
+        }
+
+        // □ WeakMap
+        // WeakMapは、Mapと同じくマップを扱うためのビルトインオブジェクトである
+        // Mapと違う点は、★「キーを弱い参照（Weak Reference）で持つ」事である
+
+        // 弱い参照とは、ガベージコレクション（GC）による、オブジェクトの開放を妨げないための特殊な参照である
+        // GCによりメモリから解放されるオブジェクトは、どこからも参照されていないオブジェクトだけであるが、
+        // 弱参照は参照があっても解放される（そのためメモリリークを防げる）
+
+        // ↓のサンプルでは、最初にobjに{}を設定し、WeakMapではそのobjをキーにして値を設定している
+        // 次にobjに別の値（ここではnull）を代入すると、objが元々参照していた{}という値はどこからも参照されなくなる
+        // この時、WeakMapは{}への弱い参照を持っているが、弱い参照はGCを妨げないため、{}は不要になった値としてGCによりメモリから解放される
+
+        // 同時に、WeakMapは解放されたオブジェクト{}をキーにして紐づいていた値（"value"）を破棄出来る
+        // ★但し、どのタイミングで実際にメモリから解放するかは、JavaScriptエンジンの実装に依存する
+
+        const map10 = new WeakMap();
+
+        // キーとなるオブジェクト
+        let obj = {};
+
+        // キーに値をセットする
+        map10.set(obj, "value");
+
+        console.log(map10); // WeakMap { [[Entries]] 0: {Object => "value"} }
+
+        // {}への参照を破棄する
+        obj = null;
+
+        console.log(map10); // WeakMap { [[Entries]] No properties }
+
+        // →GCが発生するタイミングでWeakMapから値が破棄される
+
+        // WeakMapはMapと似ているがイテレーブルでは無い
+        // その為、キーを列挙するkeysや、データ数を返すsizeプロパティ等は存在しない
+        // また、キーを弱参照で持つ特性上、キーとして使えるのは参照型のオブジェクトだけになる
+
+        // WeakMapの主な使い方の一つは、クラスにプライベートの値を格納する事である
+        // this（クラスインスタンス）をWeakMapのキーにする事で、インスタンスの外からアクセス出来ない値を保持出来、
+        // インスタンスのが参照されなくなった時は自動で解放される
+
+        // 次のコードでは、まだオブジェクトが発火するイベントのリスナー関数（イベントリスナー）をWeakMapで管理している
+        // このマップをMapで実装してしまうと、明示的に削除されるまで、イベントリスナーはメモリ上に残り続ける
+        // ここでWeakMapを使うと、AddListener()に渡されたlistenerはEventEmitterインスタンスが参照されなくなった時に、自動的に解放される
+
+        // イベントリスナーを管理するマップ
+        const listenersMap = new WeakMap();
+
+        class EventEmitter {
+          addListener(listener) {
+            // thisに紐づいたリスナーの配列を取得する
+            const listeners = listenersMap.get(this) || [];
+            const newLlisteners = listeners.concat(listener);
+            // thisをキーに新しい配列をセットする
+            listenersMap.set(this, newLlisteners);
+          }
+        }
+
+        // 上記クラスの実行例
+        let eventEmitter = new EventEmitter();
+
+        // イベントリスナーを追加する
+        eventEmitter.addListener(() => {
+          console.log("イベントが発火しました");
+        });
+
+        // eventEmitterへ参照がなくなった事で自動的にイベントリスナーが解放される
+        eventEmitter = null;
+
+        // また、あるオブジェクトから計算した結果を一時的に保存する用途でもよく使われる
+        // 次の例では、HTML要素の高さを計算した結果を保存して、二回目以降に同じ計算をしないようにしている
+        const cache = new WeakMap();
+
+        function getHeight(element) {
+          if (cache.has(element)) {
+            return cache.get(element);
+          }
+          const height = element.getBoundingClientRect().height;
+          // element オブジェクトに対して高さを紐づけて保存している
+          cache.set(element, height);
+          return height;
+        }
+
+        // NaNをキーにした時の挙動
+        const map11 = new Map();
+        map11.set(NaN, "value");
+
+        // NaNは===で比較した時には常にfalse
+        console.log(NaN === NaN); // false
+
+        // NaN同士は比較出来る
+        console.log(map11.has(NaN)); // true
+        console.log(map11.get(NaN)); // value
+        console.log("");
+
+        // ■ Set
+        // Setはセット型のコレクションを扱うためのビルドインオブジェクトであり、
+        // ★重複する値が無い事を保証したコレクションの事を指す
+        // Setは追加した値を列挙出来るので、uniqueな要素を保証した配列としてよく使われる
+        // 但し配列と違って、要素は順序を持たないのでインデックスによるアクセスは出来ない
+
+        // □ セットの作成と初期化
+        // Setオブジェクトをnewする事で、新規Setインスタンスを作成出来る
+        // 作成したばかりのセットは何も持ってないので、sizeは0になる
+
+        const set1 = new Set();
+        console.log(set1.size); // 0
+
+        // newで初期化する時に、コンストラクタに初期値（渡せるのはイテレーブルなオブジェクト）を渡す事が出来る
+        // Setでは重複する値を持たない事を保証するために、同じ値は1つのみ格納される
+
+        const set2 = new Set(["value1", "value2", "value2", "value3"]);
+        console.log(set2.size); // 3
+        console.log(set2); // Set(3) {"value1", "value2", "value3"}
+
+        // □ 値の追加と取り消し
+        // 作成したセットに値を追加するには、add()を使う
+        // 既に持っている値ををセットにadd()した場合は無視される
+        // また、セットが特定の値を持っているかどうかを確認するhas()メソッドがある
+        const set3 = new Set();
+        set3.add("a");
+        set3.add("b");
+        console.log(set3.size); // 2
+        console.log(set3); // Set(2) {"a", "b"}
+        set3.add("a");
+        console.log(set3.size); // 2 ※"a"は既にあるので追加されない
+        console.log(set3.has("a")); // true
+        console.log(set3.has("b")); // true
+        console.log(set3.has("c")); // false
+
+        // セットから値を削除するには、delete()メソッドを使う
+        // 全ての値を削除する場合は、clear()メソッドを使う
+        set3.add("d");
+        set3.delete("a");
+        console.log(set3); // Set(2) {"b", "d"}
+        set3.clear();
+        console.log(set3); // Set(0) {}
+
+        // □ セットの反復処理
+        // セットが持つ要素をイテレートするには、for...ofを使う。セットへの追加順に値が取り出される
+        const set4 = new Set();
+        set4.add(2);
+        set4.add(4);
+        set4.add(1);
+        set4.add(3);
+        console.log(set4); // Set(4) {2, 4, 1, 3}
+        set4.add("a");
+        let result4 = [];
+        for (let val of set4) {
+          result4.push(val);
+        }
+        console.log(result4); // (5) [2, 4, 1, 3, "a"]
+
+        // セットが持つ要素列挙メソッドとして、forEach()、keys()、values()、entries()がある
+        // これらはMapとの類似性保持？の為に存在するが、セットにはキーが無いので、keys()はvalues()のエイリアスになっており、
+        // entries()は[値, 値]の挿入順のエントリーを返す
+
+        // □ WeakSet
+        // WeakSetは弱い参照を持つセット（WeakMap参照）。
+        // Setと違ってイテレーブルでないので反復処理は出来ない
+        // 追加・削除・存在確認しか出来ないので、データのユニークさの確認に特化したセットと言える
+        // 弱参照なので、値として保持出来るのは、参照型のオブジェクトのみ
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Map" target="_blank">Array.prototype.map() - MDN - Mozilla</a></p>
+
+      <p><a href="https://linky-juku.com/set-and-mapping/" target="_blank">集合と写像をわかりやすく!~線形代数への道しるべ~</a></p>
+
+      <p><a href="https://jsprimer.net/basic/map-and-set/" target="_blank">Map/Set - js-primer</a></p>
+      
+    </div>
+
+    <script src="src/map.js"></script>
+  </body>
+</html>

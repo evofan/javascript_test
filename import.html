@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>import / export</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // ■ ECMAScriptモジュール（ESモジュール、ES2015で導入）は、保守性・名前空間・再利用性の為に使われる
+        // ・「保守性」... 依存性の高いコードの集合を一カ所にまとめ、それ以外のモジュールへの依存性を減らす事が出来る
+        // ・「名前空間」... モジュール毎に分かれたスコープがあり、グローバルの名前空間を汚染しない
+        // ・「再利用性」... 便利な変数や関数を複数の場所にコピー＆ペーストせずに、モジュールとして再利用出来る
+
+        // 1つのJavaScriptモジュールは、1つのJavaScriptファイルに対応する
+        // モジュールは変数や関数等を外部にエクスポート出来る
+        // また、別のモジュールで宣言された変数や関数等をインポート出来る
+
+        // ■ ECMAScriptモジュールの構文
+        // ECMAスクリプトモジュールは、export文によって変数や関数等をエクスポート出来る
+        // また、import文を使って、別のモジュールからエクスポートされたものをインポート出来る
+        // インポートとエクスポートには、それぞれ「名前付き」「デフォルト」という2種類の方法がある
+
+        // ■ 名前付きエクスポート / インポート
+
+        // 名前付きエクスポートは、モジュール毎に複数の変数や関数等をエクスポート出来る
+        // ↓ export文の後に続けて{}を書き、その中にエクスポートする変数を入れる事で、宣言済みの変数を名前付きエクスポート出来る
+        
+        // [named-export.js]
+        // const foo = "foo";
+        // 宣言済みのオブジェクトを名前付きエクスポートする
+        // export { foo };
+
+        // また、名前付きエクスポートでは、export文を宣言文の前に付けると、宣言と同時に名前付きエクスポート出来る
+        // export function bar () {};
+
+        // 名前付きインポートは、指定したモジュールから名前を指定して選択的にインポート出来る
+        // 次の例では、my-module.jsから名前付きエクスポートされたオブジェクトの名前を指定して、名前付きインポートしている
+        // import文の後に続けて{}を書き、その中にインポートしたい名前付きエクスポートの名前を入れる
+
+        // [named-import.js]
+        // ↑で名前付きエクスポートされたfooとbarをインポートする
+        // import { "foo", "bar" } from "./my-module.js";
+        // console.log(foo); // => "foo"
+        // console.log(bar); // => "bar"
+
+        // 名前付きエクスポート/インポートのエイリアス
+        // 名前付きエクスポート/インポートにはエイリアスの仕組みがある。
+        // エイリアスを使うと、宣言済みの変数を、違う名前でエクスポート出来る
+        // エイリアスを付けるには、asの後にエクスポートしたい名前を記述する
+        // const internalFoo = "foo";
+        // internalFooをfooとして名前付きエクスポートする
+        // export { internalFoo as foo };
+
+        // 名前付きインポートしたオブジェクトにも名前を付ける事が出来る（↑と同様にasで指定する）
+        // fooとして名前付きエクスポートされた変数をmyFooとしてインポートする
+        // import { foo as myFoo } from "./named-export-alias.js";
+        // console.log(myFoo); // => "foo"
+
+        // ■ デフォルトエクスポート/インポート
+
+        // デフォルトエクスポートは、モジュール毎に1つしかエクスポート出来ない特殊なエクスポートである
+        // ↓では、既に宣言されている変数をデフォルトエクスポートしている
+        // export default文で、後に続く式の評価結果をデフォルトエクスポートする
+        // const foo = "foo";
+        // foo変数の値をデフォルトエクスポートする
+        // export default foo;
+        
+        // また、export文を変数宣言の前に付けると、宣言と同時にデフォルトエクスポート出来る
+        // ★この時に関数や変数は名前を省略出来る
+        // 宣言と同時に関数をデフォルトエクスポートする
+        // export default function() {}
+
+        // 但し変数宣言は、宣言とデフォルトエクスポートを同時に行う事は出来ない
+        // ↓不正なコード
+        // export default const foo = "foo", bar = "bar";
+
+        // デフォルトインポートは、指定したモジュールのデフォルトエクスポートに名前を付けてインポートする
+        // ↓の例では、my-module.jsのデフォルトエクスポートにmyModuleという名前を付けてインポートしている
+        // （importの後に任意の名前を付ける事で、デフォルトエクスポートをインポート出来る）
+        // [my-module.js]
+        // export default {
+        //   baz: "baz";
+        // }
+
+        // [default-import.js]
+        // デフォルトエクスポートをmyModuleとしてインポートする
+        // import myModule from "./my-module.js";
+        // console.log(mtModule); // => { baz: "baz" }
+
+        // 実はデフォルトエクスポートは、defaultという固有名詞による名前付きエクスポートと同じものである
+        // その為、名前付きエクスポートで、as defaultとエイリアスを付ける事でデフォルトエクスポートをする事も出来る
+        // [default-export-alias.js]
+        // const foo = "foo";
+        // foo変数の値をデフォルトエクスポートする
+        // export { foo as default };
+
+        // 同様に名前付きインポートにおいても、defaultという名前がインポートに対応している
+        //（但しdefaultは予約語なので、as構文を使ってエイリアスを付ける必要がある）
+        // [default-import-with-named.js]
+        // myModuleとしてデフォルトインポートし、fooを名前付きインポートする
+        // import myModule, { foo } from "./my-module.js";
+        // console.log(foo); // => "foo"
+        // console.log(myModule); // => { baz: "baz" }
+
+        // ECMAスクリプトモジュールでは、エクスポートしてないものはインポート出来ない（依存関係が解決されずパースエラーになるため）
+        // なので、デフォルトインポートは、インポート先のモジュールがデフォルトエクスポートをしている必要があり、
+        // 名前付きインポートは、インポート先のモジュールが指定した名前付きエクスポートをしている必要がある
+
+        // ■ その他の構文
+
+        // □ 再エクスポート
+        // 再エクスポートとは、別のモジュールからエクスポートされたものを、改めて自分自身からエクスポートしなおす事である
+        // （複数のモジュールからエクスポートされたものをまとめたモジュールを作る時等に使われる）
+
+        // myModule.jsの全ての名前付きエクスポートを再エクスポートする
+        // export * from "./my-module.js"; // ←★project fileでindex.htmlから同階層のモジュールをエクスポートしている方法
+
+        // myModule.jsの名前付きエクスポートを選んで再エクスポートする
+        // export { foo, bar } from "./my-module.js";
+
+        // myModule.jsの名前付きエクスポートにエイリアスを付けて再エクスポートする
+        // export { foo as myModuleFoo , bar as myModuleBar } from "./my-module.js";
+
+        // myModule.jsのデフォルトエクスポートを、デフォルトエクスポートとして再エクスポートする
+        // export { default } from "./myModule.js";
+
+        // myModule.jsのデフォルトエクスポートを、名前付きエクスポートとして再エクスポートする
+        // export { default as myModuleDefaukt } from "./myModule.js";
+
+        // myModule.jsの名前付きエクスポートを、デフォルトエクスポートとして再エクスポートする
+        // export { foo as default } from "./myModule.js";
+
+        // □ 全てをインポート
+        // import * as構文は、全ての名前付きエクスポートをまとめてインポートする。
+        // この方法では、名前空間となるオブジェクトを宣言する。
+        // エクスポートされた変数や関数等にアクセスするには、★その名前空間オブジェクトのプロパティを使う
+        // また先程の通り、defaultという固有名を使うと、デフォルトエクスポートにもアクセス出来る
+        // [my-module.js]
+        // export const foo = "foo";
+        // export function bar() {};
+        // export default {
+        //   baz: "baz";
+        // }
+
+        // [namespace-import.js]
+        // 全ての名前付きエクスポートをmyModuleオブジェクトとしてまとめてインポートする
+        // import * as myModule from "./my-module.js";
+
+        // fooとして名前付きエクスポートされた値にアクセスする
+        // console.log(myModule.foo); // => "foo"
+
+        // defaultとしてデフォルトエクスポートされた値にアクセスする
+        // console.log(myModule.default); // => { baz: "baz" }
+
+        // □ 副作用のためのインポート
+        // モジュールの中には、グローバルのコードを実行するだけで、何もエクスポートしないものがある
+        // ↓例：グローバル変数を操作する
+        // [self-effects.js]
+        // import { foo } from "./myModule.js";
+
+        // グローバル変数を操作する
+        // window.foo = foo;
+
+        // このようなモジュールをインポートする場合は、副作用のためのインポート構文を使う
+        // この構文では、指定したモジュールを読み込んで実行するだで、何もインポートしない
+        // ↓.side-effecs.jsのグローバルコードが実行される
+        // import "./side-effects.js";
+
+        // ■ ECMAScriptモジュールを実行する
+        // 作成したEcmaScriptモジュールを実行する為には、起点となるJavScriptファイルをECMAScriptモジュールとして、ウェブブラウザに読み込ませる必要がある
+        // scriptタグの要素にtype="./module"属性を付与すると、ウェブブラウザは、JavaScriptファイルをECMAScriptモジュールとして読み込む
+
+        /*
+        my-module.jsをECMAScriptモジュールとして読み込む
+         script type="module" src="./my-module.js"
+
+        インラインでも同じ
+         script type="module"
+        inport { foo } from "./my-module.js"
+        */
+
+        // type="module"属性が付与されない場合は、通常のスクリプトとして扱われ、ECMAScriptモジュールの機能は使えない
+        // スクリプトとして読み込まれたJavaScriptでimport文やexportを実行するとシンタックスエラーが出る
+        console.log("");
+
+      </script>
+      
+      <p class="title">ECMAScriptモジュール</p>
+      <pre>
+      <code class="prettyprint">
+        // ■ ECMAScriptモジュール（ESモジュール、ES2015で導入）は、保守性・名前空間・再利用性の為に使われる
+        // ・「保守性」... 依存性の高いコードの集合を一カ所にまとめ、それ以外のモジュールへの依存性を減らす事が出来る
+        // ・「名前空間」... モジュール毎に分かれたスコープがあり、グローバルの名前空間を汚染しない
+        // ・「再利用性」... 便利な変数や関数を複数の場所にコピー＆ペーストせずに、モジュールとして再利用出来る
+
+        // 1つのJavaScriptモジュールは、1つのJavaScriptファイルに対応する
+        // モジュールは変数や関数等を外部にエクスポート出来る
+        // また、別のモジュールで宣言された変数や関数等をインポート出来る
+
+        // ■ ECMAScriptモジュールの構文
+        // ECMAスクリプトモジュールは、export文によって変数や関数等をエクスポート出来る
+        // また、import文を使って、別のモジュールからエクスポートされたものをインポート出来る
+        // インポートとエクスポートには、それぞれ「名前付き」「デフォルト」という2種類の方法がある
+
+        // ■ 名前付きエクスポート / インポート
+
+        // 名前付きエクスポートは、モジュール毎に複数の変数や関数等をエクスポート出来る
+        // ↓ export文の後に続けて{}を書き、その中にエクスポートする変数を入れる事で、宣言済みの変数を名前付きエクスポート出来る
+        
+        // [named-export.js]
+        const foo = "foo";
+        // 宣言済みのオブジェクトを名前付きエクスポートする
+        export { foo };
+
+        // また、名前付きエクスポートでは、export文を宣言文の前に付けると、宣言と同時に名前付きエクスポート出来る
+        export function bar () {};
+
+        // 名前付きインポートは、指定したモジュールから名前を指定して選択的にインポート出来る
+        // 次の例では、my-module.jsから名前付きエクスポートされたオブジェクトの名前を指定して、名前付きインポートしている
+        // import文の後に続けて{}を書き、その中にインポートしたい名前付きエクスポートの名前を入れる
+
+        // [named-import.js]
+        // ↑で名前付きエクスポートされたfooとbarをインポートする
+        import { "foo", "bar" } from "./my-module.js";
+        console.log(foo); // => "foo"
+        console.log(bar); // => "bar"
+
+        // 名前付きエクスポート/インポートのエイリアス
+        // 名前付きエクスポート/インポートにはエイリアスの仕組みがある。
+        // エイリアスを使うと、宣言済みの変数を、違う名前でエクスポート出来る
+        // エイリアスを付けるには、asの後にエクスポートしたい名前を記述する
+        const internalFoo = "foo";
+        // internalFooをfooとして名前付きエクスポートする
+        export { internalFoo as foo };
+
+        // 名前付きインポートしたオブジェクトにも名前を付ける事が出来る（↑と同様にasで指定する）
+        // fooとして名前付きエクスポートされた変数をmyFooとしてインポートする
+        import { foo as myFoo } from "./named-export-alias.js";
+        console.log(myFoo); // => "foo"
+
+        // ■ デフォルトエクスポート/インポート
+
+        // デフォルトエクスポートは、モジュール毎に1つしかエクスポート出来ない特殊なエクスポートである
+        // ↓では、既に宣言されている変数をデフォルトエクスポートしている
+        // export default文で、後に続く式の評価結果をデフォルトエクスポートする
+        const foo = "foo";
+        // foo変数の値をデフォルトエクスポートする
+        export default foo;
+        
+        // また、export文を変数宣言の前に付けると、宣言と同時にデフォルトエクスポート出来る
+        // ★この時に関数や変数は名前を省略出来る
+        // 宣言と同時に関数をデフォルトエクスポートする
+        export default function() {}
+
+        // 但し変数宣言は、宣言とデフォルトエクスポートを同時に行う事は出来ない
+        // ↓不正なコード
+        export default const foo = "foo", bar = "bar";
+
+        // デフォルトインポートは、指定したモジュールのデフォルトエクスポートに名前を付けてインポートする
+        // ↓の例では、my-module.jsのデフォルトエクスポートにmyModuleという名前を付けてインポートしている
+        // （importの後に任意の名前を付ける事で、デフォルトエクスポートをインポート出来る）
+        // [my-module.js]
+        export default {
+          baz: "baz";
+        }
+
+        // [default-import.js]
+        // デフォルトエクスポートをmyModuleとしてインポートする
+        import myModule from "./my-module.js";
+        console.log(mtModule); // => { baz: "baz" }
+
+        // 実はデフォルトエクスポートは、defaultという固有名詞による名前付きエクスポートと同じものである
+        // その為、名前付きエクスポートで、as defaultとエイリアスを付ける事でデフォルトエクスポートをする事も出来る
+        // [default-export-alias.js]
+        const foo = "foo";
+        // foo変数の値をデフォルトエクスポートする
+        export { foo as default };
+
+        // 同様に名前付きインポートにおいても、defaultという名前がインポートに対応している
+        //（但しdefaultは予約語なので、as構文を使ってエイリアスを付ける必要がある）
+        // [default-import-with-named.js]
+        // myModuleとしてデフォルトインポートし、fooを名前付きインポートする
+        import myModule, { foo } from "./my-module.js";
+        console.log(foo); // => "foo"
+        console.log(myModule); // => { baz: "baz" }
+
+        // ECMAスクリプトモジュールでは、エクスポートしてないものはインポート出来ない（依存関係が解決されずパースエラーになるため）
+        // なので、デフォルトインポートは、インポート先のモジュールがデフォルトエクスポートをしている必要があり、
+        // 名前付きインポートは、インポート先のモジュールが指定した名前付きエクスポートをしている必要がある
+
+        // ■ その他の構文
+
+        // □ 再エクスポート
+        // 再エクスポートとは、別のモジュールからエクスポートされたものを、改めて自分自身からエクスポートしなおす事である
+        // （複数のモジュールからエクスポートされたものをまとめたモジュールを作る時等に使われる）
+
+        // myModule.jsの全ての名前付きエクスポートを再エクスポートする
+        export * from "./my-module.js"; // ←★project fileでindex.htmlから同階層のモジュールをエクスポートしている方法
+
+        // myModule.jsの名前付きエクスポートを選んで再エクスポートする
+        export { foo, bar } from "./my-module.js";
+
+        // myModule.jsの名前付きエクスポートにエイリアスを付けて再エクスポートする
+        export { foo as myModuleFoo , bar as myModuleBar } from "./my-module.js";
+
+        // myModule.jsのデフォルトエクスポートを、デフォルトエクスポートとして再エクスポートする
+        export { default } from "./myModule.js";
+
+        // myModule.jsのデフォルトエクスポートを、名前付きエクスポートとして再エクスポートする
+        export { default as myModuleDefaukt } from "./myModule.js";
+
+        // myModule.jsの名前付きエクスポートを、デフォルトエクスポートとして再エクスポートする
+        export { foo as default } from "./myModule.js";
+
+        // □ 全てをインポート
+        // import * as構文は、全ての名前付きエクスポートをまとめてインポートする。
+        // この方法では、名前空間となるオブジェクトを宣言する。
+        // エクスポートされた変数や関数等にアクセスするには、★その名前空間オブジェクトのプロパティを使う
+        // また先程の通り、defaultという固有名を使うと、デフォルトエクスポートにもアクセス出来る
+        // [my-module.js]
+        export const foo = "foo";
+        export function bar() {};
+        export default {
+          baz: "baz";
+        }
+
+        // [namespace-import.js]
+        // 全ての名前付きエクスポートをmyModuleオブジェクトとしてまとめてインポートする
+        import * as myModule from "./my-module.js";
+
+        // fooとして名前付きエクスポートされた値にアクセスする
+        console.log(myModule.foo); // => "foo"
+
+        // defaultとしてデフォルトエクスポートされた値にアクセスする
+        console.log(myModule.default); // => { baz: "baz" }
+
+        // □ 副作用のためのインポート
+        // モジュールの中には、グローバルのコードを実行するだけで、何もエクスポートしないものがある
+        // ↓例：グローバル変数を操作する
+        // [self-effects.js]
+        import { foo } from "./myModule.js";
+
+        // グローバル変数を操作する
+        window.foo = foo;
+
+        // このようなモジュールをインポートする場合は、副作用のためのインポート構文を使う
+        // この構文では、指定したモジュールを読み込んで実行するだで、何もインポートしない
+        // ↓.side-effecs.jsのグローバルコードが実行される
+        import "./side-effects.js";
+
+        // ■ ECMAScriptモジュールを実行する
+        // 作成したEcmaScriptモジュールを実行する為には、起点となるJavScriptファイルをECMAScriptモジュールとして、ウェブブラウザに読み込ませる必要がある
+        // scriptタグの要素にtype="./module"属性を付与すると、ウェブブラウザは、JavaScriptファイルをECMAScriptモジュールとして読み込む
+
+        /*
+        my-module.jsをECMAScriptモジュールとして読み込む
+        &lt;script type="module" src="./my-module.js"&gt;&lt;script&gt;
+
+        &lt;!-- インラインでも同じ
+        &lt;script type="module"&gt;
+        inport { foo } from "./my-module.js"
+        &lt;/script&gt;
+        */
+
+        // type="module"属性が付与されない場合は、通常のスクリプトとして扱われ、ECMAScriptモジュールの機能は使えない
+        // スクリプトとして読み込まれたJavaScriptでimport文やexportを実行するとシンタックスエラーが出る
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/import" target="_blank">import - JavaScript - MDN - Mozilla</a></p>
+      
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/export" target="_blank">export - JavaScript - MDN - Mozilla</a></p>
+      
+      <p><a href="https://jsprimer.net/basic/module/" target="_blank">[ES2015] ECMAScriptモジュール</a></p>
+      
+      <p><a href="https://jsprimer.net/use-case/todoapp/entrypoint/" target="_blank">エントリポイント</a><br>
+      &gt;モジュールスコープとは、モジュールのトップレベルに自動的に作成されるスコープで、グローバルスコープの下に作られます。<br>
+      &gt;JavaScriptモジュールを別々のscript要素で読み込むと、モジュール同士でスコープが異なるため、モジュール同士で連携できません。</p>
+      
+      <p><a href="https://v8.dev/features/modules#mjs" target="_blank">JavaScript modules</a><br>
+      &gt;During development, the .mjs extension makes it crystal clear to you and anyone else<br>
+      &gt;looking at your project that the file is a module as opposed to a classic script. </p>
+
+      <!--<script src="src/import.js"></script>-->
+      <!--<script src="src/export.js"></script>-->
+
+  </body>
+</html>

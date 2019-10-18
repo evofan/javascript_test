@@ -41,7 +41,7 @@
 
         // ↑挙動的には同じだが、breakが使えない（走査して対象が見つかった→停止）filter等も。←find()を使えばOK？
 
-        // ↑forEachはObjectに使えない←Object.entries(obj).forEach()で廻せる
+        // ↑forEachはObjectに使えない ←Object.entries(obj).forEach()で廻せる
 
         console.log("");
       </script>
@@ -69,47 +69,225 @@
 
         // ↑挙動的には同じだが、breakが使えない（走査して対象が見つかった→停止）filter等も。←find()を使えばOK？
 
-        // ↑forEachはObjectに使えない←Object.entries(obj).forEach()で廻せる
+        // ↑forEachはObjectに使えない ←Object.entries(obj).forEach()で廻せる
       </code>
       </pre>
 
 
       <script>
-      // 配列に対してfor...ofを使う
-      const cat_ary2 = ["mike", "tama", "kuro"];
-      for (let i of cat_ary2) {
-        console.log(i);
-      }
-      // mike
-      // tama
-      // kuro
+        // ■ 配列に対してfor...ofを使う
+        const cat_ary2 = ["mike", "tama", "kuro"];
+        for (let i of cat_ary2) {
+          console.log(i);
+        }
+        // mike
+        // tama
+        // kuro
 
-      // Map（イテレーブルなオブジェクト）に対して使う
-      const cat_map = new Map([[1, "三毛"], [2, "タマ"], [3, "とら"]]);
-      console.log(cat_map); // Map(3) {1 => "三毛", 2 => "タマ", 3 => "とら"}
+        // ■ Map（イテレーブルなオブジェクト）に対して使う
+        const cat_map = new Map([[1, "三毛"], [2, "タマ"], [3, "とら"]]);
+        console.log(cat_map); // Map(3) {1 => "三毛", 2 => "タマ", 3 => "とら"}
+
+        // ■ Set（イテレーブルなオブジェクト、ユニークを保証）にも使える
+        const cat_set = new Set();
+        cat_set.add("mike");
+        cat_set.add("kuro");
+        cat_set.add("tama");
+        cat_set.add("kuro");
+        cat_set.add("shiro");
+        console.log(cat_set); // Set(4) {"mike", "kuro", "tama", "shiro"}
+        cat_set.delete("shiro");
+        result_cat = [];
+        for (let cat of cat_set) {
+          result_cat.push(cat);
+        }
+        console.log(result_cat); // (3) ["mike", "kuro", "tama"]
+        console.log("");
+
+        // ■ イテレーブルなオブジェクトを自前で作成し、for...ofで値を取得する
+        // 反復可能なオブジェクト
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Iteration_protocols
+        // 反復処理プロトコル
+
+        const iterableObj = {
+          // for...ofで抽出するのに必要なインターフェース
+          [Symbol.iterator]() {
+            const max_num = 10;
+            let num = 0;
+
+            const iterator = {
+              next() {
+                return { value: num++, done: num > max_num };
+              }
+            };
+            return iterator;
+          }
+        };
+        for (let elm of iterableObj) {
+          console.log(elm);
+        }
+        // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+        console.log("");
       </script>
 
-      <p class="title"></p>
+      <p class="title">for...ofの使用例</p>
       <pre>
       <code class="prettyprint">
+        // ■ 配列に対してfor...ofを使う
+        const cat_ary2 = ["mike", "tama", "kuro"];
+        for (let i of cat_ary2) {
+          console.log(i);
+        }
+        // mike
+        // tama
+        // kuro
+
+        // ■ Map（イテレーブルなオブジェクト）に対して使う
+        const cat_map = new Map([[1, "三毛"], [2, "タマ"], [3, "とら"]]);
+        console.log(cat_map); // Map(3) {1 => "三毛", 2 => "タマ", 3 => "とら"}
+
+        // ■ Set（イテレーブルなオブジェクト、ユニークを保証）にも使える
+        const cat_set = new Set();
+        cat_set.add("mike");
+        cat_set.add("kuro");
+        cat_set.add("tama");
+        cat_set.add("kuro");
+        cat_set.add("shiro");
+        console.log(cat_set); // Set(4) {"mike", "kuro", "tama", "shiro"}
+        cat_set.delete("shiro");
+        result_cat = [];
+        for (let cat of cat_set) {
+          result_cat.push(cat);
+        }
+        console.log(result_cat); // (3) ["mike", "kuro", "tama"]
+        console.log("");
+
+        // ■ イテレーブルなオブジェクトを自前で作成し、for...ofで値を取得する
+        // 反復可能なオブジェクト
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Iteration_protocols
+        // 反復処理プロトコル
+
+        const iterableObj = {
+          // for...ofで抽出するのに必要なインターフェース
+          [Symbol.iterator]() {
+            const max_num = 10;
+            let num = 0;
+
+            const iterator = {
+              next() {
+                return { value: num++, done: num > max_num };
+              }
+            };
+            return iterator;
+          }
+        };
+        for (let elm of iterableObj) {
+          console.log(elm);
+        }
+        // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
       </code>
       </pre>
 
       <script>
+        // for...ofとfor...inの差
+
+        // for...ofを使用して、たとえば配列のように、反復可能の値を反復処理
+        let animals = ["🐔", "🐷", "🐑", "🐇"];
+        let names = ["太郎", "次郎", "花子", "三郎"];
+        for (let animal of animals) {
+          // 動物たちにランダムで名前を付ける
+          let nameIndex = Math.floor(Math.random() * names.length);
+          console.log(`${names[nameIndex]} => ${animal}`);
+        }
+        // 三郎 => 🐔
+        // 三郎 => 🐷
+        // 花子 => 🐑
+        // 太郎 => 🐇
+
+        // Stringもイテレーブルな型なので、for...ofが使える
+        let str = "あいうえお";
+        for (let char of str) {
+          console.log(char.toUpperCase().repeat(3));
+        }
+        // あああ
+        // いいい
+        // ううう
+        // えええ
+        // おおお
+
+        // for...inを使用して、オブジェクトのプロパティ（オブジェクトキー）を反復処理
+        let oldcar = {
+          maker: "Honda",
+          model: "Prelude",
+          year: "1991"
+        };
+        for (let key in oldcar) {
+          console.log(`${key} -> ${oldcar[key]}`);
+        }
+        // maker -> Honda
+        // model -> Prelude
+        // year -> 1991
+
+        // for...inを使用して、配列や文字列などの反復可能オブジェクトのインデックス値を反復処理
+        let str2 = "ES6";
+        for (let idx in str2) {
+          console.log(`index of ${str2[idx]}: ${idx}`);
+        }
+        // index of E: 0
+        // index of S: 1
+        // index of 6: 2
+        console.log("");
       </script>
 
-      <p class="title"></p>
+      <p class="title">for...ofとfor...inの違い</p>
       <pre>
       <code class="prettyprint">
-      </code>
-      </pre>
+      
+        // for...ofを使用して、たとえば配列のように、反復可能の値を反復処理
+        let animals = ["🐔", "🐷", "🐑", "🐇"];
+        let names = ["太郎", "次郎", "花子", "三郎"];
+        for (let animal of animals) {
+          // 動物たちにランダムで名前を付ける
+          let nameIndex = Math.floor(Math.random() * names.length);
+          console.log(`${names[nameIndex]} => ${animal}`);
+        }
+        // 三郎 => 🐔
+        // 三郎 => 🐷
+        // 花子 => 🐑
+        // 太郎 => 🐇
 
-      <script>
-      </script>
+        // Stringもイテレーブルな型なので、for...ofが使える
+        let str = "あいうえお";
+        for (let char of str) {
+          console.log(char.toUpperCase().repeat(3));
+        }
+        // あああ
+        // いいい
+        // ううう
+        // えええ
+        // おおお
 
-      <p class="title"></p>
-      <pre>
-      <code class="prettyprint">
+        // for...inを使用して、オブジェクトのプロパティ（オブジェクトキー）を反復処理
+        let oldcar = {
+          maker: "Honda",
+          model: "Prelude",
+          year: "1991"
+        };
+        for (let key in oldcar) {
+          console.log(`${key} -> ${oldcar[key]}`);
+        }
+        // maker -> Honda
+        // model -> Prelude
+        // year -> 1991
+
+        // for...inを使用して、配列や文字列などの反復可能オブジェクトのインデックス値を反復処理
+        let str2 = "ES6";
+        for (let idx in str2) {
+          console.log(`index of ${str2[idx]}: ${idx}`);
+        }
+        // index of E: 0
+        // index of S: 1
+        // index of 6: 2
       </code>
       </pre>
 
@@ -119,20 +297,10 @@
       
       <p><a href="https://qiita.com/41semicolon/items/6ec0f6a9fdf7c97f1a41" target="_blank">for...of を使うなってAirbnbが言ってたから使わないようにしてたら慣れた</a></p>
 
-      <p><a href="" target="_blank"></a></p>
+      <p><a href="https://ginpen.com/2017/12/22/for-of/" target="_blank">イテレータとfor-of文で配列以外もぐーるぐる。（現代的JavaScriptおれおれアドベントカレンダー2017 – 22日目）</a></p>
       
-      
-<!--
-イテレータとfor-of文で配列以外もぐーるぐる。（現代的JavaScriptおれおれアドベントカレンダー2017 – 22日目）
-        https://ginpen.com/2017/12/22/for-of/
+      <p><a href="https://alligator.io/js/for-of-for-in-loops/" target="_blank">for...of vs for...in Loops in JavaScript</a></p>
 
-https://alligator.io/js/for-of-for-in-loops/
-emoji?
-
-        -->
-
-              <!--<p><a href="" target="_blank"></a></p>
-    
     </div>
 
     <script src="src/for_of.js"></script>
