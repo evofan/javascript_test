@@ -14,19 +14,631 @@
   <body>
     <div id="conatiner">
       <h1>JavaScript Test Memo</h1>
-      <h2>Generator, function*, yield</h2>
+      <h2>Generator, function*, yield, Iterator, yield*</h2>
       
       <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
 
-      <!--s/-->
       <script>
+        // ■ ジェネレータ
+        // 通常の関数は、単一の値を返す（又は何も返さない＝undefined）
+        // ジェネレータは、要求に応じ、次々に複数の値、場合によっては無限の値を生み出す（genetrate）事が出来る
+        // それらは反復可能（イテレーブル）と上手く機能し、データストリームを簡単に作成する事が出来る
+
+        // □ ジェネレータ関数
+        // ジェネレータを作成するには、特別な構文構造：function*、いわゆる”ジェネレータ関数”を使用する必要があります
+        // 例：
+        function* generateSequence() {
+          // ●●●（１）
+          yield 1;
+          yield 2;
+          return 3;
+        }
+        // generateSequence()が呼ばれた時、コードは実行されない。
+        // 代わりに”ジェネレータ”と呼ばれる、特別なオブジェクトを返す。
+
+        // ジェネレータ関数は、ジェネレーターオブジェクトを生成する
+        let generator_2 = generateSequence();
+        console.log(generator_2); // generateSequence {<suspended>}
+
+        // ジェネレータオブジェクトは、”凍結された関数呼び出し”と捉える事が出来ます。
+        // 作成時に、コードは●●●（１）の部分で一時停止される
+
+        // ジェネレータのメインメソッドは、next()である。
+        // ★next()が呼ばれると、最も近いyield<value>文まで実行を再開する
+        // ↓では、ジェネレータを作成し、最初に戻される値を取得している
+        let one = generator_2.next();
+        console.log(JSON.stringify(one)); // {"value":1,"done":false}
+
+        // ★next()の結果は常にオブジェクトである
+        // ・value ... 返された値
+        // ・done ... コードがまだ終わってない場合はfalse、そうでなければ（反復が終わっていれば）true
+
+        // ↑で最初の値だけ取得したので、続けて次の値を取得する（generatorが次のyieldを返す）
+        let two = generator_2.next();
+        console.log(JSON.stringify(two)); // {"value":2,"done":false}
+
+        // 3回目を呼び出すと、実行は関数の終了を意味するreturn文に到達する
+        let three = generator_2.next();
+        console.log(JSON.stringify(three)); // {"value":3,"done":true}
+
+        // ↑ジェネレータが完了したので（done: trueが返される）、value: 3を最終結果として返す。
+        // これ以上next()呼び出しをしても意味は無い
+        let three_next = generator_2.next();
+        console.log(JSON.stringify(three_next)); // ※{"done":true}がずっと返される
+
+        // このジェネレータをロールバックする事は出来ないが、
+        // 新たなgenerateSequence()呼び出しで別の物を作る事は出来る
+
+        // ↑までで理解すべき事は、ジェネレータは通常の関数と異なり、コードを実行しない事である。
+        // それらはジェネレータ工場（ファクトリ）として機能する
+        // function*の実行後はジェネレータ（オブジェクト）を返し、その後ジェネレータに（next()で）値を要求する
+
+        // ※function* f() か、 function *f()か。
+        // 構文的には両方とも正しいが、★アスタリスク(*)はジェネレータ関数である事を示し、名前でなく種類を表すので、
+        // 通常はfunction側に付ける
+
+        // □ ジェネレータ関数は反復可能
+        // next()メソッドを見て推測出来る通り、ジェネレータオブジェクトは反復可能（イテレーブル：iterable）である。
+        // 反復可能なので、for...ofを使って値をループする事が出来る
+        let generator_3 = generateSequence();
+        console.log(generator_3); // generateSequence {<suspended>}
+        for (let value of generator_3) {
+          // Uncaught TypeError: generateSequence is not iterable → function*の方を指定した場合
+          console.log(value);
+        }
+        // 1
+        // 2
+        // generatorObject.next()の場合には出力されていた最後の”3”が出力されていない事に注意！
+
+        // なので。for～ofを使う事が前提の場合は、ジェネレータ関数の最後の値をreturnで返すのでなく、yieldで返す必要がある
+        function* generateSequence_4() {
+          yield 1;
+          yield 2;
+          yield 3;
+        }
+        let generator_4 = generateSequence_4();
+        console.log(generator_4); // generateSequence_4 {<suspended>}
+        for (let value of generator_4) {
+          console.log(value);
+        }
+        // 1
+        // 2
+        // 3
+
+        // ジェネレータは反復可能なオブジェクトなので、スプレッド演算子...のような関連する全ての機能を呼び出す事が出来る
+        let sequence_4 = [0, ...generateSequence_4()];
+        console.log(sequence_4); // [0, 1, 2, 3] ※0の後に残りをジェネレータオブジェクトを反復した結果追加
+
+        // □ 反復可能（イテレーブル）の代わりにジェネレーターを使用する
+        //「反復可能なオブジェクト（https://ja.javascript.info/iterable）」で、値from...toを返す反復可能なrangeオブジェクトを作成したので
+        // そのコードをジェネレータを使用して作成してみる
+
+        // ※注：元
+        let range = {
+          from: 1,
+          to: 5,
+
+          // for..ofは最初にこのメソッドを一度呼び出す
+          [Symbol.iterator]() {
+            // ... これはiteratorオブジェクトを返す
+            // 以降、for..ofはそのオブジェクトでのみ機能し、次の値を要求します
+            return {
+              current: this.from,
+              last: this.to,
+
+              // next()をはfor..ofループの各イテレーションで呼ばれます
+              next() {
+                // 値をオブジェクトとして返す必要があります {done: ..., value: ...}
+                if (this.current <= this.last) {
+                  return { done: false, value: this.current++ };
+                } else {
+                  return { done: true };
+                }
+              }
+            };
+          }
+        };
+        console.log([...range]); // [1, 2, 3, 4, 5]
+
+        // ジェネレータを使用して反復可能なシーケンスを作成した場合
+        function* generateSequence_range(start, end) {
+          for (let i = start; i <= end; i++) {
+            yield i;
+          }
+        }
+        let sequence_range = [...generateSequence_range(1, 5)];
+        console.log(sequence_range); // [1, 2, 3, 4, 5]
+
+        // □ Symbol.iteratorからジェネレータへの変換
+        // ↑の例で、仮にカスタムのrangeオブジェクトを保持したいとなった場合、
+        // ジェネレータをSymbol.iteratorとして提供する事で、両方の世界からベストを得る事が出来る
+        let range2 = {
+          from: 1,
+          to: 5,
+          *[Symbol.iterator]() {
+            // ★ [Symbol.iterator]: function*()の短縮記法
+            for (let value = this.from; value <= this.to; value++) {
+              yield value;
+            }
+          }
+        };
+        console.log([...range2, 6]); // [1, 2, 3, 4, 5, 6]
+
+        // range2オブジェクトは今は反復可能になっている
+        // これは非常にうまく機能する、なぜならrange2[Symbol.iterator]が呼ばれた時、
+        // ・オブジェクトを生成して返す（ジェネレーターなので）
+        // ・オブジェクトはnext()メソッドを持つ
+        // ・{done:ture/false, value:値}の形式で値を返す
+        // これは偶然ではなく、ジェネレータはiterableをより簡単にする事を目的としているのでそのような事が出来る
+        // ジェネレータを使った最下段のパターンは、元のitrableなコードより遥かに簡潔で同じ機能を提供している
+
+        // ※ジェネレータの無限ループ注意
+        // 終わりのない疑似乱数を生成するようなジェネレータの場合は、for..ofの中でbreak;を必要とする
+
+        // □ ジェネレータの合成
+        // ジェネレータの合成は、ジェネレータ同士を透過的に埋め込む事を可能にするジェネレータの機能としてある
+        // 例えば↓のシーケンスを生成したい場合
+        // ・数字の0～9（文字コード48～57）
+        // ・大文字のA～Zが続く（文字コード65～90）
+        // ・アルファベット文字のa～zが続く（文字コード97～122）
+        // 次にそこから選択した文字でパスワードを作成する事を考慮、最初にシーケンス文字を生成する
+
+        // 通常の関数では、複数の別々の関数から結果をまとめる為に、それらを呼び出し、結果を格納し、最後に結合する
+        // ジェネレータ関数を使えば↓のように作成出来る
+
+        // ※ function* generateSequence_range(start, end) をそのまま使用
+        function* generatePasswordCodes() {
+          // 0..9
+          yield* generateSequence_range(48, 57);
+
+          // A..Z
+          yield* generateSequence_range(65, 90);
+
+          // a..z
+          yield* generateSequence_range(97, 122);
+        }
+
+        let str = "";
+        for (let code of generatePasswordCodes()) {
+          str += String.fromCharCode(code);
+        }
+        console.log(str); // 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+        console.log("");
+
+        // ↑の例に有る、特別なyield* ディレクティブは合成を担当する
+        // ★これは、別のジェネレータに実行を委譲（デリゲート）する
+        // あるいは、単純に言うとジェネレータを実行し、あたかもそれらが呼び出し元のジェネレータ自体によって行われたかのように、
+        // それらのyieldを外部に透過的に転送する
+
+        // ↑は
+        // ↓と同じ意味
+        /*
+              function* generatePasswordCodes() {
+                // 0..9
+                // yield* generateSequence_range(48, 57);
+                for (let i = start; i<=end; i++) yield i;
+
+                // A..Z
+                // yield* generateSequence_range(65, 90);
+                for (let i = start; i<=end; i++) yield i;
+
+                // a..z
+                // yield* generateSequence_range(97, 122);
+                for (let i = start; i<=end; i++) yield i;
+              }
+              */
+
+        // ジェネレータの合成は、あるジェネレータのフローを別のジェネレータに挿入する為の自然な方法
+        // 入れ子のジェネレータからの値が無限でも動作する（breakしなくて良い？）
+
+        // □ yieldは双方向
+        // 今までの例は、ジェネレータを強化されたイテレータのように使っていた
+        // しかし実際には、ジェネレータより強力で柔軟である
+        // なぜならyieldは双方向だからである＝結果を外部に返すだけでなく、ジェネレータ内部に値を渡す事も出来るからである
+        // その為には、引数を持つgenerator.next(arg)を呼び出す必要がある
+        // この引数はyieldの結果になる↓例
+        function* gen_() {
+          // 質問を外側のコードに渡して答えを待つ
+          let result = yield "2 + 2?"; //
+          console.log(result);
+        }
+        let generator_5 = gen_(); // ジェネレータオブジェクト作成
+        let question = generator_5.next().value; // 4がジェネレータから返ってくる
+        generator_5.next(4); // ジェネレータに値を渡す ※関数と呼び出しコードがお互いに値を渡し合っている
+        console.log("");
+
+        // 別の例
+        function* gen_2() {
+          let ask1 = yield "3+3?"; // 1つめのyieldに到達したら個の値を返す
+          console.log(ask1); // 3+3?
+          let ask2 = yield "3*3?";
+          console.log(ask2); // 3*3? // 2つめのyieldに到達したら個の値を返す
+        }
+        let generator_6 = gen_2();
+        console.log(generator_6.next().value); // 4、実行の開始、最初のyieldに到達 "2 + 2?"が、返される
+        console.log(generator_6.next(4).value); // 9、4を最初のyieldの結果として、ジェネレータに戻し、実行を再開する？
+        console.log(generator_6.next(9).done); // true、関数の終わりに到達したのでdoneが返る
+        console.log("");
+
+        // □ generator.throw
+        // ↑の例のように、外部のコードは、yieldの結果として、値をジェネレータに渡す可能性がある
+
+        // しかし、そこでエラーをスローする事も出来る
+        // エラーをyieldに渡すには、generator.throw(err)を呼び出す必要がある。この場合のerrは、yieldのある行に投げられる
+
+        // ↓の例で、"2+2?"のyieldはエラーになる
+        function* gen_3(params) {
+          try {
+            let result = yield "2+2?";
+            console.log(
+              "The execution does not reach here, because the exception is thrown above"
+            );
+          } catch (e) {
+            console.log(e); // Error: The answer is not found in my database
+          }
+        }
+        let generator_7 = gen_3();
+        let question2 = generator_7.next().value;
+        generator_7.throw(new Error("The answer is not found in my database"));
+        console.log("");
+
+        // エラーをキャッチするコードが無い場合、他の例外と同じく、ジェネレータは呼び出しコードで落ちる
+
+        // □ サマリ
+        // モダンなJavaScriptでは、ジェネレータは滅多にしようされない
+        // しかし、実行中に呼び出しコードとデータをやり取りする関数の機能は非常にユニークな為、便利な時がある
+        // （次の章の非同期ジェネレータを使ったストリーミングデータの処理等）
+
+        // □ タスク：疑似乱数ジェネレータ
+
+        // JavaScriptではMath.random()で乱数を作成出来るが、規則性のある乱数を作成したい場合の処理がある。
+        // ”シード疑似乱数ジェネレータ”と呼ばれる、最初に”シード（種）”を取り、以降それを元に次の値を作る方法である。
+        // シードが同じであれば、作られる乱数は毎回同じになる
+
+        // 問：seedを取り、乱数を生成するジェネレータ関数を作成せよ
+
+        // 答：
+        function* pseudoRandom(seed) {
+          let value = seed;
+          while (true) {
+            // trueなので常にループする、break無いので無限ループにならない→普通はこのままだとなるが、yieldで抜けを前提なので
+            console.log("in while ... "); // ★常に1回だけループ？yieldで抜けるから、実質breakと同じ
+            value = (value * 16807) % 2147483647;
+            yield value;
+          }
+        }
+        let seed_stat = 1;
+        let generator_8 = pseudoRandom(seed_stat); // ジェネレータオブジェクト生成
+        // next()だけだと、{done: true / false, value: 値 }のオブジェクトが返る
+        // next().valueまたは、next().doneだけで必要な方だけが取れる
+        console.log(generator_8.next()); // in while ... {value: 16807, done: false}
+        console.log(generator_8.next()); // in while ... {value: 282475249, done: false}
+        console.log(generator_8.next()); // in while ... {value: 1622650073, done: false}
+        console.log(generator_8.next()); // in while ... {value: 984943658, done: false}
+
+        // 別回答：
+        function pseudoRandom2(seed) {
+          let value = seed;
+          return function() {
+            value = (value * 16807) % 2147483647;
+            return value;
+          };
+        }
+        let generator_8b = pseudoRandom2(1);
+        // この方法（普通の関数）でも↑の問題は実現出来るが、後からfor..ofのイテレートを使ったり、ジェネレータの合成を使う事は出来ない
       </script>
-      <p class="title">タイトル</p>
+      <p class="title">ジェネレータ 高度なイテレーション</p>
       <pre>
       <code class="prettyprint">
+        // ■ ジェネレータ
+        // 通常の関数は、単一の値を返す（又は何も返さない＝undefined）
+        // ジェネレータは、要求に応じ、次々に複数の値、場合によっては無限の値を生み出す（genetrate）事が出来る
+        // それらは反復可能（イテレーブル）と上手く機能し、データストリームを簡単に作成する事が出来る
+
+        // □ ジェネレータ関数
+        // ジェネレータを作成するには、特別な構文構造：function*、いわゆる”ジェネレータ関数”を使用する必要があります
+        // 例：
+        function* generateSequence() {
+          // ●●●（１）
+          yield 1;
+          yield 2;
+          return 3;
+        }
+        // generateSequence()が呼ばれた時、コードは実行されない。
+        // 代わりに”ジェネレータ”と呼ばれる、特別なオブジェクトを返す。
+
+        // ジェネレータ関数は、ジェネレーターオブジェクトを生成する
+        let generator_2 = generateSequence();
+        console.log(generator_2); // generateSequence {&lt;suspended&gt;}
+
+        // ジェネレータオブジェクトは、”凍結された関数呼び出し”と捉える事が出来ます。
+        // 作成時に、コードは●●●（１）の部分で一時停止される
+
+        // ジェネレータのメインメソッドは、next()である。
+        // ★next()が呼ばれると、最も近いyield&lt;value&gt;文まで実行を再開する
+        // ↓では、ジェネレータを作成し、最初に戻される値を取得している
+        let one = generator_2.next();
+        console.log(JSON.stringify(one)); // {"value":1,"done":false}
+
+        // ★next()の結果は常にオブジェクトである
+        // ・value ... 返された値
+        // ・done ... コードがまだ終わってない場合はfalse、そうでなければ（反復が終わっていれば）true
+
+        // ↑で最初の値だけ取得したので、続けて次の値を取得する（generatorが次のyieldを返す）
+        let two = generator_2.next();
+        console.log(JSON.stringify(two)); // {"value":2,"done":false}
+
+        // 3回目を呼び出すと、実行は関数の終了を意味するreturn文に到達する
+        let three = generator_2.next();
+        console.log(JSON.stringify(three)); // {"value":3,"done":true}
+
+        // ↑ジェネレータが完了したので（done: trueが返される）、value: 3を最終結果として返す。
+        // これ以上next()呼び出しをしても意味は無い
+        let three_next = generator_2.next();
+        console.log(JSON.stringify(three_next)); // ※{"done":true}がずっと返される
+
+        // このジェネレータをロールバックする事は出来ないが、
+        // 新たなgenerateSequence()呼び出しで別の物を作る事は出来る
+
+        // ↑までで理解すべき事は、ジェネレータは通常の関数と異なり、コードを実行しない事である。
+        // それらはジェネレータ工場（ファクトリ）として機能する
+        // function*の実行後はジェネレータ（オブジェクト）を返し、その後ジェネレータに（next()で）値を要求する
+
+        // ※function* f() か、 function *f()か。
+        // 構文的には両方とも正しいが、★アスタリスク(*)はジェネレータ関数である事を示し、名前でなく種類を表すので、
+        // 通常はfunction側に付ける
+
+        // □ ジェネレータ関数は反復可能
+        // next()メソッドを見て推測出来る通り、ジェネレータオブジェクトは反復可能（イテレーブル：iterable）である。
+        // 反復可能なので、for...ofを使って値をループする事が出来る
+        let generator_3 = generateSequence();
+        console.log(generator_3); // generateSequence {&lt;suspended&gt;}
+        for (let value of generator_3) {
+          // Uncaught TypeError: generateSequence is not iterable → function*の方を指定した場合
+          console.log(value);
+        }
+        // 1
+        // 2
+        // generatorObject.next()の場合には出力されていた最後の”3”が出力されていない事に注意！
+
+        // なので。for～ofを使う事が前提の場合は、ジェネレータ関数の最後の値をreturnで返すのでなく、yieldで返す必要がある
+        function* generateSequence_4() {
+          yield 1;
+          yield 2;
+          yield 3;
+        }
+        let generator_4 = generateSequence_4();
+        console.log(generator_4); // generateSequence_4 {&lt;suspended&gt;}
+        for (let value of generator_4) {
+          console.log(value);
+        }
+        // 1
+        // 2
+        // 3
+
+        // ジェネレータは反復可能なオブジェクトなので、スプレッド演算子...のような関連する全ての機能を呼び出す事が出来る
+        let sequence_4 = [0, ...generateSequence_4()];
+        console.log(sequence_4); // [0, 1, 2, 3] ※0の後に残りをジェネレータオブジェクトを反復した結果追加
+
+        // □ 反復可能（イテレーブル）の代わりにジェネレーターを使用する
+        //「反復可能なオブジェクト（https://ja.javascript.info/iterable）」で、値from...toを返す反復可能なrangeオブジェクトを作成したので
+        // そのコードをジェネレータを使用して作成してみる
+
+        // ※注：元
+        let range = {
+          from: 1,
+          to: 5,
+
+          // for..ofは最初にこのメソッドを一度呼び出す
+          [Symbol.iterator]() {
+            // ... これはiteratorオブジェクトを返す
+            // 以降、for..ofはそのオブジェクトでのみ機能し、次の値を要求します
+            return {
+              current: this.from,
+              last: this.to,
+
+              // next()をはfor..ofループの各イテレーションで呼ばれます
+              next() {
+                // 値をオブジェクトとして返す必要があります {done: ..., value: ...}
+                if (this.current &lt;= this.last) {
+                  return { done: false, value: this.current++ };
+                } else {
+                  return { done: true };
+                }
+              }
+            };
+          }
+        };
+        console.log([...range]); // [1, 2, 3, 4, 5]
+
+        // ジェネレータを使用して反復可能なシーケンスを作成した場合
+        function* generateSequence_range(start, end) {
+          for (let i = start; i &lt;= end; i++) {
+            yield i;
+          }
+        }
+        let sequence_range = [...generateSequence_range(1, 5)];
+        console.log(sequence_range); // [1, 2, 3, 4, 5]
+
+        // □ Symbol.iteratorからジェネレータへの変換
+        // ↑の例で、仮にカスタムのrangeオブジェクトを保持したいとなった場合、
+        // ジェネレータをSymbol.iteratorとして提供する事で、両方の世界からベストを得る事が出来る
+        let range2 = {
+          from: 1,
+          to: 5,
+          *[Symbol.iterator]() {
+            // ★ [Symbol.iterator]: function*()の短縮記法
+            for (let value = this.from; value &lt;= this.to; value++) {
+              yield value;
+            }
+          }
+        };
+        console.log([...range2, 6]); // [1, 2, 3, 4, 5, 6]
+
+        // range2オブジェクトは今は反復可能になっている
+        // これは非常にうまく機能する、なぜならrange2[Symbol.iterator]が呼ばれた時、
+        // ・オブジェクトを生成して返す（ジェネレーターなので）
+        // ・オブジェクトはnext()メソッドを持つ
+        // ・{done:ture/false, value:値}の形式で値を返す
+        // これは偶然ではなく、ジェネレータはiterableをより簡単にする事を目的としているのでそのような事が出来る
+        // ジェネレータを使った最下段のパターンは、元のitrableなコードより遥かに簡潔で同じ機能を提供している
+
+        // ※ジェネレータの無限ループ注意
+        // 終わりのない疑似乱数を生成するようなジェネレータの場合は、for..ofの中でbreak;を必要とする
+
+        // □ ジェネレータの合成
+        // ジェネレータの合成は、ジェネレータ同士を透過的に埋め込む事を可能にするジェネレータの機能としてある
+        // 例えば↓のシーケンスを生成したい場合
+        // ・数字の0～9（文字コード48～57）
+        // ・大文字のA～Zが続く（文字コード65～90）
+        // ・アルファベット文字のa～zが続く（文字コード97～122）
+        // 次にそこから選択した文字でパスワードを作成する事を考慮、最初にシーケンス文字を生成する
+
+        // 通常の関数では、複数の別々の関数から結果をまとめる為に、それらを呼び出し、結果を格納し、最後に結合する
+        // ジェネレータ関数を使えば↓のように作成出来る
+
+        // ※ function* generateSequence_range(start, end) をそのまま使用
+        function* generatePasswordCodes() {
+          // 0..9
+          yield* generateSequence_range(48, 57);
+
+          // A..Z
+          yield* generateSequence_range(65, 90);
+
+          // a..z
+          yield* generateSequence_range(97, 122);
+        }
+
+        let str = "";
+        for (let code of generatePasswordCodes()) {
+          str += String.fromCharCode(code);
+        }
+        console.log(str); // 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+        console.log("");
+
+        // ↑の例に有る、特別なyield* ディレクティブは合成を担当する
+        // ★これは、別のジェネレータに実行を委譲（デリゲート）する
+        // あるいは、単純に言うとジェネレータを実行し、あたかもそれらが呼び出し元のジェネレータ自体によって行われたかのように、
+        // それらのyieldを外部に透過的に転送する
+
+        // ↑は
+        // ↓と同じ意味
+        /*
+              function* generatePasswordCodes() {
+                // 0..9
+                // yield* generateSequence_range(48, 57);
+                for (let i = start; i&lt;=end; i++) yield i;
+
+                // A..Z
+                // yield* generateSequence_range(65, 90);
+                for (let i = start; i&lt;=end; i++) yield i;
+
+                // a..z
+                // yield* generateSequence_range(97, 122);
+                for (let i = start; i&lt;=end; i++) yield i;
+              }
+              */
+
+        // ジェネレータの合成は、あるジェネレータのフローを別のジェネレータに挿入する為の自然な方法
+        // 入れ子のジェネレータからの値が無限でも動作する（breakしなくて良い？）
+
+        // □ yieldは双方向
+        // 今までの例は、ジェネレータを強化されたイテレータのように使っていた
+        // しかし実際には、ジェネレータより強力で柔軟である
+        // なぜならyieldは双方向だからである＝結果を外部に返すだけでなく、ジェネレータ内部に値を渡す事も出来るからである
+        // その為には、引数を持つgenerator.next(arg)を呼び出す必要がある
+        // この引数はyieldの結果になる↓例
+        function* gen_() {
+          // 質問を外側のコードに渡して答えを待つ
+          let result = yield "2 + 2?"; //
+          console.log(result);
+        }
+        let generator_5 = gen_(); // ジェネレータオブジェクト作成
+        let question = generator_5.next().value; // 4がジェネレータから返ってくる
+        generator_5.next(4); // ジェネレータに値を渡す ※関数と呼び出しコードがお互いに値を渡し合っている
+        console.log("");
+
+        // 別の例
+        function* gen_2() {
+          let ask1 = yield "3+3?"; // 1つめのyieldに到達したら個の値を返す
+          console.log(ask1); // 3+3?
+          let ask2 = yield "3*3?";
+          console.log(ask2); // 3*3? // 2つめのyieldに到達したら個の値を返す
+        }
+        let generator_6 = gen_2();
+        console.log(generator_6.next().value); // 4、実行の開始、最初のyieldに到達 "2 + 2?"が、返される
+        console.log(generator_6.next(4).value); // 9、4を最初のyieldの結果として、ジェネレータに戻し、実行を再開する？
+        console.log(generator_6.next(9).done); // true、関数の終わりに到達したのでdoneが返る
+        console.log("");
+
+        // □ generator.throw
+        // ↑の例のように、外部のコードは、yieldの結果として、値をジェネレータに渡す可能性がある
+
+        // しかし、そこでエラーをスローする事も出来る
+        // エラーをyieldに渡すには、generator.throw(err)を呼び出す必要がある。この場合のerrは、yieldのある行に投げられる
+
+        // ↓の例で、"2+2?"のyieldはエラーになる
+        function* gen_3(params) {
+          try {
+            let result = yield "2+2?";
+            console.log(
+              "The execution does not reach here, because the exception is thrown above"
+            );
+          } catch (e) {
+            console.log(e); // Error: The answer is not found in my database
+          }
+        }
+        let generator_7 = gen_3();
+        let question2 = generator_7.next().value;
+        generator_7.throw(new Error("The answer is not found in my database"));
+        console.log("");
+
+        // エラーをキャッチするコードが無い場合、他の例外と同じく、ジェネレータは呼び出しコードで落ちる
+
+        // □ サマリ
+        // モダンなJavaScriptでは、ジェネレータは滅多にしようされない
+        // しかし、実行中に呼び出しコードとデータをやり取りする関数の機能は非常にユニークな為、便利な時がある
+        // （次の章の非同期ジェネレータを使ったストリーミングデータの処理等）
+
+        // □ タスク：疑似乱数ジェネレータ
+
+        // JavaScriptではMath.random()で乱数を作成出来るが、規則性のある乱数を作成したい場合の処理がある。
+        // ”シード疑似乱数ジェネレータ”と呼ばれる、最初に”シード（種）”を取り、以降それを元に次の値を作る方法である。
+        // シードが同じであれば、作られる乱数は毎回同じになる
+
+        // 問：seedを取り、乱数を生成するジェネレータ関数を作成せよ
+
+        // 答：
+        function* pseudoRandom(seed) {
+          let value = seed;
+          while (true) {
+            // trueなので常にループする、break無いので無限ループにならない→普通はこのままだとなるが、yieldで抜けを前提なので
+            console.log("in while ... "); // ★常に1回だけループ？yieldで抜けるから、実質breakと同じ
+            value = (value * 16807) % 2147483647;
+            yield value;
+          }
+        }
+        let seed_stat = 1;
+        let generator_8 = pseudoRandom(seed_stat); // ジェネレータオブジェクト生成
+        // next()だけだと、{done: true / false, value: 値 }のオブジェクトが返る
+        // next().valueまたは、next().doneだけで必要な方だけが取れる
+        console.log(generator_8.next()); // in while ... {value: 16807, done: false}
+        console.log(generator_8.next()); // in while ... {value: 282475249, done: false}
+        console.log(generator_8.next()); // in while ... {value: 1622650073, done: false}
+        console.log(generator_8.next()); // in while ... {value: 984943658, done: false}
+
+        // 別回答：
+        function pseudoRandom2(seed) {
+          let value = seed;
+          return function() {
+            value = (value * 16807) % 2147483647;
+            return value;
+          };
+        }
+        let generator_8b = pseudoRandom2(1);
+        // この方法（普通の関数）でも↑の問題は実現出来るが、後からfor..ofのイテレートを使ったり、ジェネレータの合成を使う事は出来ない
       </code>
       </pre>
-      <!--/s-->
 
       <p class="title">参考サイト：</p>
 
@@ -41,6 +653,8 @@
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/yield*" target="_blank">yield* - JavaScript | MDN - Mozilla</a></p>
 
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Iterators_and_Generators" target="_blank">イテレーターとジェネレーター - JavaScript | MDN</a></p>
+
+      <p><a href="https://ja.javascript.info/generators" target="_blank">ジェネレータ - 現代の JavaScript チュートリアル</a></p>
     
     </div>
 
