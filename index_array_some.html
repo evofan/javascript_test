@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Array.prototype.some()</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // .map()、.reduce()、および.filter()に関する私の記事の非常に多くのビューに続いて、
+        // JavaScript開発者の兵器庫で役立つツールである2つの配列メソッドを共有する必要があると考えました：
+        // .some()および、find()
+        // ダイブしましょう！
+
+        // ■ some()
+        // この配列メソッドは、1つ以上の値が探しているものに対応しているかどうかを判断するのに役立ちます。
+        // はっきりしない場合は、例を挙げて説明しましょう…
+
+        // 以下は、極秘組織で働く工作員のリストです。
+        let operatives = [
+          { id: 12, name: "Mike", pilot: false },
+          { id: 44, name: "Kuro", pilot: true },
+          { id: 59, name: "Tama", pilot: false },
+          { id: 122, name: "Saba", pilot: false }
+        ];
+
+        // 工作員の中にパイロットがいるかどうかを知りたい。その目標を達成する多くの方法があります。
+        // ほとんどの人は、おそらく.forEach()を使用して、次のような事をします。
+        let listHasPilots = false;
+
+        operatives.forEach(function(operative) {
+          if (operative.pilot) {
+            listHasPilots = true;
+          }
+        });
+        console.log(listHasPilots); // true
+
+        // リストにパイロットが含まれているかどうかを確認するためだけの行です。
+        // .some()を使用してみましょう！
+        let listHasPilots2 = operatives.some(function(operative) {
+          return operative.pilot;
+        });
+        console.log(listHasPilots2); // true
+
+        // アロー関数を使用してさらに簡潔にする事も出来ます（ES6サポート、BabelまたはTypeScriptが必要です）
+        let listHasPilots3 = operatives.some(operative => operative.pilot);
+        console.log(listHasPilots3); // true
+
+        // ■ どのように機能しますか？
+        // さて、引数として.some()関数を渡します。その関数は、配列内の各値に対して実行されます。
+        // 次に、値が記述した条件に適合するかどうかを確認出来ます。
+        // この関数はブール値を返す必要があります（ただし、真偽値も機能します）。
+        // 1つのtrueが返されるとすぐに、.some()自体がtrueを返します。
+        // 条件で処理された値がどれもtrueでない場合（すべてfalseを返す場合）、
+        // .some()はfalseを返します。
+
+        // 1つのtrueが返されるとすぐに、.some()は他の配列値のチェックを停止する事に注意して下さい。
+        // 上記の例では、2番目の工作員であるKuroがパイロットであるため、関数は2回だけ実行されます。
+        // 他のパイロットを確認する必要はありません。
+
+        // TL; DR：配列の値の一部が探しているものに対応する場合、..some()はtrueを返します。
+        // そうでない場合は、falseを返します。
+
+        // .every()
+        // コメントで指摘したように、配列の全ての値が.every()を使用して条件に一致するかどうかも確認出来る事を知っておいて下さい。
+        // .some()とまったく同じように機能しますが、すべての出現が一致する場合にのみtrueを返します。
+
+        // ■ find()
+        // この配列メソッドは、まさにそれが言うことをします：あなたが探しているものを見つけます。
+        // 簡単に言うと、.find()は渡された条件に対応する最初の値を返します。
+        // 先ほどと同じデータを使用して実際に見てみましょう。
+        // 工作員のリストは次の通りです。
+        let operatives2 = [
+          { id: 12, name: "Mike", pilot: false },
+          { id: 44, name: "Kuro", pilot: true },
+          { id: 59, name: "Tama", pilot: false },
+          { id: 122, name: "Saba", pilot: false }
+        ];
+
+        // 以前と同じですが、今回はランクにパイロットがいるかどうかを尋ねるのではなく、
+        // そのパイロットのプロフィールが必要です。find()を使用して必要な値を出力しましょう：
+        let firstPilot = operatives.find(function(operative) {
+          return operative.pilot;
+        });
+        console.log(firstPilot); // {id: 44, name: "Kuro", pilot: true}
+
+        // ES6のアロー表記でさらに短く：
+        let firstPilot2 = operatives.find(o => o.pilot); // {id: 44, name: "Kuro", pilot: true}
+        console.log(firstPilot2); // {id: 44, name: "Kuro", pilot: true}
+
+        // ご覧のとおり、コードは.some()の場合とまったく同じですが、唯一の違いはfindの一部を変更した事です！
+        // しかし今では、ブール値を返す代わりに、リストの最初のパイロットを返します。
+
+        // 強調しましょう：.find()は最初の一致を返します。
+        // より多くの値が条件に一致する場合、それは重要ではありません。
+        // 最初の一致のみが返されます。 すべての一致のリストが必要な場合は、.find()の代わりに.filter()を使用する必要があります。
+
+        // 一致するものが見つからない場合、.find()はundefinedを返します。
+
+        // ■ 長所
+        // .forや.forEach()等の一般的なループの代わりに.find()と.some()を使用すると、コードが短くなるだけでなく、★意図が明確になります。
+        // ループを使用して何でも出来ますが、.find()を使用すると、1つの特定の配列項目を探している事を示します。
+        // .some()に関しては、配列にニーズに合ったアイテムが含まれているかどうかを明確にチェックしています。
+        //
+        // コードを明確にしてください！ 関連する場合は、.find()および.some()を使用します。
+
+        // ■ おしまい
+        // 何か新しい事を学んだ事を願っています。 知識を仲間の開発者と共有しましょう！
+        // JSコミュニティがよりクリーンでシンプルなコードを書くのに役立つJavaScriptの宝石をもっと知っていますか？
+        // もしそうなら、コメントを残して、私はそれについてのブログ記事を書く事を試みます。
+        // コーディングを続けてください！
+        console.log();
+      </script>
+      <p class="title">タイトル</p>
+      <pre>
+      <code class="prettyprint">
+        // .map()、.reduce()、および.filter()に関する私の記事の非常に多くのビューに続いて、
+        // JavaScript開発者の兵器庫で役立つツールである2つの配列メソッドを共有する必要があると考えました：
+        // .some()および、find()
+        // ダイブしましょう！
+
+        // ■ some()
+        // この配列メソッドは、1つ以上の値が探しているものに対応しているかどうかを判断するのに役立ちます。
+        // はっきりしない場合は、例を挙げて説明しましょう…
+
+        // 以下は、極秘組織で働く工作員のリストです。
+        let operatives = [
+          { id: 12, name: "Mike", pilot: false },
+          { id: 44, name: "Kuro", pilot: true },
+          { id: 59, name: "Tama", pilot: false },
+          { id: 122, name: "Saba", pilot: false }
+        ];
+
+        // 工作員の中にパイロットがいるかどうかを知りたい。その目標を達成する多くの方法があります。
+        // ほとんどの人は、おそらく.forEach()を使用して、次のような事をします。
+        let listHasPilots = false;
+
+        operatives.forEach(function(operative) {
+          if (operative.pilot) {
+            listHasPilots = true;
+          }
+        });
+        console.log(listHasPilots); // true
+
+        // リストにパイロットが含まれているかどうかを確認するためだけの行です。
+        // .some()を使用してみましょう！
+        let listHasPilots2 = operatives.some(function(operative) {
+          return operative.pilot;
+        });
+        console.log(listHasPilots2); // true
+
+        // アロー関数を使用してさらに簡潔にする事も出来ます（ES6サポート、BabelまたはTypeScriptが必要です）
+        let listHasPilots3 = operatives.some(operative => operative.pilot);
+        console.log(listHasPilots3); // true
+
+        // ■ どのように機能しますか？
+        // さて、引数として.some()関数を渡します。その関数は、配列内の各値に対して実行されます。
+        // 次に、値が記述した条件に適合するかどうかを確認出来ます。
+        // この関数はブール値を返す必要があります（ただし、真偽値も機能します）。
+        // 1つのtrueが返されるとすぐに、.some()自体がtrueを返します。
+        // 条件で処理された値がどれもtrueでない場合（すべてfalseを返す場合）、
+        // .some()はfalseを返します。
+
+        // 1つのtrueが返されるとすぐに、.some()は他の配列値のチェックを停止する事に注意して下さい。
+        // 上記の例では、2番目の工作員であるKuroがパイロットであるため、関数は2回だけ実行されます。
+        // 他のパイロットを確認する必要はありません。
+
+        // TL; DR：配列の値の一部が探しているものに対応する場合、..some()はtrueを返します。
+        // そうでない場合は、falseを返します。
+
+        // .every()
+        // コメントで指摘したように、配列の全ての値が.every()を使用して条件に一致するかどうかも確認出来る事を知っておいて下さい。
+        // .some()とまったく同じように機能しますが、すべての出現が一致する場合にのみtrueを返します。
+
+        // ■ find()
+        // この配列メソッドは、まさにそれが言うことをします：あなたが探しているものを見つけます。
+        // 簡単に言うと、.find()は渡された条件に対応する最初の値を返します。
+        // 先ほどと同じデータを使用して実際に見てみましょう。
+        // 工作員のリストは次の通りです。
+        let operatives2 = [
+          { id: 12, name: "Mike", pilot: false },
+          { id: 44, name: "Kuro", pilot: true },
+          { id: 59, name: "Tama", pilot: false },
+          { id: 122, name: "Saba", pilot: false }
+        ];
+
+        // 以前と同じですが、今回はランクにパイロットがいるかどうかを尋ねるのではなく、
+        // そのパイロットのプロフィールが必要です。find()を使用して必要な値を出力しましょう：
+        let firstPilot = operatives.find(function(operative) {
+          return operative.pilot;
+        });
+        console.log(firstPilot); // {id: 44, name: "Kuro", pilot: true}
+
+        // ES6のアロー表記でさらに短く：
+        let firstPilot2 = operatives.find(o => o.pilot); // {id: 44, name: "Kuro", pilot: true}
+        console.log(firstPilot2); // {id: 44, name: "Kuro", pilot: true}
+
+        // ご覧のとおり、コードは.some()の場合とまったく同じですが、唯一の違いはfindの一部を変更した事です！
+        // しかし今では、ブール値を返す代わりに、リストの最初のパイロットを返します。
+
+        // 強調しましょう：.find()は最初の一致を返します。
+        // より多くの値が条件に一致する場合、それは重要ではありません。
+        // 最初の一致のみが返されます。 すべての一致のリストが必要な場合は、.find()の代わりに.filter()を使用する必要があります。
+
+        // 一致するものが見つからない場合、.find()はundefinedを返します。
+
+        // ■ 長所
+        // .forや.forEach()等の一般的なループの代わりに.find()と.some()を使用すると、コードが短くなるだけでなく、★意図が明確になります。
+        // ループを使用して何でも出来ますが、.find()を使用すると、1つの特定の配列項目を探している事を示します。
+        // .some()に関しては、配列にニーズに合ったアイテムが含まれているかどうかを明確にチェックしています。
+        //
+        // コードを明確にしてください！ 関連する場合は、.find()および.some()を使用します。
+
+        // ■ おしまい
+        // 何か新しい事を学んだ事を願っています。 知識を仲間の開発者と共有しましょう！
+        // JSコミュニティがよりクリーンでシンプルなコードを書くのに役立つJavaScriptの宝石をもっと知っていますか？
+        // もしそうなら、コメントを残して、私はそれについてのブログ記事を書く事を試みます。
+        // コーディングを続けてください！
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/some" target="_blank">Array.prototype.some() - JavaScript | MDN - Mozilla</a></p>
+      
+      <p><a href="https://medium.com/poka-techblog/simplify-your-javascript-use-some-and-find-f9fb9826ddfd" target="_blank">Simplify your JavaScript – Use .some() and .find()</a></p>
+
+    </div>
+
+    <script src="src/array_some.js"></script>
+  </body>
+</html>

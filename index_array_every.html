@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Array.prototype.every()</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // ■ Q. .map()、.every()、.forEach()の違いは？
+
+        // ■ A. 戻り値が違う
+
+        // .map()は「新しいオブジェクトの配列」を返す
+        // .every()は「ブール値」を返す
+        // .forEach()は「何も返さない」
+
+        // □ その他：要素をループする関数との比較
+
+        // .every() ... false又は何かfalseyな値が返った時にイテレートを停止する
+        // .some() ... true又はtruthyな値が返った時にイテレートを停止する
+        // .filter() ... フィルター関数がtrueを返す要素を含む新しい配列を作成し、falseを返す要素を省略する
+        // .map() ... イテレータ関数によって返された値から新しい配列を作成する
+        // .reduce() ... イテレーターを繰り返し呼び出して値を作成し、以前の値を渡す(1つの値に集約する)。配列の内容や他の多くのものを合計するのに役立つ
+        // .reduceRight() ... reduce()に似ているが、昇順ではなく降順で機能する
+
+        // □ その他：forEach()ではメソッドチェーンは出来ないが、map()では出来る。
+        let arrayNumbers1 = [3, 1, 2, 0, 4];
+        let result1 = arrayNumbers1.map(i => i * 2).sort();
+        console.log(result1); // [0, 2, 4, 6, 8]
+
+        let arrayNumbers2 = [3, 1, 6, 2, 5, 4];
+        let result2 = arrayNumbers2.map(i => i * 2).sort((a, b) => a - b);
+        console.log(result2); // [2, 4, 6, 8, 10, 12]
+        console.log("");
+      </script>
+      <p class="title">.map() .every() .forEach()の違い</p>
+      <pre>
+      <code class="prettyprint">
+        // ■ Q. .map()、.every()、.forEach()の違いは？
+
+        // ■ A. 戻り値が違う
+
+        // .map()は「新しいオブジェクトの配列」を返す
+        // .every()は「ブール値」を返す
+        // .forEach()は「何も返さない」
+
+        // □ その他：要素をループする関数との比較
+
+        // .every() ... false又は何かfalseyな値が返った時にイテレートを停止する
+        // .some() ... true又はtruthyな値が返った時にイテレートを停止する
+        // .filter() ... フィルター関数がtrueを返す要素を含む新しい配列を作成し、falseを返す要素を省略する
+        // .map() ... イテレータ関数によって返された値から新しい配列を作成する
+        // .reduce() ... イテレーターを繰り返し呼び出して値を作成し、以前の値を渡す(1つの値に集約する)。配列の内容や他の多くのものを合計するのに役立つ
+        // .reduceRight() ... reduce()に似ているが、昇順ではなく降順で機能する
+
+        // □ その他：forEach()ではメソッドチェーンは出来ないが、map()では出来る。
+        let arrayNumbers1 = [3, 1, 2, 0, 4];
+        let result1 = arrayNumbers1.map(i => i * 2).sort();
+        console.log(result1); // [0, 2, 4, 6, 8]
+
+        let arrayNumbers2 = [3, 1, 6, 2, 5, 4];
+        let result2 = arrayNumbers2.map(i => i * 2).sort((a, b) => a - b);
+        console.log(result2); // [2, 4, 6, 8, 10, 12]
+      </code>
+      </pre>
+
+      <script>
+        // ■ Q. JavaScriptを使用して配列内の全てののエントリをループするにはどうすればよいですか？ ※2012年8月の質問
+        // 私はそれがこのようなものだと思った：
+        //
+        // forEach(instance in theArray)
+        //
+        // theArrayは私の配列ですが、これは間違っているようです。
+
+        // ■ A1. あなたがセーフガードでそれを使用するか、少なくともそれがあなたを噛むかもしれない理由を少なくとも知っていない限り、for-inを使用しないで下さい。
+        //
+        // 最善の策は通常、
+        // ・for...ofループする（ES2015+専用）
+        // ・Array#forEach()、又はそれに関係するsome()のようなメソッド（ES5+専用）
+        // ・シンプルな昔ながらのforループ
+        // ・安全装置内のfor...inループ
+
+        // JavaScriptには、配列および配列のようなオブジェクトをループするための強力なセマンティクスがあります。
+        // 答えを2つの部分に分割しました。純粋な配列のオプションと、引数オブジェクト、その他の反復可能なオブジェクト（ES2015 +）、
+        // DOMコレクションなど、配列のようなもののためのオプションです。
+
+        // ES5をES5にトランスコンパイルする事で、ES5エンジンでもES2015オプションを使用出来るようになりました。
+        // 詳細については、「ES2015 transpiling」/「ES6 transpiling」を検索して下さい...
+
+        // ～詳細省略
+
+        // ■ A2. この答え（A1）は絶望的に古くなっています。
+        // より現代的なアプローチについては、配列で利用可能なメソッドを見て下さい。関心のある方法は次の通りです。
+        // ・forEach()
+        // ・map()
+        // ・filter()
+        // ・zip ... pythonやrubyにある複数の配列を同時に扱うメソッド
+        // ・reduce()
+        // ・every()
+        // ・some()
+
+        // JavaScriptで配列を反復処理する標準的な方法は、標準的なforループです。
+        let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let sum = 0;
+        let length = arr.length,
+          element = null;
+        for (let i = 0; i < length; i++) {
+          element = arr[i];
+          sum += element;
+        }
+        console.log(sum); // 55
+        console.log("");
+      </script>
+      <p class="title">For-each over an array in JavaScript?</p>
+      <pre>
+      <code class="prettyprint">
+        // ■ Q. JavaScriptを使用して配列内の全てののエントリをループするにはどうすればよいですか？ ※2012年8月の質問
+        // 私はそれがこのようなものだと思った：
+        //
+        // forEach(instance in theArray)
+        //
+        // theArrayは私の配列ですが、これは間違っているようです。
+
+        // ■ A1. あなたがセーフガードでそれを使用するか、少なくともそれがあなたを噛むかもしれない理由を少なくとも知っていない限り、for-inを使用しないで下さい。
+        //
+        // 最善の策は通常、
+        // ・for...ofループする（ES2015+専用）
+        // ・Array#forEach()、又はそれに関係するsome()のようなメソッド（ES5+専用）
+        // ・シンプルな昔ながらのforループ
+        // ・安全装置内のfor...inループ
+
+        // JavaScriptには、配列および配列のようなオブジェクトをループするための強力なセマンティクスがあります。
+        // 答えを2つの部分に分割しました。純粋な配列のオプションと、引数オブジェクト、その他の反復可能なオブジェクト（ES2015 +）、
+        // DOMコレクションなど、配列のようなもののためのオプションです。
+
+        // ES5をES5にトランスコンパイルする事で、ES5エンジンでもES2015オプションを使用出来るようになりました。
+        // 詳細については、「ES2015 transpiling」/「ES6 transpiling」を検索して下さい...
+
+        // ～詳細省略
+
+        // ■ A2. この答え（A1）は絶望的に古くなっています。
+        // より現代的なアプローチについては、配列で利用可能なメソッドを見て下さい。関心のある方法は次の通りです。
+        // ・forEach()
+        // ・map()
+        // ・filter()
+        // ・zip ... pythonやrubyにある複数の配列を同時に扱うメソッド
+        // ・reduce()
+        // ・every()
+        // ・some()
+
+        // JavaScriptで配列を反復処理する標準的な方法は、標準的なforループです。
+        let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let sum = 0;
+        let length = arr.length,
+          element = null;
+        for (let i = 0; i &lt; length; i++) {
+          element = arr[i];
+          sum += element;
+        }
+        console.log(sum); // 55
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/every" target="_blank">Array.prototype.every() - JavaScript | MDN - Mozilla</a></p>
+      <p><a href="https://stackoverflow.com/questions/7340893/what-is-the-difference-between-map-every-and-foreach" target="_blank">What is the difference between .map, .every, and .forEach?</a></p>
+      <p><a href="http://secret-garden.hatenablog.com/entry/2017/10/24/191414" target="_blank">JavaScript で数値をソートするときの注意</a><br>＞比較関数は a &gt; b ならプラス値、a &lt; b ならマイナス値を返す</p>
+      
+      <p><a href="https://stackoverflow.com/questions/9329446/for-each-over-an-array-in-javascript/9329476#9329476" target="_blank">For-each over an array in JavaScript?</a></p>
+    
+    </div>
+
+    <script src="src/array_every.js"></script>
+  </body>
+</html>
