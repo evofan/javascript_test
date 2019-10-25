@@ -1230,24 +1230,297 @@
         function doWhatever({ aaa, bbb }) {}
       </code>
       </pre>
-      <!--/s-->
 
       <script>
+        // Destructuring in JavaScript、JavaScriptの分割代入
+
+        // 分割代入は、配列とオブジェクトの値から変数を作成する強力な方法であり、使用する必要があります。コードが簡単になります！
+        // 分割代入はES2015（別名ES6）仕様の一部であり、全てのブラウザーと互換性がある訳では無い事に注意して下さい。
+        // Babel、Typescript、またはコードをES5にコンパイルするものを使用して、全てのユーザーの完全な互換性を確保する事をお勧めします。
+
+        // ■ 配列の分割代入
+
+        // 配列の値を別々の変数に割り当てたい場合は、単純化された綺麗な方法で目標を達成するために分割代入を利用出来ます。
+        // インデックスやループを使用する必要はありません！
+
+        // これらの4つの値を4つの変数に割り当てたい場合、次のように配列の分割代入を使用出来ます。
+        const organizations = ["Pyke", "Black Sun", "Kanjiklub", "Crimson Dawn"];
+        const [firstGang, secondGang, thirdGang, fourthGang] = organizations;
+
+        console.log(firstGang); // Pyke
+        console.log(secondGang); // Black Sun
+        console.log(thirdGang); // Kanjiklub
+        console.log(fourthGang); // Crimson Dawn
         console.log("");
+
+        // ここでは、変数と値の位置が重要である事に注意して下さい。
+        // 「最初の新しい変数は、常に配列の最初の値を継承」します。
+
+        // しかし、変数として最初の2つの値のみが必要で、残りが配列として必要な場合はどうでしょうか？とても簡単です。
+        const organizations2 = ["Pyke", "Black Sun", "Kanjiklub", "Crimson Dawn"];
+        const [firstGang2, secondGang2, ...theRest2] = organizations2;
+
+        console.log(firstGang2); // Pyke
+        console.log(secondGang2); // Black Sun
+        console.log(theRest2); // ["Kanjiklub", "Crimson Dawn"]
+        console.log("");
+
+        // 必要に応じてデフォルト値を設定する事も出来ます！
+        // そうすれば、渡された配列に十分な数の値が無い場合でも、すべての変数に定義された値が入ります！
+        const organizations3 = ["Pyke", "Black Sun"];
+        const [
+          firstGang3 = "First Order",
+          secondGang3 = "Resistance",
+          thirdGang3 = "New Republic"
+        ] = organizations3;
+
+        console.log(firstGang3); // Pyke
+        console.log(secondGang3); // Black Sun
+        console.log(thirdGang3); // New Republic
+        console.log("");
+
+        // □ 一般的な使用例
+        // これをいつ使用するのか疑問に思うかもしれません。つまり...配列の分割代入を使用する明らかなケースはありますか？
+        //
+        // 実際、たくさんあります！たとえば、配列にブログ投稿があり、最初の投稿を他の投稿とは異なる方法で操作したい場合、
+        // 分割代入（デストラクタリング）を使用して最初の投稿と残りの全ての投稿を2つの異なる変数に分割出来ます。
+        const blogPosts = [
+          /* data, data, data, data, data, data, ...*/
+        ];
+        const [starPost, ...otherPosts] = blogPosts;
+
+        // または、配列の最初の3つのポストだけが必要で、3つの変数を宣言するだけで、残りは無視されるとします。
+        const blogPosts2 = [
+          /* data, data, data, data, data, data, ...*/
+        ];
+        const [post1, post2, post3] = blogPosts2;
+
+        // ■ オブジェクトの分割代入
+        // また、分割代入を使用して、オブジェクト値を変数に割り当てる事も出来ます。
+        // 配列を使用した場合と非常に似ている事が分かります。
+        const planet4 = {
+          name4: "Hosnian Prime",
+          faction4: "New Republic",
+          weather4: "Temperate"
+        };
+        const { name4, faction4, weather4 } = planet4;
+
+        console.log(name4); // Hosnian Prime
+        console.log(faction4); // New Republic
+        console.log(weather4); // Temperate
+        console.log("");
+
+        // 上記の例で分かるように、変数にはオブジェクトのキーと同じ名前を使用しました。
+        // ただし、キーとは異なる名前で変数を定義出来ます。
+
+        const planet5 = {
+          name5: "Hosnian Prime",
+          faction5: "New Republic",
+          weather5: "Temperate"
+        };
+        const { name5: system, faction5: team, weather5: conditions } = planet5;
+
+        console.log(system); // Hosnian Prime
+        console.log(team); // New Republic
+        console.log(conditions); // Temperate
+        console.log("");
+
+        // また、配列の場合と同様に、デフォルト値を設定する事も出来ます。※代入する値が無い場合はデフォルト値が使われる
+        const planet6 = {
+          name6: "Hosnian Prime"
+        };
+        const {
+          name6 = "Unknown planet",
+          faction6 = "Unknown faction",
+          weather6 = "Unknown conditions"
+        } = planet6;
+
+        console.log(name6); // Hosnian Prime
+        console.log(faction6); // Unknown faction
+        console.log(weather6); // Unknown conditions
+        console.log("");
+
+        // □ 一般的な使用例
+
+        // オブジェクトから1つ以上の値のみが必要であり、
+        //　objectWithALongNameName.keyName構文を使用してそれらの値にアクセスしたくない場合は、
+        // 単純な構造化を使用して新しい変数を作成出来ます（コードが簡潔になります）。
+
+        // ただし、オブジェクトの構造化の最適な使用法は、「オプション」を使った処理です。
+
+        // デフォルト値でオプションを処理する関数があるとします。簡単な方法でそれを処理する方法は次の通りです。
+        function shipGenerator(options = {}) {
+          const { cannons = 4, engines = 2, crew = 10 } = options; // Default options
+
+          return `This ship has ${cannons} cannons, ${engines} engines, and ${crew} crew members.`;
+        }
+
+        console.log(shipGenerator({ engines: 10, crew: 20 })); // This ship has 4 cannons, 10 engines, and 20 crew members.
+        console.log(shipGenerator({ cannons: 0 })); // This ship has 0 cannons, 2 engines, and 10 crew members.
+        console.log(shipGenerator()); // This ship has 4 cannons, 2 engines, and 10 crew members.
+
+        //　ご覧の通り引数としてoptions = {} を記述する事により、何も渡されない場合は「デフォルトで空のオブジェクトを渡されたオプション」として使用する事を指定します。
+
+        // その後、分割代入を使用して、渡されたオプションでデフォルトのオプションをオーバーライドします。
+        // その後、関数でoptions.cannonsの代わりに（引数で渡した）cannonsを使用するだけで、セットアップは非常に簡単でした！
+
+        // ■ 分割代入使用を共有して下さい！
+
+        // 共有したいクールな方法で、プロジェクトで分割代入を使用しましたか？ 下のコメントにスニペットを残して、仲間の開発者を助けて下さい！
+        // コーディングを続けて下さい！
+
+        console.log("");
+
       </script>
+      <p class="title">JavaScriptの分割代入</p>
+      <pre>
+      <code class="prettyprint">
+        // Destructuring in JavaScript、JavaScriptの分割代入
+
+        // 分割代入は、配列とオブジェクトの値から変数を作成する強力な方法であり、使用する必要があります。コードが簡単になります！
+        // 分割代入はES2015（別名ES6）仕様の一部であり、全てのブラウザーと互換性がある訳では無い事に注意して下さい。
+        // Babel、Typescript、またはコードをES5にコンパイルするものを使用して、全てのユーザーの完全な互換性を確保する事をお勧めします。
+
+        // ■ 配列の分割代入
+
+        // 配列の値を別々の変数に割り当てたい場合は、単純化された綺麗な方法で目標を達成するために分割代入を利用出来ます。
+        // インデックスやループを使用する必要はありません！
+
+        // これらの4つの値を4つの変数に割り当てたい場合、次のように配列の分割代入を使用出来ます。
+        const organizations = ["Pyke", "Black Sun", "Kanjiklub", "Crimson Dawn"];
+        const [firstGang, secondGang, thirdGang, fourthGang] = organizations;
+
+        console.log(firstGang); // Pyke
+        console.log(secondGang); // Black Sun
+        console.log(thirdGang); // Kanjiklub
+        console.log(fourthGang); // Crimson Dawn
+        console.log("");
+
+        // ここでは、変数と値の位置が重要である事に注意して下さい。
+        // 「最初の新しい変数は、常に配列の最初の値を継承」します。
+
+        // しかし、変数として最初の2つの値のみが必要で、残りが配列として必要な場合はどうでしょうか？とても簡単です。
+        const organizations2 = ["Pyke", "Black Sun", "Kanjiklub", "Crimson Dawn"];
+        const [firstGang2, secondGang2, ...theRest2] = organizations2;
+
+        console.log(firstGang2); // Pyke
+        console.log(secondGang2); // Black Sun
+        console.log(theRest2); // ["Kanjiklub", "Crimson Dawn"]
+        console.log("");
+
+        // 必要に応じてデフォルト値を設定する事も出来ます！
+        // そうすれば、渡された配列に十分な数の値が無い場合でも、すべての変数に定義された値が入ります！
+        const organizations3 = ["Pyke", "Black Sun"];
+        const [
+          firstGang3 = "First Order",
+          secondGang3 = "Resistance",
+          thirdGang3 = "New Republic"
+        ] = organizations3;
+
+        console.log(firstGang3); // Pyke
+        console.log(secondGang3); // Black Sun
+        console.log(thirdGang3); // New Republic
+        console.log("");
+
+        // □ 一般的な使用例
+        // これをいつ使用するのか疑問に思うかもしれません。つまり...配列の分割代入を使用する明らかなケースはありますか？
+        //
+        // 実際、たくさんあります！たとえば、配列にブログ投稿があり、最初の投稿を他の投稿とは異なる方法で操作したい場合、
+        // 分割代入（デストラクタリング）を使用して最初の投稿と残りの全ての投稿を2つの異なる変数に分割出来ます。
+        const blogPosts = [
+          /* data, data, data, data, data, data, ...*/
+        ];
+        const [starPost, ...otherPosts] = blogPosts;
+
+        // または、配列の最初の3つのポストだけが必要で、3つの変数を宣言するだけで、残りは無視されるとします。
+        const blogPosts2 = [
+          /* data, data, data, data, data, data, ...*/
+        ];
+        const [post1, post2, post3] = blogPosts2;
+
+        // ■ オブジェクトの分割代入
+        // また、分割代入を使用して、オブジェクト値を変数に割り当てる事も出来ます。
+        // 配列を使用した場合と非常に似ている事が分かります。
+        const planet4 = {
+          name4: "Hosnian Prime",
+          faction4: "New Republic",
+          weather4: "Temperate"
+        };
+        const { name4, faction4, weather4 } = planet4;
+
+        console.log(name4); // Hosnian Prime
+        console.log(faction4); // New Republic
+        console.log(weather4); // Temperate
+        console.log("");
+
+        // 上記の例で分かるように、変数にはオブジェクトのキーと同じ名前を使用しました。
+        // ただし、キーとは異なる名前で変数を定義出来ます。
+
+        const planet5 = {
+          name5: "Hosnian Prime",
+          faction5: "New Republic",
+          weather5: "Temperate"
+        };
+        const { name5: system, faction5: team, weather5: conditions } = planet5;
+
+        console.log(system); // Hosnian Prime
+        console.log(team); // New Republic
+        console.log(conditions); // Temperate
+        console.log("");
+
+        // また、配列の場合と同様に、デフォルト値を設定する事も出来ます。※代入する値が無い場合はデフォルト値が使われる
+        const planet6 = {
+          name6: "Hosnian Prime"
+        };
+        const {
+          name6 = "Unknown planet",
+          faction6 = "Unknown faction",
+          weather6 = "Unknown conditions"
+        } = planet6;
+
+        console.log(name6); // Hosnian Prime
+        console.log(faction6); // Unknown faction
+        console.log(weather6); // Unknown conditions
+        console.log("");
+
+        // □ 一般的な使用例
+
+        // オブジェクトから1つ以上の値のみが必要であり、
+        //　objectWithALongNameName.keyName構文を使用してそれらの値にアクセスしたくない場合は、
+        // 単純な構造化を使用して新しい変数を作成出来ます（コードが簡潔になります）。
+
+        // ただし、オブジェクトの構造化の最適な使用法は、「オプション」を使った処理です。
+
+        // デフォルト値でオプションを処理する関数があるとします。簡単な方法でそれを処理する方法は次の通りです。
+        function shipGenerator(options = {}) {
+          const { cannons = 4, engines = 2, crew = 10 } = options; // Default options
+
+          return `This ship has ${cannons} cannons, ${engines} engines, and ${crew} crew members.`;
+        }
+
+        console.log(shipGenerator({ engines: 10, crew: 20 })); // This ship has 4 cannons, 10 engines, and 20 crew members.
+        console.log(shipGenerator({ cannons: 0 })); // This ship has 0 cannons, 2 engines, and 10 crew members.
+        console.log(shipGenerator()); // This ship has 4 cannons, 2 engines, and 10 crew members.
+
+        //　ご覧の通り引数としてoptions = {} を記述する事により、何も渡されない場合は「デフォルトで空のオブジェクトを渡されたオプション」として使用する事を指定します。
+
+        // その後、分割代入を使用して、渡されたオプションでデフォルトのオプションをオーバーライドします。
+        // その後、関数でoptions.cannonsの代わりに（引数で渡した）cannonsを使用するだけで、セットアップは非常に簡単でした！
+
+        // ■ 分割代入使用を共有して下さい！
+
+        // 共有したいクールな方法で、プロジェクトで分割代入を使用しましたか？ 下のコメントにスニペットを残して、仲間の開発者を助けて下さい！
+        // コーディングを続けて下さい！
+      </code>
+      </pre>
 
       <p class="title">参考サイト：</p>
-
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment" target="_blank">分割代入 - JavaScript | MDN</a></p>
-
       <p><a href="https://qiita.com/amamamaou/items/1ec21316b8bf05ba9c34" target="_blank">ECMAScript 2015 の分割代入は奥が深かった</a></p>
-
       <p><a href="https://ja.javascript.info/destructuring-assignment" target="_blank">分割代入 - 現代の JavaScript チュートリアル</a></p>
-
       <p><a href="https://ginpen.com/2017/12/14/destructuring-object/" target="_blank">分割代入、画期的な機能。（現代的JavaScriptおれおれアドベントカレンダー2017 – 14日目）</a></p>
+      <p><a href="https://medium.com/poka-techblog/destructuring-in-javascript-f4f56d5cbd80" target="_blank">Medium: Destructuring in JavaScript</a></p>
 
-      <!--<p><a href="" target="_blank"></a></p>-->
-    
     </div>
 
     <script src="src/destructuring_assignment.js"></script>
