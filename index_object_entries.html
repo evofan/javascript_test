@@ -1,0 +1,469 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Object.entries()</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // ■ Object.entries()を使ってオブジェクト→配列内オブジェクトに変換する
+        let obj_1 = {
+          mike: 10,
+          kuro: 6,
+          tora: 3
+        };
+        let out_1 = Object.entries(obj_1).map(([key, value]) => ({
+          key: key,
+          value: value
+        }));
+        // [
+        //  {key: "mike", value: 10}
+        //  {key: "kuro", value: 6}
+        //  {key: "tora", value: 3}
+        // ]
+        console.log(out_1);
+
+        // 別形式に出力
+        let out_2 = Object.entries(obj_1).map((key, value) => ({ [key]: value }));
+        console.log(out_2);
+        // [
+        //  {mike,10: 0}
+        //  {kuro,6: 1}
+        //  {tora,3: 2}
+        // ]
+
+        // □ Object.keys()を使った場合
+        let out_4 = {};
+        Object.keys(obj_1).forEach(key => {
+          let value = obj_1[key];
+          console.log(key, value);
+        });
+        // mike 10
+        // kuro 6
+        // tora 3
+        console.log("");
+
+        // □ 配列内オブジェクトから配列に戻す
+        list_6 = [
+          { key: "mike", value: 10 },
+          { key: "kuro", value: 6 },
+          { key: "tora", value: 3 }
+        ];
+
+        // reduce + Object.assign
+        let out_6 = list_6.reduce(
+          (obj, item) => Object.assign(obj, { [item.key]: item.value }),
+          {}
+        );
+        console.log(out_6); // {mike: 10, kuro: 6, tora: 3}
+
+        // rest parameters
+        let out_7 = list_6.reduce(
+          (accumulator, currentValue) => ({
+            ...accumulator,
+            [currentValue.key]: currentValue.value
+          }),
+          {}
+        );
+        console.log(out_7); // {mike: 10, kuro: 6, tora: 3}
+        console.log("");
+      </script>
+      <p class="title">Object.entries()を使ってオブジェクト→配列内オブジェクトに変換する</p>
+      <pre>
+      <code class="prettyprint">
+        let obj_1 = {
+          mike: 10,
+          kuro: 6,
+          tora: 3
+        };
+        let out_1 = Object.entries(obj_1).map(([key, value]) => ({
+          key: key,
+          value: value
+        }));
+        // [
+        //  {key: "mike", value: 10}
+        //  {key: "kuro", value: 6}
+        //  {key: "tora", value: 3}
+        // ]
+        console.log(out_1);
+
+        // 別形式に出力
+        let out_2 = Object.entries(obj_1).map((key, value) => ({ [key]: value }));
+        console.log(out_2);
+        // [
+        //  {mike,10: 0}
+        //  {kuro,6: 1}
+        //  {tora,3: 2}
+        // ]
+
+        // □ Object.keys()を使った場合
+        let out_4 = {};
+        Object.keys(obj_1).forEach(key => {
+          let value = obj_1[key];
+          console.log(key, value);
+        });
+        // mike 10
+        // kuro 6
+        // tora 3
+        console.log("");
+
+        // □ 配列内オブジェクトから配列に戻す
+        list_6 = [
+          { key: "mike", value: 10 },
+          { key: "kuro", value: 6 },
+          { key: "tora", value: 3 }
+        ];
+
+        // reduce + Object.assign
+        let out_6 = list_6.reduce(
+          (obj, item) => Object.assign(obj, { [item.key]: item.value }),
+          {}
+        );
+        console.log(out_6); // {mike: 10, kuro: 6, tora: 3}
+
+        // rest parameters
+        let out_7 = list_6.reduce(
+          (accumulator, currentValue) => ({
+            ...accumulator,
+            [currentValue.key]: currentValue.value
+          }),
+          {}
+        );
+        console.log(out_7); // {mike: 10, kuro: 6, tora: 3}
+      </code>
+      </pre>
+
+      <script>
+        // ■ Object.keys, values, entries
+
+        // map.keys()、map.values()、map.entries()をいうメソッドは、Map、Set、Array（arr.values()を除く）に使用出来る
+
+        // 通常のオブジェクトに対して使える繰り返しメソッドには下記のものがある
+        // ・Object.keys(obj) ... キーの配列を返す
+        // ・Object.values(obj) ... 値の配列を返す
+        // ・Object.entries(obj) ... [キー、値]のペア配列を返す
+
+        // 違いとして、
+        // Map ... 構文：map.keys()、戻り値：iterable
+        // Object ... 構文：Object.keys(obj)、戻り値：本当のArray
+
+        // 例
+        let user = {
+          name: "John",
+          age: 30
+        };
+        console.log(Object.keys(user)); // ["name", "age"]
+        console.log(Object.values(user)); // ["John", 30]
+        console.log(Object.entries(user)); // [ ["name", "John"], ["age", 30] ]
+
+        // 値のループ
+        for (let value of Object.values(user)) {
+          console.log(value);
+        }
+        // John
+        // 30
+        console.log("");
+
+        // Object.keys/values/entriesはSymbolを使っているプロパティを無視する
+
+        // ので、もしSymbolのキーも同様に扱いたい場合、Object.getOwnPropertySymbols()を使う。↓はSymbolを使ってるキーの配列のみを返す
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertySymbols
+
+        // また、メソッドReflect.ownKeys(obj)は全てのキーを返す
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Reflect/ownKeys
+
+        // □ タスク
+
+        // （１）プロパティを合計する
+        // 任意の数の給与を持つsalariesオブジェクトがあります
+        // Object.values()とfor...ofループを使用して、全ての給与の合計を返す関数sumSalaries()を書いて下さい。
+        // もしsalariesが空の場合、結果は0になります。
+
+        // 例:
+        let salaries = {
+          John: 100,
+          Pete: 300,
+          Mary: 250
+        };
+        let salariesEmpty = {};
+        // alert( sumSalaries(salaries) ); // 650
+        let sumSalaries = obj => {
+          let sum = 0;
+          for (let v of Object.values(obj)) {
+            sum += v;
+          }
+          return sum;
+        };
+        // テスト確認
+        console.log(sumSalaries(salaries)); // 650
+        console.log(sumSalaries(salariesEmpty)); // 0
+        console.log("");
+
+        // 回答
+        function sumSalaries2(salaries) {
+          let sum = 0;
+          for (let salary of Object.values(salaries)) {
+            sum += salary;
+          }
+
+          return sum;
+        }
+
+        //（２）プロパティをカウントする
+        // オブジェクトの中のプロパティの数を返す関数count(obj)を書いて下さい。
+        //
+        let user2 = {
+          name: "John",
+          age: 30
+        };
+        let user3 = {
+          name: "Taro",
+          age: 24,
+          sex: "male",
+          job: "designer"
+        };
+        // alert( count(user) ); // 2
+        //
+        // できるだけ短いコードを作ってください。
+        // P.S. シンボリックプロパティは無視し、“通常” のものだけをカウントしてください。
+        let count = (obj, c = 0) => {
+          // let c = 0;
+          for (let v of Object.entries(obj)) {
+            c++;
+          }
+          return c;
+        };
+        // テスト確認
+        console.log(count(user2)); // 2
+        console.log(count(user3)); // 4
+
+        // 回答
+        function count2(obj) {
+          return Object.keys(obj).length;
+        }
+        // ↑★考え方：Object.keys, values, entriesは配列を返すので、そのlengthを見れば要素数が分かる
+
+        console.log("");
+      </script>
+      <p class="title">Object.keys, values, entries</p>
+      <pre>
+      <code class="prettyprint">
+        // ■ Object.keys, values, entries
+
+        // map.keys()、map.values()、map.entries()をいうメソッドは、Map、Set、Array（arr.values()を除く）に使用出来る
+
+        // 通常のオブジェクトに対して使える繰り返しメソッドには下記のものがある
+        // ・Object.keys(obj) ... キーの配列を返す
+        // ・Object.values(obj) ... 値の配列を返す
+        // ・Object.entries(obj) ... [キー、値]のペア配列を返す
+
+        // 違いとして、
+        // Map ... 構文：map.keys()、戻り値：iterable
+        // Object ... 構文：Object.keys(obj)、戻り値：本当のArray
+
+        // 例
+        let user = {
+          name: "John",
+          age: 30
+        };
+        console.log(Object.keys(user)); // ["name", "age"]
+        console.log(Object.values(user)); // ["John", 30]
+        console.log(Object.entries(user)); // [ ["name", "John"], ["age", 30] ]
+
+        // 値のループ
+        for (let value of Object.values(user)) {
+          console.log(value);
+        }
+        // John
+        // 30
+        console.log("");
+
+        // Object.keys/values/entriesはSymbolを使っているプロパティを無視する
+
+        // ので、もしSymbolのキーも同様に扱いたい場合、Object.getOwnPropertySymbols()を使う。↓はSymbolを使ってるキーの配列のみを返す
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertySymbols
+
+        // また、メソッドReflect.ownKeys(obj)は全てのキーを返す
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Reflect/ownKeys
+
+        // □ タスク
+
+        // （１）プロパティを合計する
+        // 任意の数の給与を持つsalariesオブジェクトがあります
+        // Object.values()とfor...ofループを使用して、全ての給与の合計を返す関数sumSalaries()を書いて下さい。
+        // もしsalariesが空の場合、結果は0になります。
+
+        // 例:
+        let salaries = {
+          John: 100,
+          Pete: 300,
+          Mary: 250
+        };
+        let salariesEmpty = {};
+        // alert( sumSalaries(salaries) ); // 650
+        let sumSalaries = obj => {
+          let sum = 0;
+          for (let v of Object.values(obj)) {
+            sum += v;
+          }
+          return sum;
+        };
+        // テスト確認
+        console.log(sumSalaries(salaries)); // 650
+        console.log(sumSalaries(salariesEmpty)); // 0
+        console.log("");
+
+        // 回答
+        function sumSalaries2(salaries) {
+          let sum = 0;
+          for (let salary of Object.values(salaries)) {
+            sum += salary;
+          }
+
+          return sum;
+        }
+
+        //（２）プロパティをカウントする
+        // オブジェクトの中のプロパティの数を返す関数count(obj)を書いて下さい。
+        //
+        let user2 = {
+          name: "John",
+          age: 30
+        };
+        let user3 = {
+          name: "Taro",
+          age: 24,
+          sex: "male",
+          job: "designer"
+        };
+        // alert( count(user) ); // 2
+        //
+        // できるだけ短いコードを作ってください。
+        // P.S. シンボリックプロパティは無視し、“通常” のものだけをカウントしてください。
+        let count = (obj, c = 0) => {
+          // let c = 0;
+          for (let v of Object.entries(obj)) {
+            c++;
+          }
+          return c;
+        };
+        // テスト確認
+        console.log(count(user2)); // 2
+        console.log(count(user3)); // 4
+
+        // 回答
+        function count2(obj) {
+          return Object.keys(obj).length;
+        }
+        // ★Object.keys, values, entriesは配列を返すので、そのlengthを見れば要素数が分かる
+      </code>
+      </pre>
+
+      <script>
+        // ES8のリリース（別名2017）では、Object.keysに付随するObject.valuesとObject.entriesがあります。
+        // この記事では、その使用法について簡単に説明します。
+
+        // Object.keysを使用してJavaScriptオブジェクトのキーを反復処理します。
+        const countries = {
+          FJ: "Fiji",
+          CL: "Chile"
+        };
+        console.log(Object.keys(countries)); // [ "FJ", "CL" ]
+
+        // これで、値についても同じ事が出来ます。
+        const countries2 = {
+          FJ: "Fiji",
+          CL: "Chile"
+        };
+        console.log(Object.values(countries2)); // [ "Fiji", "Chile" ]
+
+        // しかし、両方を同時に実行したい場合はどうなりますか？
+        const countries3 = {
+          FJ: "Fiji",
+          CL: "Chile"
+        };
+        console.log(Object.entries(countries3)); // [ ["FJ", "Fiji"], ["CL", "Chile"] ]
+
+        // テンプレート文字列と配列の構造化を使用して国をマッピングしましょう。
+        const countries4 = {
+          FJ: "Fiji",
+          CL: "Chile"
+        };
+        let data = Object.entries(countries3).map(
+          ([code, name]) => `${name} (${code})`
+        );
+        console.log(data); // [ "Fiji (FJ)", "Chile (CL)" ]
+
+        // Object.valuesとObject.entriesは、すべての最新のブラウザーとノード8で利用出来ます。
+
+        console.log("");
+      </script>
+      <p class="title">ES8 Object.entries / values</p>
+      <pre>
+      <code class="prettyprint">
+        // ES8のリリース（別名2017）では、Object.keysに付随するObject.valuesとObject.entriesがあります。
+        // この記事では、その使用法について簡単に説明します。
+
+        // Object.keysを使用してJavaScriptオブジェクトのキーを反復処理します。
+        const countries = {
+          FJ: "Fiji",
+          CL: "Chile"
+        };
+        console.log(Object.keys(countries)); // [ "FJ", "CL" ]
+
+        // これで、値についても同じ事が出来ます。
+        const countries2 = {
+          FJ: "Fiji",
+          CL: "Chile"
+        };
+        console.log(Object.values(countries2)); // [ "Fiji", "Chile" ]
+
+        // しかし、両方を同時に実行したい場合はどうなりますか？
+        const countries3 = {
+          FJ: "Fiji",
+          CL: "Chile"
+        };
+        console.log(Object.entries(countries3)); // [ ["FJ", "Fiji"], ["CL", "Chile"] ]
+
+        // テンプレート文字列と配列の構造化を使用して国をマッピングしましょう。
+        const countries4 = {
+          FJ: "Fiji",
+          CL: "Chile"
+        };
+        let data = Object.entries(countries3).map(
+          ([code, name]) => `${name} (${code})`
+        );
+        console.log(data); // [ "Fiji (FJ)", "Chile (CL)" ]
+
+        // Object.valuesとObject.entriesは、すべての最新のブラウザーとノード8で利用出来ます。
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/entries" target="_blank">Object.entries() - JavaScript | MDN - Mozilla</a></p>
+
+      <p><a href="https://qiita.com/kws9/items/6ce80ae1c0fd28a3a9d7" target="_blank">Object.entries() を使ってObject → 配列変換 - Qiita</a></p>
+
+      <p><a href="https://ja.javascript.info/keys-values-entries" target="_blank">JavaScript Info: Object.keys, values, entries</a></p>
+
+      <p><a href="https://medium.com/front-end-weekly/es8-object-entries-values-24e15ee889df" target="_blank">Medium: ES8 Object.entries/values</a></p>
+
+    </div>
+
+    <script src="src/object_entries.js"></script>
+  </body>
+</html>

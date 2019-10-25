@@ -1,0 +1,278 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Array.prototype.entries()</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // ■ JavaScriptで[key, vlalue]のループと分割代入を使ったループ、※Array.prototype.entries()の使用例
+
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Deprecated_and_obsolete_features
+        // 非推奨の機能、廃止された機能
+        // 分割代入型 for...in は非推奨です。代わりに for...of を使用してください。
+
+        // ■ for...ofの使用例
+
+        // □ Arrayに使用
+        const array_1 = [["三毛", "mike"], ["黒", "kuro"], ["白", "shiro"]];
+        for (const [key, value] of array_1) {
+          console.log({ key, value });
+        }
+        // {key: "三毛", value: "mike"}
+        // {key: "黒", value: "kuro"}
+        // {key: "白", value: "shiro"}
+
+        // □ Array.prototype.entries()と一緒に使用
+        // ※配列のindexをキーにする
+        const array_2 = ["三毛", "タマ", "とら"];
+        for (const [key, value] of array_2.entries()) {
+          console.log({ key, value });
+        }
+        // {key: 0, value: "三毛"}
+        // {key: 1, value: "タマ"}
+        // {key: 2, value: "とら"}
+
+        // □ Mapに使用
+        const map_3 = new Map([["mike", 10], ["tama", 6], ["sabi", 3]]);
+        for (const [key, value] of map_3) {
+          console.log({ key, value });
+        }
+        // {key: "mike", value: 10}
+        // {key: "tama", value: 6}
+        // {key: "sabi", value: 3}
+
+        // □ Objectに使用、Object.prototype.entries()と一緒に使用、※オブジェクト内の列挙可能なプロパティの[key, value]を返す
+        const object_4 = { mike: 10, tama: 6, sabi: 3 };
+        for (const [key, value] of Object.entries(object_4)) {
+          console.log({ key, value });
+        }
+        // {key: "mike", value: 10}
+        // {key: "tama", value: 6}
+        // {key: "sabi", value: 3}
+        console.log("");
+
+        // ■ forEach()の使用例
+
+        // □ Arrayに使用
+        // 関数の引数に分割代入で使用
+        const array_5 = [["三毛", "mike"], ["黒", "kuro"], ["鯖", "saba"]];
+        array_5.forEach(([key, value]) => {
+          console.log({ key, value });
+        });
+        // {key: "三毛", value: "mike"}
+        // {key: "黒", value: "kuro"}
+        // {key: "鯖", value: "saba"}
+
+        // □ 通常のArrayに使用、インデックスをキーに使用
+        const array_6 = ["三毛", "サバ", "ミー"];
+        array_6.forEach((/*key,*/ value, key) => {
+          console.log({ key, value });
+        });
+        // {key: 0, value: "三毛"}
+        // {key: 1, value: "サバ"}
+        // {key: 2, value: "ミー"}
+
+        // □ Mapに使用
+        const map_7 = new Map([["mike", 10], ["tama", 6], ["saba", 2]]);
+        map_7.forEach((value, key) => {
+          console.log({ key, value });
+        });
+        // {key: "mike", value: 10}
+        // {key: "tama", value: 6}
+        // {key: "saba", value: 2}
+
+        // □ Objectに使用、Object.prototype.entries()と一緒に使用、
+        const object_8 = { mike: 10, elu: 7, sabi: 3 };
+        Object.entries(object_8).forEach(([key, value]) => {
+          console.log({ key, value });
+        });
+        console.log("");
+        // {key: "mike", value: 10}
+        // {key: "elu", value: 7}
+        // {key: "sabi", value: 3}
+
+        // ■ keyだけを廻してvalue値を取得
+        // Object.keys(array)、Map.prototype.keys()、Object.keys(object)を使用
+
+        // 例
+
+        // Object.keys()、Array
+        Object.keys(array_5).forEach(key => {
+          let value = array_5[key];
+          console.log(`${key}: ${value}`);
+        });
+        // 0: 三毛,mike
+        // 1: 黒,kuro
+        // 2: 鯖,saba
+
+        // Object.keys()、※Object
+        Object.keys(object_8).forEach((key, index) => {
+          //  console.log("key: ", key);
+          //  console.log("index: ", index);
+          //  console.log("index: ", index);
+          let value = object_8[key];
+          console.log(`${index}, ${key}: ${value}`);
+        });
+        // 0, mike: 10
+        // 1, elu: 7
+        // 2, sabi: 3
+
+        // Map.prototype.keys()
+        let mapIterator = map_7.keys();
+        console.log(mapIterator.next()); // {value: "mike", done: false}
+        console.log(mapIterator.next().value); // tama
+        console.log(mapIterator.next()); // {value: "saba", done: false}
+        console.log(mapIterator.next()); // {value: undefined, done: true}
+      </script>
+      <p class="title">■ JavaScriptで[key, vlalue]のループと分割代入を使ったループ、※Array.prototype.entries()の使用例</p>
+      <pre>
+      <code class="prettyprint">
+        // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Deprecated_and_obsolete_features
+        // 非推奨の機能、廃止された機能
+        // 分割代入型 for...in は非推奨です。代わりに for...of を使用してください。
+
+        // ■ for...ofの使用例
+
+        // □ Arrayに使用
+        const array_1 = [["三毛", "mike"], ["黒", "kuro"], ["白", "shiro"]];
+        for (const [key, value] of array_1) {
+          console.log({ key, value });
+        }
+        // {key: "三毛", value: "mike"}
+        // {key: "黒", value: "kuro"}
+        // {key: "白", value: "shiro"}
+
+        // □ Array.prototype.entries()と一緒に使用
+        // ※配列のindexをキーにする
+        const array_2 = ["三毛", "タマ", "とら"];
+        for (const [key, value] of array_2.entries()) {
+          console.log({ key, value });
+        }
+        // {key: 0, value: "三毛"}
+        // {key: 1, value: "タマ"}
+        // {key: 2, value: "とら"}
+
+        // □ Mapに使用
+        const map_3 = new Map([["mike", 10], ["tama", 6], ["sabi", 3]]);
+        for (const [key, value] of map_3) {
+          console.log({ key, value });
+        }
+        // {key: "mike", value: 10}
+        // {key: "tama", value: 6}
+        // {key: "sabi", value: 3}
+
+        // □ Objectに使用、Object.prototype.entries()と一緒に使用、※オブジェクト内の列挙可能なプロパティの[key, value]を返す
+        const object_4 = { mike: 10, tama: 6, sabi: 3 };
+        for (const [key, value] of Object.entries(object_4)) {
+          console.log({ key, value });
+        }
+        // {key: "mike", value: 10}
+        // {key: "tama", value: 6}
+        // {key: "sabi", value: 3}
+        console.log("");
+
+        // ■ forEach()の使用例
+
+        // □ Arrayに使用
+        // 関数の引数に分割代入で使用
+        const array_5 = [["三毛", "mike"], ["黒", "kuro"], ["鯖", "saba"]];
+        array_5.forEach(([key, value]) => {
+          console.log({ key, value });
+        });
+        // {key: "三毛", value: "mike"}
+        // {key: "黒", value: "kuro"}
+        // {key: "鯖", value: "saba"}
+
+        // □ 通常のArrayに使用、インデックスをキーに使用
+        const array_6 = ["三毛", "サバ", "ミー"];
+        array_6.forEach((/*key,*/ value, key) => {
+          console.log({ key, value });
+        });
+        // {key: 0, value: "三毛"}
+        // {key: 1, value: "サバ"}
+        // {key: 2, value: "ミー"}
+
+        // □ Mapに使用
+        const map_7 = new Map([["mike", 10], ["tama", 6], ["saba", 2]]);
+        map_7.forEach((value, key) => {
+          console.log({ key, value });
+        });
+        // {key: "mike", value: 10}
+        // {key: "tama", value: 6}
+        // {key: "saba", value: 2}
+
+        // □ Objectに使用、Object.prototype.entries()と一緒に使用、
+        const object_8 = { mike: 10, elu: 7, sabi: 3 };
+        Object.entries(object_8).forEach(([key, value]) => {
+          console.log({ key, value });
+        });
+        console.log("");
+        // {key: "mike", value: 10}
+        // {key: "elu", value: 7}
+        // {key: "sabi", value: 3}
+
+        // ■ keyだけを廻してvalue値を取得
+        // Object.keys(array)、Map.prototype.keys()、Object.keys(object)を使用
+
+        // 例
+
+        // Object.keys()、Array
+        Object.keys(array_5).forEach(key => {
+          let value = array_5[key];
+          console.log(`${key}: ${value}`);
+        });
+        // 0: 三毛,mike
+        // 1: 黒,kuro
+        // 2: 鯖,saba
+
+        // Object.keys()、※Object
+        Object.keys(object_8).forEach((key, index) => {
+          //  console.log("key: ", key);
+          //  console.log("index: ", index);
+          //  console.log("index: ", index);
+          let value = object_8[key];
+          console.log(`${index}, ${key}: ${value}`);
+        });
+        // 0, mike: 10
+        // 1, elu: 7
+        // 2, sabi: 3
+
+        // Map.prototype.keys()
+        let mapIterator = map_7.keys();
+        console.log(mapIterator.next()); // {value: "mike", done: false}
+        console.log(mapIterator.next().value); // tama
+        console.log(mapIterator.next()); // {value: "saba", done: false}
+        console.log(mapIterator.next()); // {value: undefined, done: true}
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/entries" target="_blank">Array.prototype.entries() - JavaScript | MDN - Mozilla</a></p>
+      
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Map/keys" target="_blank">Map.prototype.keys() - MDN - Mozilla</a></p>
+
+      <p><a href="https://qiita.com/kerupani129/items/6bb14acb2213179156a2" target="_blank">JavaScript で [key, value] のループと分割代入を使ったループ - Qiita</a></p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/template_strings" target="_blank">テンプレート文字列 - JavaScript | MDN</a></p>
+    
+    </div>
+
+    <script src="src/array_entries.js"></script>
+    <script src="src/template_strings.js"></script>
+  </body>
+</html>
