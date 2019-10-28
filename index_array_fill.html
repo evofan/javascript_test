@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Array.prototype.fill()</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <p class="title">Array.fill()と配列・オブジェクト操作</p>
+      <pre>
+      <code class="prettyprint">
+        console.log("【Array.fill() test】");
+
+        // Array.prototype.fill()を使ったコード
+        const leng2: number = 10;
+        const elem2: string = "Cat";
+        const array2: Array<string | number> = [0, 1, 2, 3];
+        array2.fill(elem2);
+
+        console.log("array2: ", array2); // ["Cat", "Cat", "Cat", "Cat"]
+
+        // fill()を使わないでforを使った場合
+        const array3: string[] = new Array<string>(leng2);
+        const elem3: string = "Cat";
+        let length3 = array3.length;
+        for (let i = 0; i &lt; length3; i++) {
+          array3[i] = elem3;
+        }
+        console.log(array3); //  ["Cat", "Cat", "Cat", "Cat", "Cat", "Cat", "Cat", "Cat", "Cat", "Cat"]
+
+        // map()を使った方法
+        const array4: any[] = new Array<string | number>(leng2)
+          .fill(null)
+          .map(idx => elem3);
+        console.log(array4); // ["Cat", "Cat", "Cat", "Cat", "Cat", "Cat", "Cat", "Cat", "Cat", "Cat"]
+
+        // map()を使った方法、番号付き配列に
+        const array5: any[] = new Array<string | number>(leng2)
+          .fill(null)
+          .map((key, idx) => [idx, elem3]);
+        console.log(array5); // [0, "Cat"], [1, "Cat"], [2, "Cat"], [3, "Cat"], [4, "Cat"], [5, "Cat"], [6, "Cat"], [7, "Cat"], [8, "Cat"], [9, "Cat"]
+
+        // 配列 → インデックス番号付きオブジェクトへ
+        const Object6: object = {};
+        Object.keys(array4).forEach(key => (Object6[key] = array4[key]));
+        console.log(Object6); // {0: "Cat", 1: "Cat", 2: "Cat", 3: "Cat", 4: "Cat", 5: "Cat", 6: "Cat", 7: "Cat", 8: "Cat", 9: "Cat"}
+
+        // from()を使う
+        let cats_ary = ["Mike", "Kuro", "Shiro"];
+        let Object7: object = {};
+        Object7 = Array.from(cats_ary, x => (Object7[x] = `${x.toLowerCase()}猫`));
+        console.log("Object8: ", Object7); // ["mike猫", "kuro猫", "shiro猫"]
+
+        // 配列からインデックス番号付きオブジェクトへ（reduce使用版）
+        let initialValue: any = {};
+        let Object8: any = array4.reduce((accumulator, currentValue, idx) => {
+          // console.log(accumulator);
+          // console.log(currentValue);
+          // console.log(idx);
+          return { ...array4, [idx]: currentValue };
+        }, initialValue);
+        console.log(Object8); // {0: "Cat", 1: "Cat", 2: "Cat", 3: "Cat", 4: "Cat", 5: "Cat", 6: "Cat", 7: "Cat", 8: "Cat", 9: "Cat"}
+      </code>
+      </pre>
+
+      <!--s/-->
+      <!--
+      <script>
+      </script>
+
+      <p class="title">タイトル</p>
+      <pre>
+      <code class="prettyprint">
+      </code>
+      </pre>
+      -->
+      <!--/s-->
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/fill" target="_blank">Array.prototype.fill() - MDN - Mozilla</a></p>
+      <p><a href="https://qiita.com/Nossa/items/e420c15175d87cec079e" target="_blank">【JavaScript】配列を同じ値で埋めたり、連続した値を設定する - Qiitas</a></p>
+
+      <p><a href="https://www.pg-fl.jp/program/ts/kw-ref/object.htm" target="_blank">object - TypeScriptキーワード一覧 - Programming Field</a><br>
+      ＞「object 型」のデータは「プリミティブ型ではない Object 型」以上の情報を持たず、<br>
+      ＞「any」の意味を持つわけでもないため、通常利用することは稀です。<br>
+      ＞多くの場合、「interface」などで定義されたより具体的な型を指定するか、<br>
+      ＞「任意の型を利用したい」という意味で any 型を用いることが多いと考えられます。</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/from" target="_blank">Array.from() - JavaScript | MDN - Mozilla</a></p>
+
+    </div>
+
+    <script src="src/array_fill.js"></script>
+    <script src="src/array_fill_test.ts" defer></script>
+    <script src="src/array_from.js"></script>
+  </body>
+</html>

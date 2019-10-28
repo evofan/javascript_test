@@ -1,0 +1,15 @@
+{
+  "name": "javascript_test-master_1028",
+  "version": "1.0.0",
+  "description": "**TEST PAGE**   [https://evofan.github.io/javascript_test/](https://evofan.github.io/javascript_test/)",
+  "main": "temp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  }
+}

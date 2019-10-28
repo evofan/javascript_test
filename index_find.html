@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+  </head>
+
+  <body>
+    <div id="conatiner">
+      <h1>JavaScript Test Memo</h1>
+      <h2>Array.prototype.find()</h2>
+      
+      <p>テスト内容はChromeのコンソールに表示＋参考ページを元にサンプル作成</p>
+
+      <script>
+        // find()を使った例
+        const cat_array1 = [
+          { name: "mike", age: 10, sex: "female" },
+          { name: "kuro", age: 6, sex: "male" },
+          { name: "tora", age: 3, sex: "male" }
+        ];
+        let targetAge = 6;
+        let targetCat = cat_array1.find(el => el.age === 6);
+        console.log(targetCat); // {name: "kuro", age: 6}
+
+        // find()以外の「探す」系メソッド
+
+        // □ filter() ... 全部探す
+        let targetCat2 = cat_array1.filter(el => el.sex === "male");
+        console.log(targetCat2); // [ {name: "kuro", age: 6, sex: "male"}, {name: "tora", age: 3, sex: "male"} ]
+
+        // □ findIndex() ... インデックスを探す
+        let targetCat3 = cat_array1.findIndex(el => el.name === "tora");
+        console.log(targetCat3); // 2
+        console.log(cat_array1[targetCat3]); // {name: "tora", age: 3, sex: "male"}
+
+        // □ some() ... あるか（1つ以上存在するか）を調べる
+        let targetCat4 = cat_array1.some(el => el.age >= 10);
+        console.log(targetCat4); // true
+
+        console.log("");
+
+      </script>
+      <p class="title">find()を使った例</p>
+      <pre>
+      <code class="prettyprint">
+        const cat_array1 = [
+          { name: "mike", age: 10, sex: "female" },
+          { name: "kuro", age: 6, sex: "male" },
+          { name: "tora", age: 3, sex: "male" }
+        ];
+        let targetAge = 6;
+        let targetCat = cat_array1.find(el => el.age === 6);
+        console.log(targetCat); // {name: "kuro", age: 6}
+
+        // find()以外の「探す」系メソッド
+
+        // □ filter() ... 全部探す
+        let targetCat2 = cat_array1.filter(el => el.sex === "male");
+        console.log(targetCat2); // [ {name: "kuro", age: 6, sex: "male"}, {name: "tora", age: 3, sex: "male"} ]
+
+        // □ findIndex() ... インデックスを探す
+        let targetCat3 = cat_array1.findIndex(el => el.name === "tora");
+        console.log(targetCat3); // 2
+        console.log(cat_array1[targetCat3]); // {name: "tora", age: 3, sex: "male"}
+
+        // □ some() ... あるか（1つ以上存在するか）を調べる
+        let targetCat4 = cat_array1.some(el => el.age >= 10);
+        console.log(targetCat4); // true
+      </code>
+      </pre>
+
+      <p class="title">参考サイト：</p>
+
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/find" target="_blank">Array.prototype.find() - JavaScript | MDN - Mozilla</a></p>
+
+      <p><a href="https://ginpen.com/2018/12/04/array-find/" target="_blank">配列から条件に合うものはfind()で見つけよう。（配列とかおれおれAdvent Calendar2018 – 04日目）</a></p>
+
+      <!--<p><a href="" target="_blank"></a></p>-->
+    
+    </div>
+
+    <script src="src/array_find.js"></script>
+  </body>
+</html>
