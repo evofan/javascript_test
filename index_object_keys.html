@@ -551,7 +551,7 @@
 
       </script>
 
-      <p class="title">配列とオブジェクトが組み合わさわったパータンの走査方色々</p>
+      <p class="title">配列とオブジェクトが組み合わさわったパターンの走査法色々</p>
 
       <pre>
       <code class="prettyprint">
@@ -598,8 +598,8 @@
         // forループ版
         let ar3_leng = array3.length;
         // console.log(ar3_leng); // 2
-        for (i = 0; i < ar3_leng; i++) {
-          for (j = 0; j < array3[i].length; j++) {
+        for (i = 0; i &lt; ar3_leng; i++) {
+          for (j = 0; j &lt; array3[i].length; j++) {
             console.log("array3[" + i + "][" + j + "]");
             console.log(`${array3[i][j]}\n\n`);
           }
@@ -727,6 +727,171 @@
       </code>
       </pre>
 
+      <script>
+      // 配列内のオブジェクト（複数）内の特定の値を取得する
+      let sampleObj1 = [
+        {
+          familyNameStr: "Yamada",
+          familyNum: 5,
+          addressNum: 47,
+          telNum: 0123456789,
+          parentAgeNum: [34, 29],
+          childAgeNum: [5, 3, 1]
+        },
+        {
+          familyNameStr: "Suzuki",
+          familyNum: 3,
+          addressNum: 28,
+          telNum: 01235486245,
+          parentAgeNum: [40, 36],
+          childAgeNum: [2]
+        },
+        {
+          familyNameStr: "Sato",
+          familyNum: 2,
+          addressNum: 10,
+          telNum: 012054924961,
+          parentAgeNum: [27, 25],
+          childAgeNum: []
+        },
+        {
+          familyNameStr: "Takahashi",
+          familyNum: 4,
+          addressNum: 34,
+          telNum: 01233245684,
+          parentAgeNum: [32, 37],
+          childAgeNum: [4, 2]
+        }
+      ];
+      // console.log("sampleObj1: ", sampleObj1);
+
+      // ↑の子供の年齢だけを取得して1つにまとめたい
+      let childAgeAry = [];
+      Object.keys(sampleObj1).forEach(key => {
+        // console.log(`${key}, ${sampleObj1[key]}`);
+        let obj = sampleObj1[key];
+        Object.keys(obj).forEach(key => key === "childAgeNum" ? childAgeAry.push(obj.childAgeNum) : key);
+      });
+      console.log("childAgeAry: ", childAgeAry);
+      /* result
+            childAgeAry: [
+              [5, 3, 1],
+              [2],
+              [],
+              [4, 2]
+            ]
+            */
+      console.log("");
+      </script>
+
+      <p class="title">配列内のオブジェクト（複数）内の特定の値を取得する</p>
+
+      <pre>
+      <code class="prettyprint">
+        let sampleObj1 = [
+          {
+            familyNameStr: "Yamada",
+            familyNum: 5,
+            addressNum: 47,
+            telNum: 0123456789,
+            parentAgeNum: [34, 29],
+            childAgeNum: [5, 3, 1]
+          },
+          {
+            familyNameStr: "Suzuki",
+            familyNum: 3,
+            addressNum: 28,
+            telNum: 01235486245,
+            parentAgeNum: [40, 36],
+            childAgeNum: [2]
+          },
+          {
+            familyNameStr: "Sato",
+            familyNum: 2,
+            addressNum: 10,
+            telNum: 012054924961,
+            parentAgeNum: [27, 25],
+            childAgeNum: []
+          },
+          {
+            familyNameStr: "Takahashi",
+            familyNum: 4,
+            addressNum: 34,
+            telNum: 01233245684,
+            parentAgeNum: [32, 37],
+            childAgeNum: [4, 2]
+          }
+        ];
+        // console.log("sampleObj1: ", sampleObj1);
+
+        // ↑の子供の年齢だけを取得して1つにまとめたい
+        let childAgeAry = [];
+        Object.keys(sampleObj1).forEach(key => {
+          // console.log(`${key}, ${sampleObj1[key]}`);
+          let obj = sampleObj1[key];
+          Object.keys(obj).forEach(key => key === "childAgeNum" ? childAgeAry.push(obj.childAgeNum) : key);
+        });
+        console.log("childAgeAry: ", childAgeAry);
+        // childAgeAry: [[5, 3, 1], [2], [], [4, 2]]
+      </code>
+      </pre>
+
+      <script>
+      // オブジェクト内のオブジェクト（複数）内の特定の値に同じ変更をかける
+      let spriteDummy = {
+        sprite1: {
+          x: 1
+        },
+        sprite2: {
+          x: 2
+        },
+        sprite3: {
+          x: 3
+        }
+      };
+      Object.keys(spriteDummy).forEach(el => {
+        // `${el}`.x = 100
+        console.log(el); // sprite1～sprite3
+        console.log(`${el}`.x); // undefined
+        console.log(spriteDummy[el]); // {x: 1}～{x: 3}
+        spriteDummy[el].x *= 10;
+      });
+      console.log(spriteDummy.sprite1.x); // 10
+      console.log(spriteDummy.sprite2.x); // 20
+      console.log(spriteDummy.sprite3.x); // 30
+
+      console.log("");
+      </script>
+
+      <p class="title">オブジェクト内のオブジェクト（複数）内の特定の値に同じ変更をかける</p>
+
+      <pre>
+      <code class="prettyprint">
+        // オブジェクト内のオブジェクト（複数）内の特定の値に同じ変更をかける
+        let spriteDummy = {
+          sprite1: {
+            x: 1
+          },
+          sprite2: {
+            x: 2
+          },
+          sprite3: {
+            x: 3
+          }
+        };
+        Object.keys(spriteDummy).forEach(el => {
+          // `${el}`.x = 100
+          console.log(el); // sprite1～sprite3
+          console.log(`${el}`.x); // undefined
+          console.log(spriteDummy[el]); // {x: 1}～{x: 3}
+          spriteDummy[el].x *= 10;
+        });
+        console.log(spriteDummy.sprite1.x); // 10
+        console.log(spriteDummy.sprite2.x); // 20
+        console.log(spriteDummy.sprite3.x); // 30
+      </code>
+      </pre>
+
       <p class="title">参考サイト：</p>
 
       <p><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/keys" target="_blank">Object.keys() - Developer Mozilla</a></p>
@@ -743,7 +908,9 @@
 
       <p><a href="https://mae.chab.in/archives/2963#post2963-2" target="_blank">技術ブログの「ソースコード」表示を効果的にカスタマイズする方法</a></p>
 
-      <!--<p><a href="" target="_blank"></a></p>-->
+      <p><a href="https://jsprimer.net/basic/loop/" target="_blank">ループと反復処理 · JavaScript Primer #jsprime</a><br>
+      ＞for...in文の利用は避け、Object.keysメソッドなどを使い配列として反復処理するなど別の方法を考えたほうがよいでしょう。
+      </p>
       
     </div>
 
