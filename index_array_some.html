@@ -121,7 +121,7 @@
         // JSコミュニティがよりクリーンでシンプルなコードを書くのに役立つJavaScriptの宝石をもっと知っていますか？
         // もしそうなら、コメントを残して、私はそれについてのブログ記事を書く事を試みます。
         // コーディングを続けてください！
-        console.log();
+        console.log("");
       </script>
       <p class="title">some()および、find()の使用例</p>
       <pre>
@@ -228,6 +228,35 @@
         // JSコミュニティがよりクリーンでシンプルなコードを書くのに役立つJavaScriptの宝石をもっと知っていますか？
         // もしそうなら、コメントを残して、私はそれについてのブログ記事を書く事を試みます。
         // コーディングを続けてください！
+      </code>
+      </pre>
+
+
+      <script>
+        // （配列内）配列の中に該当する値があるかを判別
+        let sampleAry1 = [[1,7,9,12], [4,9,10,14],[2,6,11,15]];
+        let hitNum1 = 6;
+        let result1 = sampleAry1.some(ele => ele.some(ele => ele === hitNum1));
+        console.log("result1: ", result1); // result1:  true
+
+        let hitNum2 = 8;
+        let result2 = sampleAry1.some(ele => ele.some(ele => ele === hitNum2));
+        console.log("result2: ", result2); // result2:  false
+
+        console.log("");
+      </script>
+      <p class="title">some()の使用例2</p>
+      <pre>
+      <code class="prettyprint">
+        // （配列内）配列の中に該当する値があるかを判別
+        let sampleAry1 = [[1,7,9,12], [4,9,10,14],[2,6,11,15]];
+        let hitNum1 = 6;
+        let result1 = sampleAry1.some(ele => ele.some(ele => ele === hitNum1));
+        console.log("result1: ", result1); // result1:  true
+
+        let hitNum2 = 8;
+        let result2 = sampleAry1.some(ele => ele.some(ele => ele === hitNum2));
+        console.log("result2: ", result2); // result2:  false
       </code>
       </pre>
 
