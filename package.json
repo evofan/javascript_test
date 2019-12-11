@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "parcel": "^1.12.4"
+  },
+  "dependencies": {
+    "serialize-javascript": "^2.1.2"
   }
 }
