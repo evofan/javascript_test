@@ -14,7 +14,8 @@
     "parcel": "^1.12.4"
   },
   "dependencies": {
-    "npm-check-updates": "^9.0.1",
+    "elliptic": "^6.5.4",
+    "npm-check-updates": "^11.2.1",
     "serialize-javascript": "^5.0.1",
     "serialize-to-js": "^3.1.1"
   }
