@@ -13,7 +13,7 @@
     "color-string": "^1.6.0",
     "glob-parent": "^6.0.1",
     "is-svg": "^4.3.1",
-    "node-forge": "^0.10.0",
+    "node-forge": "^1.0.0",
     "normalize-url": "^7.0.2",
     "parcel": "^1.12.4",
     "postcss": "^8.3.6",
