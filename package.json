@@ -19,7 +19,7 @@
     "parcel": "^2.12.0",
     "postcss": "^8.4.38",
     "set-value": "^4.1.0",
-    "ws": "^8.17.0"
+    "ws": "^8.17.1"
   },
   "dependencies": {
     "elliptic": "^6.5.5",
